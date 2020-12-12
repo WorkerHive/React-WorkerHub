@@ -1,0 +1,11 @@
+.tree-item:hover svg{
+    display: flex;
+}
+
+.tree-item{
+    height: 58px;
+}
+
+.tree-item svg{
+    display: none;
+}

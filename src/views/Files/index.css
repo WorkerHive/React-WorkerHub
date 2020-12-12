@@ -1,0 +1,9 @@
+.file-list.selected{
+  border: 1px solid blue;
+  border-radius: 5px;
+}
+
+.file-list{
+  flex: 1;
+}
+

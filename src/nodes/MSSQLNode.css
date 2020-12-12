@@ -1,0 +1,11 @@
+.mssql-adapter .adapter-info{
+    font-size: 10px;
+    color: #dfdfdf;
+    opacity: 0.6;
+}
+
+.mssql-adapter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}

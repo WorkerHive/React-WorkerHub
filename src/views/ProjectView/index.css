@@ -1,0 +1,13 @@
+.project-header{
+    display: flex;
+    padding: 8px;
+}
+
+.project-header__block{
+    display: flex;
+    flex-direction: column;
+}
+
+.project-header__row{
+    display: flex;
+}

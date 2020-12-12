@@ -1,0 +1,10 @@
+.permission-form{
+    flex: 1;
+    display: flex;
+    position: relative;
+}
+
+.permission-form__inner{
+    flex: 1;
+    display: flex;
+}
