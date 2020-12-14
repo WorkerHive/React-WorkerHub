@@ -4,7 +4,10 @@ import GClient from '../graph';
 
 const client = GClient()
 
-export const ADD_TEAM_MEMBER = gql`
+export const addTeamMember = (member) => {
+  return (dispatch) => {
+    client.mutate({
+      mutation: gql`
   mutation AddTeamMember($member: TeamMemberInput){
     addTeamMember(member: $member){
       id
@@ -13,7 +16,15 @@ export const ADD_TEAM_MEMBER = gql`
       phoneNumber
     }
   }
-`
+`,
+      variables: {
+        member: member
+      }
+    }).then((r) => r.data.addTeamMember).then((r) => {
+      dispatch({type: types.ADD_TEAM_MEMBER, newMember: r})
+    })
+  }
+}
 
 export const UPDATE_TEAM_MEMBER = gql`
   mutation UpdateTeam($memberId: ID, $member: TeamMemberInput){

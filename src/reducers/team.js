@@ -11,6 +11,11 @@ export default function teamReducer(state = INIT, action = {} ){
                 ...state,
                 list: action.team
             }
+        case types.ADD_TEAM_MEMBER:
+            return {
+                ...state,
+                list: state.list.concat([action.newMember])
+            }
         default:
             return state;
     }

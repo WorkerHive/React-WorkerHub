@@ -11,6 +11,11 @@ export default function projectReducer(state = init, action={}){
         ...state,
         list: action.projects
       }
+    case types.ADD_PROJECT:
+      return {
+        ...state,
+        list: state.list.concat([action.newProject])
+      }
     default:
       return state;
   }

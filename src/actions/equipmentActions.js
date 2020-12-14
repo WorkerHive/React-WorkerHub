@@ -4,7 +4,10 @@ import GClient from '../graph';
 
 const client = GClient()
 
-export const ADD_EQUIPMENT = gql`
+export const addEquipment = (equipment) => {
+  return (dispatch) => {
+    client.mutate({
+      mutation: gql`
   mutation AddEquipment($equipment: EquipmentInput){
     addEquipment(equipment: $equipment){
       id
@@ -13,17 +16,39 @@ export const ADD_EQUIPMENT = gql`
       description
     }
   }
-`
-
-export const UPDATE_EQUIPMENT = gql`
-  mutation UpdateEquipment($equipmentId: ID, $equipment: EquipmentInput){
-    updateEquipment(equipmentId: $equipmentId, equipment: $equipment){
-      name
-      type
-      description
+`,
+    variables: {
+      equipment: equipment
     }
+  }).then((r) => r.data.addEquipment).then((r) => {
+    dispatch({type: types.ADD_EQUIPMENT, newItem: r})
+  })
+}
+}
+
+export const updateEquipment = (id, equipment) => {
+  console.log(id, equipment)
+  return (dispatch) => {
+    return client.mutate({
+      mutation:  gql`
+      mutation UpdateEquipment($equipmentId: String, $equipment: EquipmentInput){
+        updateEquipment(equipmentId: $equipmentId, equipment: $equipment){
+          name
+          type
+          description
+        }
+      }
+    `,
+    variables: {
+      equipmentId: id,
+      equipment
+    }
+    }).then((r) => r.data.updateEquipment).then((r) => {
+      dispatch({type: types.UPDATE_EQUIPMENT, equipment, id})
+    })
   }
-`
+}
+
 
 export const getEquipment = () => {
   return (dispatch) => {

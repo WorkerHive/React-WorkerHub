@@ -8,6 +8,8 @@ export default () => {
         'https://thetechcompany.workhub.services/graphql' || 'http://localhost:4000/graphql' : 
         process.env.REACT_APP_GRAPH_URL || '/graphql',
     }),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache({
+      addTypename: false
+    })
   })
 }

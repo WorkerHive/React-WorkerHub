@@ -5,16 +5,27 @@ import GClient from '../graph';
 
 const client = GClient()
 
-export const ADD_PROJECT = gql`
-  mutation AddProject($project: ProjectInput){
-    addProject(project: $project){
-      id
-      name
-      description
-      status
+export const addProject = (project) => {
+  return (dispatch) => {
+    return client.mutate({
+      mutation: gql`
+      mutation AddProject($project: ProjectInput){
+        addProject(project: $project){
+          id
+          name
+          description
+          status
+        }
+      }
+    `,
+    variables: {
+      project: project
     }
+    }).then((r) => r.data.addProject).then((r) => {
+      dispatch({type: types.ADD_PROJECT, newProject: r})
+    })
   }
-`
+}
 
 export const UPDATE_PROJECT = gql`
   mutation UpdateProject($projectId: ID, $project: ProjectInput){

@@ -25,7 +25,7 @@ import { useMutation } from '@apollo/client'
 import { connect } from 'react-redux';
 import SearchTable from '../../components/search-table';
 import PermissionForm from '../../components/permission-form';
-import { UPDATE_PROJECT, ADD_PROJECT, getProjects } from '../../actions/projectActions';
+import { UPDATE_PROJECT, addProject, getProjects } from '../../actions/projectActions';
 import qs from 'qs';
 
 import './index.css';
@@ -33,7 +33,6 @@ import './index.css';
 function Projects(props){
   const query_string = qs.parse(props.location.search, {ignoreQueryPrefix: true})
   const [ selected, setSelected ] = React.useState(null)
-  const [ addProject, {data} ] = useMutation(ADD_PROJECT)
   const [ updateProject] = useMutation(UPDATE_PROJECT)
 
   React.useEffect(() => {
@@ -42,12 +41,19 @@ function Projects(props){
 
   return [
     <DashboardHeader 
-    tabs={[]}
+    tabs={["ALL", ...new Set(props.projects.filter((a) => a.status != null && a.status != undefined).map((x) => x.status.trim().toUpperCase()))] || []}
     onTabSelect={(tab) => {
+      if(tab == "ALL"){
+        delete query_string.status;
+        props.history.push(`${window.location.pathname}?${qs.stringify(query_string)}`)
+      }else{
+        query_string.status = tab;
+        props.history.push(`${window.location.pathname}?${qs.stringify(query_string)}`)
+      }
         //setSelectedTab(tab)
         //props.history.push(`${props.match.url}/${tab.toLowerCase()}`)
     }}
-    selectedTab={''}
+    selectedTab={query_string.status && query_string.status.toUpperCase() || 'ALL'}
     title={"Projects"} />,
     <PermissionForm
       onSave={(data) => {
@@ -56,7 +62,7 @@ function Projects(props){
           delete d.id
           updateProject({variables: {projectId: data.id, project: d}})
         }else{
-          addProject({variables: {project: data}})
+          props.addProject(data)
         }
       }} 
       onClose={() => setSelected(null)}
@@ -89,5 +95,6 @@ export default connect((state) => ({
   type: state.dashboard.types.filter((a) => a.name == "Projects"),
   permissions: state.dashboard.permissions.filter((a) => a.type == "Projects")
 }), (dispatch) => ({
-  getProjects: () => dispatch(getProjects())
+  getProjects: () => dispatch(getProjects()),
+  addProject: (project) => dispatch(addProject(project))
 }))(Projects)

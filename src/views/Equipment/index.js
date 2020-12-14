@@ -10,14 +10,10 @@ import DashboardHeader from '../../components/dashboard-header';
 import SearchTable from '../../components/search-table';
 import PermissionForm from '../../components/permission-form';
 import { connect } from 'react-redux';
-import { useMutation } from '@apollo/client'
-import { getEquipment, UPDATE_EQUIPMENT, ADD_EQUIPMENT } from '../../actions/equipmentActions';
+import { getEquipment, updateEquipment, addEquipment } from '../../actions/equipmentActions';
 
 function Equipment(props){
   const [ selected, setSelected] = React.useState(null)
-
-  const [ addEquipment ] = useMutation(ADD_EQUIPMENT)
-  const [ updateEquipment ] = useMutation(UPDATE_EQUIPMENT)
 
   React.useEffect(() => {
     props.getEquipment()
@@ -35,20 +31,12 @@ function Equipment(props){
     <PermissionForm 
       onSave={(data) => {
         if(data.id){
-          let d = data;
+          let d = Object.assign({}, data);
+          console.log(data)
           delete d.id;
-          updateEquipment({
-            variables: {
-              equipmentId: data.id,
-              equipment: d
-            }
-          })
+          props.updateEquipment(data.id, d)
         }else{
-          addEquipment({
-            variables: {
-              equipment: data
-            }
-          })
+          props.addEquipment(data)
         }
       }}
       onClose={() => setSelected(null)}
@@ -72,5 +60,7 @@ export default connect((state) => ({
   type: state.dashboard.types.filter((a) => a.name =="Equipment"),
   permissions: state.dashboard.permissions.filter((a) => a.type == "Equipment")
 }), (dispatch) => ({
-  getEquipment: () => dispatch(getEquipment())
+  getEquipment: () => dispatch(getEquipment()),
+  addEquipment: (equipment) => dispatch(addEquipment(equipment)),
+  updateEquipment: (id, equipment) => dispatch(updateEquipment(id, equipment))
 }))(Equipment)

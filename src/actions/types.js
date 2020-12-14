@@ -1,6 +1,16 @@
+//Projects
 export const SET_PROJECTS = "SET_PROJECTS";
+export const ADD_PROJECT = "ADD_PROJECT"
+
+//Team
 export const SET_TEAM = 'SET_TEAM';
+export const ADD_TEAM_MEMBER = "ADD_TEAM_MEMBER";
+
+//Equipment
 export const SET_EQUIPMENT = "SET_EQUIPMENT";
+export const ADD_EQUIPMENT = "ADD_EQUIPMENT";
+export const UPDATE_EQUIPMENT = "UPDATE_EQUIPMENT"
+
 export const SET_FILES = "SET_FILES";
 
 //Calendar things
