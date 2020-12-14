@@ -37,6 +37,9 @@ export const getProjects = () => {
             name
             description
             status
+            files{
+              cid
+            }
           }
         }
       `

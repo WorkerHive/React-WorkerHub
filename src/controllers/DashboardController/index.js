@@ -37,14 +37,19 @@ import qs from 'qs';
 import jwt_decode from 'jwt-decode';
 import { Switch, Route } from 'react-router-dom';
 
+import IPFS from 'ipfs';
+
 import { getTypes, getPermissions } from '../../actions/adminActions'
 
 import './index.css';
 
 function DashboardController(props){
   let query_string = qs.parse(props.location.search, {ignoreQueryPrefix: true})
-  console.log(query_string, props)
+
   const currentPath = window.location.pathname.replace(/\/dashboard/g, '')
+
+  const [ ipfsNode, setIPFS ] = React.useState(null)
+
   const menu = [
     {
       icon: <Dashboard />,
@@ -78,9 +83,13 @@ function DashboardController(props){
     },
   ]
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
     props.getTypes()
     props.getPermissions()
+
+    const node = await IPFS.create()
+    setIPFS(node)
+    console.log(await node.id())
   }, [])
 
   const renderTitle = () => {
@@ -149,7 +158,9 @@ function DashboardController(props){
           <Route path={`${props.match.url}/calendar`} component={Calendar} />
           <Route path={`${props.match.url}/projects`} component={Projects} exact />
           <Route path={`${props.match.url}/projects/:id`} component={ProjectView} />
-          <Route path={`${props.match.url}/files`} component={Files} />
+          <Route path={`${props.match.url}/files`} render={(props) => {
+            return <Files {...props} ipfs={ipfsNode} />
+          }} />
           <Route path={`${props.match.url}/team`} component={Teams} />
           <Route path={`${props.match.url}/equipment`} component={Equipment} />
           <Route path={`${props.match.url}/settings`} component={SettingsView} />

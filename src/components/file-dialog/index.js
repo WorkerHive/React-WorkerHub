@@ -24,6 +24,13 @@ function FileDialog(props){
 
     const [ selectedFiles, setSelected ] = React.useState({})
 
+    const attachFiles = () => {
+        if(props.onAttach){
+            props.onAttach(selectedFiles)
+            setSelected({})
+            props.onClose()
+        }
+    }
     return (
         <Dialog fullWidth open={props.open} onClose={props.onClose}>
             <DialogTitle>Files</DialogTitle>
@@ -48,7 +55,7 @@ function FileDialog(props){
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onClose}>Close</Button>
-                <Button color="primary" variant="contained">Attach</Button>
+                <Button color="primary" variant="contained" onClick={attachFiles}>Attach</Button>
             </DialogActions>
 
         </Dialog>

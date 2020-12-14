@@ -19,6 +19,16 @@ export const UPLOAD_FILE = gql`
     }
   `
 
+export const ATTACH_FILE = gql`
+    mutation AttachFile($projectId: ID, $fileId: ID){
+      attachFileToProject(projectId: $projectId, fileId: $fileId){
+        files{
+          cid
+        }
+      }
+    }
+`
+
 export const CONVERT_FILE = gql`
     mutation ConvertFile($fileId: ID, $targetFormat:String){
       convertFile(fileId: $fileId, targetFormat: $targetFormat){

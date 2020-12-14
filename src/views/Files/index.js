@@ -15,7 +15,8 @@ import {
   Checkbox
 } from '@material-ui/core';
 import DashboardHeader from '../../components/dashboard-header';
-
+import PDFCard from '../../components/pdf-card';
+import FilePreview from '../../components/file-preview-dialog';
 import { useMutation } from '@apollo/client';
 import { addFile, CONVERT_FILE, getFiles, UPLOAD_FILE } from '../../actions/fileActions';
 import {useDropzone} from 'react-dropzone'
@@ -26,6 +27,7 @@ import './index.css';
 function Files(props){
   const [ uploadFile, {data} ] = useMutation(UPLOAD_FILE)
   const [ convertFile ] = useMutation(CONVERT_FILE)
+  const [ selectedData, setData ] = React.useState(null)
 
   const onDrop = useCallback(async (acceptedFiles) => {
     if(acceptedFiles && acceptedFiles.length > 0){
@@ -59,6 +61,7 @@ function Files(props){
     selectedTab={''}
     title={"Files"} />,
     <Paper style={{marginTop: 12, flex: 1, position: 'relative', display: 'flex', flexDirection: 'column'}}>
+      <FilePreview open={selectedData} onClose={() => setData(null)} file={selectedData} />
       <div {...getRootProps()} style={{flex: 1, display: 'flex', flexDirection: 'column'}}>
         <input {...getInputProps()} />
       <List className={isDragActive ? 'file-list selected' : 'file-list'}>
@@ -70,7 +73,27 @@ function Files(props){
               targetFormat: "glb"
             }
             console.log(vars)
-            convertFile({variables: vars})
+            if(props.ipfs){
+              const get = async (x) => {
+                if(props.ipfs){
+                  console.log(x)
+                  let file =  props.ipfs.cat(x.cid)
+                  let data = Buffer.from('')
+                  for await (const chunk of file){
+                    data = Buffer.concat([data, chunk])
+                  }
+                  setData({
+                    filename: x.filename,
+                    extension: x.extension,
+                    content: data
+                  })
+                 // console.log(data)
+                }
+                
+              }
+              get(x)
+            }
+            //convertFile({variables: vars})
           }}>
             <Checkbox onClick={(e) => {
               e.stopPropagation();

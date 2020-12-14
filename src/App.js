@@ -13,6 +13,7 @@ import {
 
 import GClient from './graph';
 import configureStore from './configureStore';
+
 import './App.css';
 
 const { store, persistor } = configureStore();

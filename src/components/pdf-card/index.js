@@ -15,8 +15,17 @@ export default function PDFCard(props){
         <Document
             file={props.file}
             onLoadSuccess={onDocumentLoad}>
-            
-            <Page pageNumber={pageNumber} />
+             {
+              Array.from(
+                new Array(numPages),
+                (el, index) => (
+                  <Page
+                    key={`page_${index + 1}`}
+                    pageNumber={index + 1}
+                  />
+                ),
+              )
+            }
         </Document>
     )
 }
