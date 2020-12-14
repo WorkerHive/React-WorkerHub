@@ -4,13 +4,19 @@ import PropTypes from 'prop-types';
 import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
 
 import {
-    Add    
+    Add,
+    Dashboard as DashboardIcon,
+    List as ListIcon,
+    EmojiNature
 } from '@material-ui/icons';
 
 import {
     IconButton,
     SvgIcon,
-    Collapse
+    Collapse,
+    ButtonGroup,
+    Divider,
+    Button
 } from "@material-ui/core"
 
 import {
@@ -18,31 +24,18 @@ import {
     TreeItem,
 } from '@material-ui/lab'
 
+import HiveEditor from 'react-hive-flow'
+import GraphKanban from '../../components/graph-kanban';
+
 import { v4 as uuidv4 } from 'uuid';
 import { useSpring, animated } from 'react-spring/web.cjs';
 import './plan.css';
 
 export default function PlanTab(props){
-    const [ nodes, setNodes ] = React.useState([
-        {
-            id: 'planning',
-            name: "Planning"
-        },
-        {
-            id: 'design',
-            name: "Design"
-        }
-    ])
-    const [ links, setLinks ] = React.useState([
-        {
-            target: 'planning',
-            source: 'root'
-        },
-        {
-            target: 'design',
-            source: 'planning'
-        }
-    ])
+  const [ selectedView, setView ] = React.useState('list')
+
+    const [ nodes, setNodes ] = React.useState([])
+    const [ links, setLinks ] = React.useState([])
 
     const [ expanded, setExpanded ] = React.useState(['root'])
 
@@ -59,7 +52,7 @@ export default function PlanTab(props){
                     })
                     addLink({target: n.id, source: tree_branch.id})
         
-                }} nodeId={tree_branch.id} label={tree_branch.name}>
+                }} nodeId={tree_branch.id} label={tree_branch && tree_branch.data && tree_branch.data.label}>
                     {(_children || []).map((x) => renderTree(x))}
                 </StyledTreeItem>
             )
@@ -83,32 +76,83 @@ export default function PlanTab(props){
         return link;
     }
 
-    let rootNodes = links.filter((a) => a.source == 'root').map((x) => nodes.filter((a) =>  a.id == x.target)[0])
-    console.log(rootNodes)
+
+    const renderKanban = () => {
+      return (
+        <GraphKanban graph={{nodes: nodes}} />
+      )
+    }
+
+    const renderList = () => {
+      let rootNodes = nodes.filter((x) => links.filter((a) => a.target == x.id).length == 0)
+//      let rootNodes = links.filter((a) => a.source == 'root').map((x) => nodes.filter((a) =>  a.id == x.target)[0])
+
+      return (
+        <TreeView
+        multiSelect
+        defaultExpanded={['1']}
+        expanded={expanded}
+        onNodeToggle={(event, newExpanded) => {
+            console.log(event, newExpanded)
+            setExpanded(newExpanded)
+        }}
+        defaultCollapseIcon={<MinusSquare />}
+        defaultExpandIcon={<PlusSquare />}
+        defaultEndIcon={<CloseSquare />}>
+         <StyledTreeItem addChild={() => {
+            let n = addNode({
+                name: ''
+            })
+            addLink({target: n.id, source: 'root'})
+                        
+            console.log(nodes, links)
+         }} nodeId="root" label={props.project.name}>
+             {rootNodes.map((x) => renderTree(x))}
+        </StyledTreeItem>
+     </TreeView>
+      )
+    }
+
+    const renderHive = () => {
+      return (
+        <div className="plan-hive">
+      <HiveEditor
+          nodes={nodes}
+          links={links}
+          onNodeChange={(nodes) => setNodes(nodes)}
+          onLinkChange={(links) => setLinks(links)} />
+        </div>
+      )
+    }
+
+
+    const renderPlan = () => {
+      switch(selectedView){
+        case 'kanban':
+          return renderKanban()
+        case 'list':
+          return renderList()
+        case 'hive':
+          return renderHive()
+        default:
+          return
+      }
+    }
+
     return (
-        <div style={{padding: 4}}>
-            <TreeView
-                multiSelect
-                defaultExpanded={['1']}
-                expanded={expanded}
-                onNodeToggle={(event, newExpanded) => {
-                    console.log(event, newExpanded)
-                    setExpanded(newExpanded)
-                }}
-                defaultCollapseIcon={<MinusSquare />}
-                defaultExpandIcon={<PlusSquare />}
-                defaultEndIcon={<CloseSquare />}>
-                 <StyledTreeItem addChild={() => {
-                    let n = addNode({
-                        name: ''
-                    })
-                    addLink({target: n.id, source: 'root'})
-                                
-                    console.log(nodes, links)
-                 }} nodeId="root" label={props.project.name}>
-                     {rootNodes.map((x) => renderTree(x))}
-                </StyledTreeItem>
-             </TreeView>
+        <div style={{padding: 4, display: 'flex', flex: 1, flexDirection: 'column'}}>
+            <div className="plan-header">
+              <div>
+
+              </div>
+              <ButtonGroup>
+                <Button variant={selectedView == 'kanban' && 'contained'} onClick={() => setView('kanban')}><DashboardIcon /></Button>
+                <Button variant={selectedView == 'list' && 'contained'} onClick={() => setView('list')}><ListIcon /></Button>
+                <Button variant={selectedView == 'hive' && 'contained'} onClick={() => setView('hive')}><EmojiNature /></Button>
+              </ButtonGroup>
+            </div>
+            <Divider />
+            {renderPlan()}
         </div>
     )
 }

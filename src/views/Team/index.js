@@ -13,14 +13,13 @@ import PermissionForm from '../../components/permission-form';
 import { connect } from 'react-redux';
 
 function Teams(props){
-  const [team, setTeam ] = React.useState([])
   const [ selected, setSelected ] = React.useState(null)
 
   const [ addTeamMember, ] = useMutation(ADD_TEAM_MEMBER);
   const [ updateTeamMember ] = useMutation(UPDATE_TEAM_MEMBER)
 
   React.useEffect(() => {
-    getTeam().then((result) => setTeam(result.data.team))
+    props.getTeam()
   }, [])
 
   return [
@@ -50,7 +49,7 @@ function Teams(props){
       type={props.type} 
       permissions={props.permissions}>
       <SearchTable 
-        data={team}
+        data={props.team}
         renderItem={(item) => (
           <ListItem button onClick={() => setSelected(item)}>{item.name}</ListItem>
         )} />
@@ -59,6 +58,9 @@ function Teams(props){
 }
 
 export default connect((state) => ({
+  team: state.team.list,
   type: state.dashboard.types.filter((a) => a.name == "Team Members"),
   permissions: state.dashboard.permissions.filter((a) => a.type == "Team Members")
+}), (dispatch) => ({
+  getTeam: () => dispatch(getTeam())
 }))(Teams)

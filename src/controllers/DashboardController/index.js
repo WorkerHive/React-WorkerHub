@@ -90,6 +90,10 @@ function DashboardController(props){
     const node = await IPFS.create()
     setIPFS(node)
     console.log(await node.id())
+
+    return () => {
+      node.stop()
+    }
   }, [])
 
   const renderTitle = () => {

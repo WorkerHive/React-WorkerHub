@@ -14,14 +14,13 @@ import { useMutation } from '@apollo/client'
 import { getEquipment, UPDATE_EQUIPMENT, ADD_EQUIPMENT } from '../../actions/equipmentActions';
 
 function Equipment(props){
-  const [ equipment, setEquipment ] = React.useState([])
   const [ selected, setSelected] = React.useState(null)
 
   const [ addEquipment ] = useMutation(ADD_EQUIPMENT)
   const [ updateEquipment ] = useMutation(UPDATE_EQUIPMENT)
 
   React.useEffect(() => {
-    getEquipment().then((result) => setEquipment(result.data.equipment))
+    props.getEquipment()
   }, [])
 
   return [
@@ -57,7 +56,7 @@ function Equipment(props){
       type={props.type} 
       permissions={props.permissions}>
     <SearchTable
-      data={equipment}
+      data={props.equipment}
       renderItem={(item) => (
         <ListItem button onClick={(e) => {
           setSelected(item)
@@ -69,6 +68,9 @@ function Equipment(props){
   ]
 }
 export default connect((state) => ({
+  equipment: state.equipment.list,
   type: state.dashboard.types.filter((a) => a.name =="Equipment"),
   permissions: state.dashboard.permissions.filter((a) => a.type == "Equipment")
+}), (dispatch) => ({
+  getEquipment: () => dispatch(getEquipment())
 }))(Equipment)

@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-
+import * as types from './types';
 import GClient from '../graph';
 
 const client = GClient()
@@ -26,16 +26,21 @@ export const UPDATE_EQUIPMENT = gql`
 `
 
 export const getEquipment = () => {
-  return client.query({
-    query: gql`
-      query GetEquipment {
-        equipment {
-          id
-          name
-          type
-          description
+  return (dispatch) => {
+    return client.query({
+      query: gql`
+        query GetEquipment {
+          equipment {
+            id
+            name
+            type
+            description
+          }
         }
-      }
-    `
-  })
+      `
+    }).then((r) => r.data.equipment).then((r) => {
+      dispatch({type: types.SET_EQUIPMENT, equipment: r})
+    })
+  }
+ 
 }

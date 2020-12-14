@@ -75,7 +75,7 @@ function Projects(props){
         renderItem={(item) => (
           <ListItem onClick={() => {
             //setSelected(item)
-             props.history.push(`${props.match.url}/${item.id}`)
+             props.history.push(`${props.match.url}/${item.id}/plan`)
           }}button>{item.name}</ListItem>
         )} />
 

@@ -3,6 +3,10 @@ export const SET_TEAM = 'SET_TEAM';
 export const SET_EQUIPMENT = "SET_EQUIPMENT";
 export const SET_FILES = "SET_FILES";
 
+//Calendar things
+export const SET_BOOKINGS = "SET_BOOKINGS";
+export const ADD_BOOKING = "ADD_BOOKING";
+
 export const SET_TOKEN = 'SET_TOKEN';
 
 export const ADD_FILE = 'ADD_FILE';

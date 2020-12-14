@@ -9,3 +9,17 @@
 .tree-item svg{
     display: none;
 }
+
+.plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 4px;
+}
+
+.plan-hive{
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
