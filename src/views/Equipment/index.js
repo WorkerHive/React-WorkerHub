@@ -10,7 +10,9 @@ import DashboardHeader from '../../components/dashboard-header';
 import SearchTable from '../../components/search-table';
 import PermissionForm from '../../components/permission-form';
 import { connect } from 'react-redux';
-import { getEquipment, updateEquipment, addEquipment } from '../../actions/equipmentActions';
+import { removeEquipment, getEquipment, updateEquipment, addEquipment } from '../../actions/equipmentActions';
+import MoreMenu from '../../components/more-menu';
+import './index.css';
 
 function Equipment(props){
   const [ selected, setSelected] = React.useState(null)
@@ -21,7 +23,7 @@ function Equipment(props){
 
   return [
     <DashboardHeader 
-    tabs={[]}
+    tabs={[...new Set(props.equipment.filter((a) => a.type).map((x) => x.type))]}
     onTabSelect={(tab) => {
         //setSelectedTab(tab)
         //props.history.push(`${props.match.url}/${tab.toLowerCase()}`)
@@ -46,11 +48,17 @@ function Equipment(props){
     <SearchTable
       data={props.equipment}
       renderItem={(item) => (
+        <div className="equipment-item">
         <ListItem button onClick={(e) => {
           setSelected(item)
         }}>
           {item.name}
         </ListItem>
+          <MoreMenu onDelete={() => {
+            props.removeEquipment(item.id)
+          }} />
+        </div>
+
       )} />
       </PermissionForm>
   ]
@@ -62,5 +70,6 @@ export default connect((state) => ({
 }), (dispatch) => ({
   getEquipment: () => dispatch(getEquipment()),
   addEquipment: (equipment) => dispatch(addEquipment(equipment)),
-  updateEquipment: (id, equipment) => dispatch(updateEquipment(id, equipment))
+  updateEquipment: (id, equipment) => dispatch(updateEquipment(id, equipment)),
+  removeEquipment: (id) => dispatch(removeEquipment(id))
 }))(Equipment)

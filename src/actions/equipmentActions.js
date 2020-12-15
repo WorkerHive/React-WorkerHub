@@ -49,6 +49,23 @@ export const updateEquipment = (id, equipment) => {
   }
 }
 
+export const removeEquipment = (id) => {
+  return (dispatch) => {
+    return client.mutate({
+      mutation: gql`
+        mutation RemoveEquipment($id: String){
+          removeEquipment(equipmentId: $id)
+        }
+      `,
+      variables: {
+        id: id
+      }
+    }).then((r) => r.data.removeEquipment).then((r) => {
+      dispatch({type: types.REMOVE_EQUIPMENT, id: id})
+    })
+  }
+}
+
 
 export const getEquipment = () => {
   return (dispatch) => {

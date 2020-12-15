@@ -22,7 +22,7 @@ function CalendarView(props){
 
     const myEventsList = [];
 
-    const tabs = [];
+    const tabs = ["All", "Me", "Projects"];
     
     React.useEffect(() => {
         props.getBookings()
@@ -56,8 +56,8 @@ function CalendarView(props){
                     id: x.id,
                     title: x.project.name,
                     allDay: x.allDay,
-                    start: new Date(x.date*1000),
-                    end: new Date(x.date* 1000)
+                    start: new Date((x.startTime || x.date)*1000),
+                    end: new Date((x.endTime || x.date)* 1000)
                 }))}
                 startAccessor="start"
                 endAccessor="end"

@@ -27,7 +27,10 @@ export const addProject = (project) => {
   }
 }
 
-export const UPDATE_PROJECT = gql`
+export const updateProject = (projectId, project) => {
+  return (dispatch) => {
+    return client.mutate({
+      mutation: gql`
   mutation UpdateProject($projectId: ID, $project: ProjectInput){
     updateProject(projectId: $projectId, project: $project){
       id
@@ -36,8 +39,15 @@ export const UPDATE_PROJECT = gql`
       status
     }
   }
-`
-
+`, 
+variables: {
+  projectId: projectId,
+  project: project
+}}).then((r) => r.data.updateProject).then((r) => {
+  dispatch({type: types.UPDATE_PROJECT, project: project, id: projectId})
+})
+} 
+  }
 export const getProjects = () => {
   return (dispatch) => {
     return client.query({

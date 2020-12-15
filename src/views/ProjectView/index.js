@@ -26,10 +26,9 @@ function ProjectView(props){
         }
     }, [props.project])
 
-    console.log("PROJECT", project)
 
     const tabs = ["Plan", "Calendar", "Team", "Files"]
-    console.log(props.location.pathname.replace(props.match.url, ''))
+
     return [
         <DashboardHeader 
             tabs={tabs}
@@ -42,7 +41,7 @@ function ProjectView(props){
         <Paper style={{flex: 1, marginTop: 12, display: 'flex'}}>
             <Switch>
                 <Route path={`${props.match.url}/plan`} render={(props) => {
-                    return <ProjectTabs.PlanTab {...props} project={project} />
+                    return <ProjectTabs.PlanTab {...props} y={props.y} project={project} />
                 }} />
                 <Route path={`${props.match.url}/calendar`} render={(props) => {
                     return <ProjectTabs.CalendarTab {...props} project={project} />

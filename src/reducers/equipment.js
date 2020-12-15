@@ -28,6 +28,14 @@ export default function equipmentReducer(state = INIT, action={}){
                 ...state,
                 list: updated
             }
+        case types.REMOVE_EQUIPMENT:
+            updated = state.list.slice()
+            let eIx = updated.map((x) => x.id).indexOf(action.id)
+            updated.splice(eIx, 1)
+            return {
+                ...state,
+                list: updated
+            }
         default:
             return state;
     }

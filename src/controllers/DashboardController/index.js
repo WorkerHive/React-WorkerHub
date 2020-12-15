@@ -41,7 +41,11 @@ import IPFS from 'ipfs';
 
 import { getTypes, getPermissions } from '../../actions/adminActions'
 
+import YActions from '../../graph/yjs';
+
 import './index.css';
+
+const doc = YActions()
 
 function DashboardController(props){
   let query_string = qs.parse(props.location.search, {ignoreQueryPrefix: true})
@@ -86,13 +90,16 @@ function DashboardController(props){
   React.useEffect(async () => {
     props.getTypes()
     props.getPermissions()
-
-    const node = await IPFS.create()
+    let node;
+    if(!ipfsNode){
+      node = await IPFS.create()
     setIPFS(node)
-    console.log(await node.id())
+    }
+  
+    //console.log(await node.id())
 
-    return () => {
-      node.stop()
+    return async () => {
+      await (ipfsNode || node).stop()
     }
   }, [])
 
@@ -159,9 +166,13 @@ function DashboardController(props){
       <div className="dashapp-body">
 
         <Switch>
-          <Route path={`${props.match.url}/calendar`} component={Calendar} />
+          <Route path={`${props.match.url}/calendar`} render={(props) => (
+            <Calendar {...props} y={doc} />
+          )} />
           <Route path={`${props.match.url}/projects`} component={Projects} exact />
-          <Route path={`${props.match.url}/projects/:id`} component={ProjectView} />
+          <Route path={`${props.match.url}/projects/:id`} render={(props) => (
+            <ProjectView {...props} y={doc}/>
+          )} />
           <Route path={`${props.match.url}/files`} render={(props) => {
             return <Files {...props} ipfs={ipfsNode} />
           }} />

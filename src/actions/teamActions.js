@@ -44,6 +44,8 @@ export const getTeam = () => {
           team {
             id
             name
+            username
+            password
             phoneNumber
             email
           }

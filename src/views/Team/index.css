@@ -1,0 +1,11 @@
+.team-item{
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 50px;
+}
+
+.team-item .more-menu{
+    position: absolute;
+    right: 12px;
+}

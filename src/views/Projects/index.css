@@ -1,0 +1,16 @@
+.project-item{
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid black;
+}
+
+.project-item .more-menu{
+    position: absolute;
+    right: 12px;
+}
+.project-item:has(.more-menu){
+    pointer-events: none;
+}

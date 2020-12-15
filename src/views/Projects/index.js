@@ -16,16 +16,18 @@ import {
   Paper,
   Divider,
   TextField,
-  Fab
+  Fab,
+  Typography
 } from '@material-ui/core';
 
+import MoreMenu from '../../components/more-menu';
 import DashboardHeader from '../../components/dashboard-header';
 
 import { useMutation } from '@apollo/client'
 import { connect } from 'react-redux';
 import SearchTable from '../../components/search-table';
 import PermissionForm from '../../components/permission-form';
-import { UPDATE_PROJECT, addProject, getProjects } from '../../actions/projectActions';
+import { updateProject, addProject, getProjects } from '../../actions/projectActions';
 import qs from 'qs';
 
 import './index.css';
@@ -33,7 +35,6 @@ import './index.css';
 function Projects(props){
   const query_string = qs.parse(props.location.search, {ignoreQueryPrefix: true})
   const [ selected, setSelected ] = React.useState(null)
-  const [ updateProject] = useMutation(UPDATE_PROJECT)
 
   React.useEffect(() => {
     props.getProjects() 
@@ -60,7 +61,7 @@ function Projects(props){
         if(data.id){
           let d = Object.assign({}, data);
           delete d.id
-          updateProject({variables: {projectId: data.id, project: d}})
+          props.updateProject(data.id, d)
         }else{
           props.addProject(data)
         }
@@ -78,12 +79,16 @@ function Projects(props){
           }
           return false;
         }).filter((a) => a.name)}
-        renderItem={(item) => (
-          <ListItem onClick={() => {
-            //setSelected(item)
-             props.history.push(`${props.match.url}/${item.id}/plan`)
-          }}button>{item.name}</ListItem>
-        )} />
+        renderItem={(item) => [
+          <div className="project-item">
+            <ListItem button onClick={() => {
+              props.history.push(`${props.match.url}/${item.id}/plan`)
+              }}>
+              <Typography style={{flex: 1}} variant="subtitle1">{item.name}</Typography>
+            </ListItem>
+            <MoreMenu />
+          </div>
+        ]} />
 
     </PermissionForm>
 
@@ -96,5 +101,6 @@ export default connect((state) => ({
   permissions: state.dashboard.permissions.filter((a) => a.type == "Projects")
 }), (dispatch) => ({
   getProjects: () => dispatch(getProjects()),
-  addProject: (project) => dispatch(addProject(project))
+  addProject: (project) => dispatch(addProject(project)),
+  updateProject: (id, project) => dispatch(updateProject(id, project))
 }))(Projects)

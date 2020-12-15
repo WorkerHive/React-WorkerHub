@@ -29,7 +29,11 @@ import GraphKanban from '../../components/graph-kanban';
 
 import { v4 as uuidv4 } from 'uuid';
 import { useSpring, animated } from 'react-spring/web.cjs';
+import YActions from '../../graph/yjs';
 import './plan.css';
+
+const ydoc = YActions()
+let yDoc;
 
 export default function PlanTab(props){
   const [ selectedView, setView ] = React.useState('list')
@@ -39,16 +43,74 @@ export default function PlanTab(props){
 
     const [ expanded, setExpanded ] = React.useState(['root'])
 
+    const [ docProject, setProject ] = React.useState({})
+    const [ doc, setDoc ] = React.useState(null)
     
+    const observer = () => {
+      if(yDoc){
+        let obj = yDoc.toJSON()
+        console.log("OBSERVE", obj)
+        if(obj.nodes != null){
+          setNodes(obj.nodes.map((x) => Object.assign({}, x)))
+        }
+        if(obj.links != null) {
+          setLinks(obj.links.map((x) => Object.assign({}, x)))
+        }
+      }
+    }
+
+    React.useEffect(() => {
+      console.log("YDC", props)
+      if(props.project && ydoc && props.project.id != docProject.id){
+        if(doc) doc.unobserve(observer);
+
+        console.log("Setting up YDOC")
+        let _doc = ydoc.getMap(`plan-${props.project.id}`)
+        yDoc = _doc;
+        setDoc(_doc)
+        _doc.observe(observer)
+
+        setProject(props.project)
+        
+        let init = _doc.toJSON();
+
+        if(init.nodes != null) setNodes(init.nodes)
+        if(init.links != null) setLinks(init.links)
+      }
+    }, [props.project, doc])
+
+    const _setNodes = (nodes) => {
+      if(doc){
+        doc.set('nodes', nodes)
+      }
+      setNodes(nodes)
+    }
+
+    const _setLinks = (links) => {
+      if(doc){
+        doc.set('links', links)
+      }
+      setLinks(links)
+    }
+
     const renderTree = (tree_branch) => {
         if(tree_branch){
             let _links = links.filter((a) => a.source == tree_branch.id)
             let _children = _links.map((x) => nodes.filter((a) => a.id == x.target)[0])
 
+            let parent_pos = nodes.filter((a) => a.id == tree_branch.id)[0].position
+
             let item = (
                 <StyledTreeItem addChild={() => {
                     let n = addNode({
-                        name: 'test'
+                        type: 'baseNode',
+                        data:{
+                          label: ""
+                        },
+                        position: {
+                          x: parent_pos.x,
+                          y: parent_pos.y + 121
+                        }
                     })
                     addLink({target: n.id, source: tree_branch.id})
         
@@ -63,8 +125,10 @@ export default function PlanTab(props){
     const addNode = (node) => {
         let n = nodes.slice();
         node.id = uuidv4()
+        if(!node.data)node.data = {};
+        if(!node.position)node.position = {x:300, y:300}
         n.push(node)
-        setNodes(n)
+        _setNodes(n)
         return node;
     }
 
@@ -72,7 +136,7 @@ export default function PlanTab(props){
         let l = links.slice();
         link.id = uuidv4()
         l.push(link);
-        setLinks(l)
+        _setLinks(l)
         return link;
     }
 
@@ -101,9 +165,10 @@ export default function PlanTab(props){
         defaultEndIcon={<CloseSquare />}>
          <StyledTreeItem addChild={() => {
             let n = addNode({
-                name: ''
+                type: 'baseNode',
+                data: {label: ''}
             })
-            addLink({target: n.id, source: 'root'})
+          //  addLink({target: n.id, source: 'root'})
                         
             console.log(nodes, links)
          }} nodeId="root" label={props.project.name}>
@@ -119,8 +184,8 @@ export default function PlanTab(props){
       <HiveEditor
           nodes={nodes}
           links={links}
-          onNodeChange={(nodes) => setNodes(nodes)}
-          onLinkChange={(links) => setLinks(links)} />
+          onNodeChange={(nodes) => _setNodes(nodes)}
+          onLinkChange={(links) => _setLinks(links)} />
         </div>
       )
     }

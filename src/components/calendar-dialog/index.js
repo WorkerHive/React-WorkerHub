@@ -30,10 +30,10 @@ import { addBooking } from '../../actions/calendarActions';
 import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import { connect } from 'react-redux';
 
+import moment from 'moment';
+
 function CalendarDialog(props){
     
-
-
     const [ step, setStep ] = React.useState(0)
     const [ searchTab, setSearchTab ] = React.useState(0)
     const [ search, setSearch ] = React.useState(null)
@@ -66,21 +66,31 @@ function CalendarDialog(props){
                     }
                 }
             }
+
+            let sTime = moment(date)
+            let eTime = moment(date)
+            sTime.set('hour', startTime.get('hour'))
+            sTime.set('minute', startTime.get('minute'))
+            eTime.set('hour', endTime.get('hour'))
+            eTime.set('minute', endTime.get('minute'))
             let booking = {
                 date: date.valueOf(),
                 project: project,
-                startTime: startTime,
-                endTime: endTime,
+                startTime: sTime,
+                endTime: eTime,
                 allDay: allDay,
                 items: {
                     team: team,
                     equipment: equipment
                 }
             }
+
+            
+
             props.addBooking({
                     allDay: allDay,
-                    startTime: startTime && startTime.valueOf() / 1000,
-                    endTime: endTime && endTime.valueOf() / 1000,
+                    startTime: startTime && parseInt(sTime.valueOf() / 1000),
+                    endTime: endTime && parseInt(eTime.valueOf() / 1000),
                     date: date.valueOf() / 1000
                 },
                 project.id,
@@ -110,6 +120,7 @@ function CalendarDialog(props){
                     }}/>
                 <KeyboardDatePicker 
                     value={date}
+                    format="DD/MM/yyyy"
                     onChange={(e, newVal) => setDate(e)}
                     margin="normal" 
                     label="Date" 
