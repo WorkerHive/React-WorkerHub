@@ -14,18 +14,37 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { getBookings } from '../../actions/calendarActions';
 import { connect } from 'react-redux';
+import YActions from '../../graph/yjs';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+
 const localizer = momentLocalizer(moment)
+const doc = YActions();
+
+let yDoc;
 
 function CalendarView(props){
     const [ dialogOpen, openDialog ] = React.useState(false)
+    const [ bookings, setBookings ] = React.useState([])
 
     const myEventsList = [];
 
     const tabs = ["All", "Me", "Projects"];
     
+    const observer = () => {
+        let obj = yDoc.toJSON()
+        if(obj.bookings && obj.bookings.length > 0){
+            setBookings(obj.bookings)
+        }
+    }
     React.useEffect(() => {
-        props.getBookings()
+        yDoc = doc.getMap('calendar')
+        yDoc.observe(observer)
+        
+        let obj = yDoc.toJSON()
+        if(obj.bookings && obj.bookings.length > 0){
+            setBookings(obj.bookings)
+        }
+       // props.getBookings()
     }, [])
 
     return [
@@ -37,7 +56,7 @@ function CalendarView(props){
             props.history.push(`${props.match.url}/${tab.toLowerCase()}`)
         }}
         title={"Calendar"} />,
-        <CalendarDialog open={dialogOpen} onClose={() => openDialog(false)} />,
+        <CalendarDialog y={yDoc} open={dialogOpen} onClose={() => openDialog(false)} />,
         
         <Paper style={{
             position: 'relative',
@@ -52,7 +71,7 @@ function CalendarView(props){
             </Fab>
             <Calendar
                 localizer={localizer}
-                events={props.bookings.map((x) => ({
+                events={bookings.map((x) => ({
                     id: x.id,
                     title: x.project.name,
                     allDay: x.allDay,

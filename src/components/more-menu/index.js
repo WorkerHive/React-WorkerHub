@@ -25,7 +25,12 @@ export default function MoreMenu(props){
         </IconButton>,
         <Menu open={menuOpen} onClose={() => openMenu(null)} anchorEl={menuOpen}>
             <MenuItem>Edit</MenuItem>
-            <MenuItem onClick={props.onDelete && props.onDelete} style={{color: 'red'}}>Delete</MenuItem>
+            <MenuItem onClick={() => {
+                if(props.onDelete) {
+                    openMenu(null)
+                 props.onDelete()
+                 }
+                 }} style={{color: 'red'}}>Delete</MenuItem>
         </Menu>
     ]
 }

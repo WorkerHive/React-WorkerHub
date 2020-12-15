@@ -13,6 +13,14 @@ export default function projectReducer(state = init, action={}){
         ...state,
         list: action.projects
       }
+    case types.REMOVE_PROJECT:
+      updated = state.list.slice()
+      let pIx = updated.map((x) => x.id).indexOf(action.id)
+      updated.splice(pIx, 1)
+      return {
+        ...state,
+        list: updated
+      }
     case types.ADD_PROJECT:
       return {
         ...state,

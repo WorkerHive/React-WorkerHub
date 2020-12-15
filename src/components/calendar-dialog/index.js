@@ -1,5 +1,5 @@
 import React from 'react';
-
+import * as Y from 'yjs'
 import { 
     Dialog,
     DialogActions,
@@ -29,8 +29,12 @@ import { useMutation } from '@apollo/client';
 import { addBooking } from '../../actions/calendarActions';
 import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import { connect } from 'react-redux';
+import YActions from '../../graph/yjs';
 
 import moment from 'moment';
+const doc = YActions();
+
+let yDoc; 
 
 function CalendarDialog(props){
     
@@ -45,6 +49,10 @@ function CalendarDialog(props){
     const [ project, setProject ] = React.useState(null)
 
     const [ selectedItems, setSelectedItems ] = React.useState({})
+
+    React.useEffect(() => {
+       yDoc = doc.getMap('calendar')    
+    }, [])
 
     const stepButton = () => {
         if(step == 0){
@@ -67,27 +75,51 @@ function CalendarDialog(props){
                 }
             }
 
-            let sTime = moment(date)
-            let eTime = moment(date)
-            sTime.set('hour', startTime.get('hour'))
-            sTime.set('minute', startTime.get('minute'))
-            eTime.set('hour', endTime.get('hour'))
-            eTime.set('minute', endTime.get('minute'))
-            let booking = {
-                date: date.valueOf(),
+            let sTime, eTime;
+            if(startTime){
+                sTime = moment(date)
+                sTime.set('hour', startTime.get('hour'))
+                sTime.set('minute', startTime.get('minute'))
+
+            }
+            if(endTime){
+                eTime = moment(date)
+            
+                eTime.set('hour', endTime.get('hour'))
+                eTime.set('minute', endTime.get('minute'))
+            }
+
+
+            let booking = new Y.Map();
+            let _booking = {
+                date: date.valueOf() / 1000,
                 project: project,
-                startTime: sTime,
-                endTime: eTime,
+                startTime: sTime && parseInt(sTime.valueOf() / 1000),
+                endTime: eTime && parseInt(eTime.valueOf() / 1000),
                 allDay: allDay,
                 items: {
                     team: team,
                     equipment: equipment
                 }
             }
+            
+            booking.set('date', _booking.date)
+            booking.set('project', _booking.project)
+
+            if(yDoc){
+                //yDoc.set('bookings', [])
+                console.log("Inserting into yjs")
+                let obj = yDoc.toJSON()
+                let bookings = obj.bookings || [];
+                console.log(bookings)
+                bookings.push(_booking)
+                yDoc.set('bookings', bookings)
+                console.log(yDoc.toJSON())
+            }
 
             
 
-            props.addBooking({
+            /*props.addBooking({
                     allDay: allDay,
                     startTime: startTime && parseInt(sTime.valueOf() / 1000),
                     endTime: endTime && parseInt(eTime.valueOf() / 1000),
@@ -97,7 +129,7 @@ function CalendarDialog(props){
                 {
                     equipment: equipment,
                     team: team
-                })
+                })*/
                 props.onClose()
         }
     }

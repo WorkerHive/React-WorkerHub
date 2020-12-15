@@ -48,6 +48,25 @@ variables: {
 })
 } 
   }
+
+  export const removeProject = (projectId) => {
+    return (dispatch) => {
+      return client.mutate({
+        mutation: gql`
+          mutation RemoveProject($projectId: ID){
+            removeProject(projectId: $projectId)
+          }
+        `,
+          variables: {
+            projectId: projectId
+          }
+      }).then((r) => r.data.removeProject).then((r) => {
+        if(r) dispatch({type: types.REMOVE_PROJECT, id: projectId})
+      })
+    }
+
+  }
+
 export const getProjects = () => {
   return (dispatch) => {
     return client.query({

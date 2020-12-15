@@ -27,7 +27,7 @@ import { useMutation } from '@apollo/client'
 import { connect } from 'react-redux';
 import SearchTable from '../../components/search-table';
 import PermissionForm from '../../components/permission-form';
-import { updateProject, addProject, getProjects } from '../../actions/projectActions';
+import { updateProject, addProject, removeProject, getProjects } from '../../actions/projectActions';
 import qs from 'qs';
 
 import './index.css';
@@ -86,7 +86,9 @@ function Projects(props){
               }}>
               <Typography style={{flex: 1}} variant="subtitle1">{item.name}</Typography>
             </ListItem>
-            <MoreMenu />
+            <MoreMenu onDelete={() => {
+              props.removeProject(item.id)
+            }} />
           </div>
         ]} />
 
@@ -102,5 +104,6 @@ export default connect((state) => ({
 }), (dispatch) => ({
   getProjects: () => dispatch(getProjects()),
   addProject: (project) => dispatch(addProject(project)),
-  updateProject: (id, project) => dispatch(updateProject(id, project))
+  updateProject: (id, project) => dispatch(updateProject(id, project)),
+  removeProject: (id) => dispatch(removeProject(id))
 }))(Projects)
