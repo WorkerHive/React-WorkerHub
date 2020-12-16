@@ -36,6 +36,23 @@ export const UPDATE_TEAM_MEMBER = gql`
   }
 `
 
+export const removeTeamMember = (id) => {
+  return (dispatch, getState) => {
+    return client.mutate({
+      mutation: gql`
+        mutation RemoveMember($memberId: ID){
+          removeTeamMember(memberId: $memberId)
+        }
+      `,
+      variables: {
+        memberId: id
+      }
+    }).then((r) => r.data.removeTeamMember).then((r) => {
+      dispatch({type: types.REMOVE_TEAM_MEMBER, id: id})
+    })
+  }
+}
+
 export const getTeam = () => {
   return (dispatch) => {
     return client.query({

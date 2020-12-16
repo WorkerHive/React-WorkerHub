@@ -27,7 +27,7 @@ import { useMutation } from '@apollo/client'
 import { connect } from 'react-redux';
 import SearchTable from '../../components/search-table';
 import PermissionForm from '../../components/permission-form';
-import { updateProject, addProject, removeProject, getProjects } from '../../actions/projectActions';
+import { updateProject, addProject, removeProject,   getProjects } from '../../actions/projectActions';
 import qs from 'qs';
 
 import './index.css';
@@ -57,11 +57,11 @@ function Projects(props){
     selectedTab={query_string.status && query_string.status.toUpperCase() || 'ALL'}
     title={"Projects"} />,
     <PermissionForm
-      onSave={(data) => {
-        if(data.id){
+      onSave={(obj, data) => {
+        if(obj.id){
           let d = Object.assign({}, data);
           delete d.id
-          props.updateProject(data.id, d)
+          props.updateProject(obj.id, d)
         }else{
           props.addProject(data)
         }
@@ -86,7 +86,12 @@ function Projects(props){
               }}>
               <Typography style={{flex: 1}} variant="subtitle1">{item.name}</Typography>
             </ListItem>
-            <MoreMenu onDelete={() => {
+            <MoreMenu 
+              onEdit={() => {
+                setSelected(item)
+
+              }}
+            onDelete={() => {
               props.removeProject(item.id)
             }} />
           </div>

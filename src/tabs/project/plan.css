@@ -23,3 +23,9 @@
     display: flex;
     flex-direction: column;
 }
+
+.plan-container{
+    height: calc(100% - 48px);
+    position: relative;
+    display: flex;
+}

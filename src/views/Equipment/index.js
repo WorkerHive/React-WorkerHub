@@ -3,7 +3,8 @@ import React from 'react';
 import {
   Paper,
   List,
-  ListItem
+  ListItem,
+  Typography
 } from '@material-ui/core';
 
 import DashboardHeader from '../../components/dashboard-header';
@@ -50,11 +51,14 @@ function Equipment(props){
       renderItem={(item) => (
         <div className="equipment-item">
         <ListItem button onClick={(e) => {
-          setSelected(item)
         }}>
-          {item.name}
+          <Typography variant="subtitle1" style={{flex: 1}}>{item.name}</Typography>
         </ListItem>
-          <MoreMenu onDelete={() => {
+          <MoreMenu
+            onEdit={() => {
+              setSelected(item)
+            }}
+          onDelete={() => {
             props.removeEquipment(item.id)
           }} />
         </div>

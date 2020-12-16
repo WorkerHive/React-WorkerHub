@@ -8,7 +8,7 @@ import {
 import DashboardHeader from '../../components/dashboard-header';
 import SearchTable from '../../components/search-table';
 import { useMutation } from "@apollo/client";
-import { addTeamMember, UPDATE_TEAM_MEMBER, getTeam } from '../../actions/teamActions';
+import { removeTeamMember, addTeamMember, UPDATE_TEAM_MEMBER, getTeam } from '../../actions/teamActions';
 import PermissionForm from '../../components/permission-form';
 import MoreMenu from '../../components/more-menu';
 import { connect } from 'react-redux';
@@ -53,8 +53,12 @@ function Teams(props){
         data={props.team}
         renderItem={(item) => (
           <div className="team-item">
-          <ListItem button onClick={() => setSelected(item)}>{item.name}</ListItem>
-          <MoreMenu />
+          <ListItem button >{item.name}</ListItem>
+          <MoreMenu onEdit={() => {
+              setSelected(item)
+          }} onDelete={() => {
+            props.removeTeamMember(item.id)
+          }}/>
           </div>
         )} />
     </PermissionForm>
@@ -67,5 +71,6 @@ export default connect((state) => ({
   permissions: state.dashboard.permissions.filter((a) => a.type == "Team Members")
 }), (dispatch) => ({
   getTeam: () => dispatch(getTeam()),
-  addTeamMember: (member) => dispatch(addTeamMember(member))
+  addTeamMember: (member) => dispatch(addTeamMember(member)),
+  removeTeamMember: (id) => dispatch(removeTeamMember(id))
 }))(Teams)

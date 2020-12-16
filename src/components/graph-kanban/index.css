@@ -1,0 +1,19 @@
+.react-kanban-board{
+    overflow-y: scroll;
+    flex: 1;
+    height: 100%;
+    position: relative;
+}
+
+.react-kanban-board > div{
+    height: 100%;
+    position: relative;
+}
+
+.react-kanban-column{
+    height: calc(100% - 40px) !important;
+}
+
+.react-kanban-column > div:last-child{
+    overflow-y: scroll;
+}

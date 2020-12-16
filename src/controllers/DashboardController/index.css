@@ -57,11 +57,17 @@
 .dashapp-body{
   flex: 1;
   padding: 8px;
+  position: relative;
   display: flex;
+  width: calc(100vw - 216px);
+  height: calc(100vh - 16px);
   flex-direction: column;
   background: #dfdfdf;  
 }
 .dashapp{
   flex: 1;
   display: flex;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
 }

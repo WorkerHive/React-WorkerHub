@@ -7,6 +7,7 @@ export const UPDATE_PROJECT = "UPDATE_PROJECT"
 //Team
 export const SET_TEAM = 'SET_TEAM';
 export const ADD_TEAM_MEMBER = "ADD_TEAM_MEMBER";
+export const REMOVE_TEAM_MEMBER = "REMOVE_TEAM_MEMBER"
 
 //Equipment
 export const SET_EQUIPMENT = "SET_EQUIPMENT";

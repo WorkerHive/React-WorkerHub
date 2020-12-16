@@ -30,13 +30,15 @@ import GraphKanban from '../../components/graph-kanban';
 import { v4 as uuidv4 } from 'uuid';
 import { useSpring, animated } from 'react-spring/web.cjs';
 import YActions from '../../graph/yjs';
+import qs from 'qs';
 import './plan.css';
 
 const ydoc = YActions()
 let yDoc;
 
 export default function PlanTab(props){
-  const [ selectedView, setView ] = React.useState('list')
+  let query = qs.parse(window.location.search, {ignoreQueryPrefix: true})
+  const [ selectedView, _setView ] = React.useState('list')
 
     const [ nodes, setNodes ] = React.useState([])
     const [ links, setLinks ] = React.useState([])
@@ -140,10 +142,51 @@ export default function PlanTab(props){
         return link;
     }
 
+    const [ columnMap, setColumnMap ] = React.useState([])
 
     const renderKanban = () => {
       return (
-        <GraphKanban graph={{nodes: nodes}} />
+        <GraphKanban 
+          onStatusChange={(card, status) => {
+            let n = nodes.slice()
+            let ix = n.map((x) => x.id).indexOf(card.id)
+            n[ix].data.status = status;
+            _setNodes(n)
+           // console.log(card, status)
+          }}
+          onChange={(cols) => {
+            //Add column -> node mapping to yjs
+            /*let output = cols.map((x) => ({
+              id: x.id,
+              title: x.title,
+              cards: x.cards.map((x) => x.id)
+            }))
+            setColumnMap(output)*/
+          }}
+          template={[
+            {
+              id: 0,
+              title: "Blocked",
+              status: "BLOCKED"
+            },
+            {
+              id: 1,
+              title: "Ready to be Done",
+              status: "UNFINISHED"
+            },
+            {
+              id: 2,
+              title: "Doing",
+              status: "IN PROGRESS"
+            },
+            {
+              id: 3,
+              title: "Done",
+              status: "COMPLETE"
+            }
+          ]}
+          map={columnMap}
+          graph={{nodes: nodes, links: links}} />
       )
     }
 
@@ -192,7 +235,8 @@ export default function PlanTab(props){
 
 
     const renderPlan = () => {
-      switch(selectedView){
+      let view = query.view || 'kanban'
+      switch(view){
         case 'kanban':
           return renderKanban()
         case 'list':
@@ -204,20 +248,30 @@ export default function PlanTab(props){
       }
     }
 
+    const setView = (view) => {
+      if(!query) query = {};
+      query.view = view;
+      props.history.push(`${props.location.pathname}?${qs.stringify(query)}`)
+    }
+
+    let view = query.view || 'kanban';
+    
     return (
-        <div style={{padding: 4, display: 'flex', flex: 1, flexDirection: 'column'}}>
+        <div style={{padding: 4, display: 'flex', flex: 1, position: 'relative', flexDirection: 'column', width: 'calc(100% - 8px)'}}>
             <div className="plan-header">
               <div>
 
               </div>
               <ButtonGroup>
-                <Button variant={selectedView == 'kanban' && 'contained'} onClick={() => setView('kanban')}><DashboardIcon /></Button>
-                <Button variant={selectedView == 'list' && 'contained'} onClick={() => setView('list')}><ListIcon /></Button>
-                <Button variant={selectedView == 'hive' && 'contained'} onClick={() => setView('hive')}><EmojiNature /></Button>
+                <Button variant={view == 'kanban' && 'contained'} onClick={() => setView('kanban')}><DashboardIcon /></Button>
+                <Button variant={view == 'list' && 'contained'} onClick={() => setView('list')}><ListIcon /></Button>
+                <Button variant={view == 'hive' && 'contained'} onClick={() => setView('hive')}><EmojiNature /></Button>
               </ButtonGroup>
             </div>
             <Divider />
+            <div className="plan-container">
             {renderPlan()}
+            </div>
         </div>
     )
 }

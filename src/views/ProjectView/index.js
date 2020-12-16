@@ -38,7 +38,7 @@ function ProjectView(props){
             }}
             selectedTab={selectedTab || props.location.pathname.replace(`${props.match.url}/`, '')}
             title={project.name} />,
-        <Paper style={{flex: 1, marginTop: 12, display: 'flex'}}>
+        <Paper style={{flex: 1, width: '100%', height: 'calc(100vh - 76px)', marginTop: 12, display: 'flex'}}>
             <Switch>
                 <Route path={`${props.match.url}/plan`} render={(props) => {
                     return <ProjectTabs.PlanTab {...props} y={props.y} project={project} />

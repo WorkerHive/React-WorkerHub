@@ -19,6 +19,7 @@ import './index.css';
 export default function PermissionForm(props){
     const [dialogOpen, openDialog] = React.useState(false)
 
+    const [ changes, setChanges ] = React.useState({})
     const [ dataObj, setDataObj ] = React.useState({})
 
     const permissions = props.permissions && props.permissions[0] || {}
@@ -39,8 +40,11 @@ export default function PermissionForm(props){
                 fields.push((
                     <TextField value={dataObj[typeKey]} onChange={(e) => {
                         let d = Object.assign({}, dataObj);
+                        let changed = Object.assign({}, changes)
                         d[typeKey] = e.target.value;
+                        changed[typeKey] = e.target.value;
                         setDataObj(d)
+                        setChanges(changed)
                     }} label={typeKey} ></TextField>
                 ))
             }
@@ -55,7 +59,7 @@ export default function PermissionForm(props){
     }
 
     const onSave = () => {
-        props.onSave(dataObj)
+        props.onSave(dataObj, changes)
         onClose();
     }
 
