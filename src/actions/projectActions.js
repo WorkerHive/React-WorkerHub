@@ -78,6 +78,7 @@ export const getProjects = () => {
             description
             status
             files{
+              filename
               cid
             }
           }

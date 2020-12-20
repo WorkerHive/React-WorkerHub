@@ -2,7 +2,9 @@ import React, {useCallback} from 'react';
 
 import {
   Add,
-  MoreVert
+  MoreVert,
+  Contactless,
+  Info
 } from '@material-ui/icons';
 
 import {
@@ -14,9 +16,15 @@ import {
   Divider,
   Checkbox
 } from '@material-ui/core';
+import MoreMenu from '../../components/more-menu'
 import DashboardHeader from '../../components/dashboard-header';
-import PDFCard from '../../components/pdf-card';
-import FilePreview from '../../components/file-preview-dialog';
+import PermissionForm from '../../components/permission-form';
+import SearchTable from '../../components/search-table';
+
+import FilePreviewDialog from '../../components/file-preview-dialog';
+
+import ConverterDialog from '../../components/converter-dialog';
+
 import { useMutation } from '@apollo/client';
 import { addFile, CONVERT_FILE, getFiles, UPLOAD_FILE } from '../../actions/fileActions';
 import {useDropzone} from 'react-dropzone'
@@ -26,7 +34,7 @@ import './index.css';
 
 function Files(props){
   const [ uploadFile, {data} ] = useMutation(UPLOAD_FILE)
-  const [ convertFile ] = useMutation(CONVERT_FILE)
+  const [ convertDoc, setConvertDoc ] = React.useState(null)
   const [ selectedData, setData ] = React.useState(null)
 
   const onDrop = useCallback(async (acceptedFiles) => {
@@ -43,10 +51,10 @@ function Files(props){
   }, [data])
 
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
 
   const [ files, setFiles ] = React.useState([])
-
+  const [ viewable ] = React.useState(["pdf", "glb", "png"])
   React.useEffect(() => {
     props.getFiles()
   }, [])
@@ -60,62 +68,91 @@ function Files(props){
     }}
     selectedTab={''}
     title={"Files"} />,
-    <Paper style={{marginTop: 12, flex: 1, position: 'relative', display: 'flex', flexDirection: 'column'}}>
-      <FilePreview open={selectedData} onClose={() => setData(null)} file={selectedData} />
-      <div {...getRootProps()} style={{flex: 1, display: 'flex', flexDirection: 'column'}}>
+
+    <PermissionForm
+      type={props.type}
+      permissions={props.permissions}
+      >
+        <FilePreviewDialog ipfs={props.ipfs} open={selectedData} file={selectedData} onClose={() => setData(null)} />
+        <ConverterDialog open={convertDoc} selected={convertDoc} onClose={() => setConvertDoc(null)}/>
+        <div className={isDragActive ? 'file-list selected' : 'file-list'} {...getRootProps()} >
         <input {...getInputProps()} />
-      <List className={isDragActive ? 'file-list selected' : 'file-list'}>
-        {props.files.map((x) => [
-          <ListItem button onClick={(e) => {
-            e.stopPropagation();
-            let vars = {
-              fileId: x.id,
-              targetFormat: "glb"
-            }
-            console.log(vars)
-            if(props.ipfs){
-              const get = async (x) => {
-                if(props.ipfs){
-                  console.log(x)
-                  let file =  props.ipfs.cat(x.cid)
-                  let data = Buffer.from('')
-                  for await (const chunk of file){
-                    data = Buffer.concat([data, chunk])
+
+        <SearchTable 
+          data={props.files}
+          renderItem={(x) => (
+            <div className="file-item">
+              <ListItem button onClick={(e) => {
+                e.stopPropagation();
+                if(viewable.indexOf(x.extension) > -1 ||(x.conversion && viewable.indexOf(x.conversion.extension) > -1)){
+               //   alert("Viewable")
+                  let file = {}
+                  if(viewable.indexOf(x.extension) > -1){
+                    file = {
+                      filename: x.filename,
+                      cid: x.cid,
+                      extension: x.extension
+                    }
+                  }else if(x.conversion && viewable.indexOf(x.conversion.extension) > -1){
+                    file = {
+                      filename: x.filename,
+                      cid: x.conversion.cid,
+                      extension: x.conversion.extension
+                    }
                   }
-                  setData({
-                    filename: x.filename,
-                    extension: x.extension,
-                    content: data
-                  })
-                 // console.log(data)
+                  setData(file)
                 }
+         
+                /*
+                if(props.ipfs){
+                  const get = async (x) => {
+                    if(props.ipfs){
+                      console.log(x)
+                      let file =  props.ipfs.cat(x.cid)
+                      let data = Buffer.from('')
+                      for await (const chunk of file){
+                        data = Buffer.concat([data, chunk])
+                      }
+                      setData({
+                        filename: x.filename,
+                        extension: x.extension,
+                        content: data
+                      })
+                     // console.log(data)
+                    }
+                    
+                  }
+                  //get(x)*/
+
                 
-              }
-              get(x)
-            }
-            //convertFile({variables: vars})
-          }}>
-            <Checkbox onClick={(e) => {
+              }}>
+                 <Checkbox onClick={(e) => {
               e.stopPropagation();
             }}/>  
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column'}}>
               <div>{x.filename}</div>
               <span style={{fontSize: 10}}>{x.cid}</span>
             </div>
-            <IconButton onClick={(e) => {
-              e.stopPropagation()
-            }}>
-              <MoreVert />
-            </IconButton>
-          </ListItem>,
-          <Divider />
-        ])}
-        </List>
-      </div>
-      <Fab style={{position: 'absolute', right: 8, bottom: 8}} color="primary" >
-        <Add />
-      </Fab>
-    </Paper>
+              </ListItem>
+              <MoreMenu 
+              menu={[
+                {
+                  label: "Convert",
+                  icon: <Contactless />,
+                  action: () => {
+                    setConvertDoc(x)
+                  }
+                },
+                {
+                  label: "Get Info",
+                  icon: <Info />,
+                  action: () => {}
+                }
+              ]} />
+            </div>
+          )}/>
+          </div>
+    </PermissionForm>
   ]
 }
 

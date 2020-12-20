@@ -1,0 +1,5 @@
+.calendar-tab{
+    flex: 1;
+    display: flex;
+    padding: 4px;
+}

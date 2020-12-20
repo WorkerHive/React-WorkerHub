@@ -9,12 +9,13 @@ import {
 } from '@material-ui/core'
 
 import { useMutation } from '@apollo/client';
-import { LOGIN, setToken } from '../../actions/authActions';
+import { getQuote, LOGIN, setToken } from '../../actions/authActions';
 import { connect } from 'react-redux';
 
 import './index.css';
 
 function Login(props){
+    const [ quote, setQuote ] = React.useState({})
     const [ error, setError ] = React.useState(null)
     const [ username, setUsername ] = React.useState('')
     const [ password, setPassword ] = React.useState('')
@@ -35,13 +36,29 @@ function Login(props){
         })
     }
 
+    React.useEffect(() => {
+        getQuote().then((quote) => {
+            setQuote(quote)
+        })
+    })
+
     return (
         <div className="login-view">
             <div className="image-banner">
+                <div className="quotes">
+                <span>
+                    {quote.q}
+                </span>
+                <span>{quote.a}</span>
+                </div>
             </div>
             <Paper style={{display: 'flex', flex: 0.3, flexDirection: 'column', padding: 8}}>
-                <Typography variant="h6">WorkHub</Typography>
-                <Divider />
+                <div style={{display: 'flex', alignItems: 'center', paddingBottom: 8}}>
+                    <img style={{height: 70, marginRight: 12}} src="/assets/teal.png" />
+                    <Typography style={{color: 'teal'}} variant="h4">WorkHub</Typography>
+
+                </div>
+                <Divider style={{marginBottom: 22}} />
             <TextField 
                 error={error}
                 label="Username" 
@@ -56,7 +73,7 @@ function Login(props){
                 onChange={(e) => setPassword(e.target.value)}/>
             <Button 
                 onClick={login}
-                style={{marginTop: 12}} 
+                style={{marginTop: 33}} 
                 color="primary" 
                 variant="contained">Login</Button>
             </Paper>

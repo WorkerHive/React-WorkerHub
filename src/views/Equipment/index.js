@@ -13,6 +13,7 @@ import PermissionForm from '../../components/permission-form';
 import { connect } from 'react-redux';
 import { removeEquipment, getEquipment, updateEquipment, addEquipment } from '../../actions/equipmentActions';
 import MoreMenu from '../../components/more-menu';
+import jwt_decode from 'jwt-decode';
 import './index.css';
 
 function Equipment(props){
@@ -55,12 +56,18 @@ function Equipment(props){
           <Typography variant="subtitle1" style={{flex: 1}}>{item.name}</Typography>
         </ListItem>
           <MoreMenu
-            onEdit={() => {
-              setSelected(item)
-            }}
-          onDelete={() => {
-            props.removeEquipment(item.id)
-          }} />
+            menu={[
+            ].concat(props.user.admin ? [
+              {
+                label: "Edit",
+                action: () => setSelected(item)
+              },
+              {
+                label: "Delete",
+                color: 'red',
+                action: () => props.removeEquipment(item.id)
+              }
+            ] : [])} />
         </div>
 
       )} />
@@ -68,6 +75,7 @@ function Equipment(props){
   ]
 }
 export default connect((state) => ({
+  user: jwt_decode(state.auth.token),
   equipment: state.equipment.list,
   type: state.dashboard.types.filter((a) => a.name =="Equipment"),
   permissions: state.dashboard.permissions.filter((a) => a.type == "Equipment")

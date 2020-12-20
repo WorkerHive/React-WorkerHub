@@ -44,7 +44,7 @@ function ProjectView(props){
                     return <ProjectTabs.PlanTab {...props} y={props.y} project={project} />
                 }} />
                 <Route path={`${props.match.url}/calendar`} render={(props) => {
-                    return <ProjectTabs.CalendarTab {...props} project={project} />
+                    return <ProjectTabs.CalendarTab {...props} y={props.y} project={project} />
                 }} />
                 <Route path={`${props.match.url}/team`} render={(props) => {
                     return <ProjectTabs.TeamTab {...props} project={project} />

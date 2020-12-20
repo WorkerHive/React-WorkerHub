@@ -8,6 +8,7 @@ export const UPDATE_PROJECT = "UPDATE_PROJECT"
 export const SET_TEAM = 'SET_TEAM';
 export const ADD_TEAM_MEMBER = "ADD_TEAM_MEMBER";
 export const REMOVE_TEAM_MEMBER = "REMOVE_TEAM_MEMBER"
+export const UPDATE_TEAM_MEMBER = "UPDATE_TEAM_MEMBER"
 
 //Equipment
 export const SET_EQUIPMENT = "SET_EQUIPMENT";
@@ -22,6 +23,7 @@ export const SET_BOOKINGS = "SET_BOOKINGS";
 export const ADD_BOOKING = "ADD_BOOKING";
 
 export const SET_TOKEN = 'SET_TOKEN';
+export const SET_STATUS = 'SET_STATUS';
 
 export const ADD_FILE = 'ADD_FILE';
 

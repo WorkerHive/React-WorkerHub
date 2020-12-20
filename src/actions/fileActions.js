@@ -19,7 +19,9 @@ export const UPLOAD_FILE = gql`
     }
   `
 
-export const ATTACH_FILE = gql`
+export const attachFile = (projectId, fileId) => {
+  client.mutate({
+    mutation: gql`
     mutation AttachFile($projectId: ID, $fileId: ID){
       attachFileToProject(projectId: $projectId, fileId: $fileId){
         files{
@@ -27,16 +29,61 @@ export const ATTACH_FILE = gql`
         }
       }
     }
-`
+    `,
+    variables: {
+      projectId: projectId,
+      fileId: fileId
+    }
+  }).then((r) => r.data.attachFileToProject).then((r) => {
+      console.log(r)
+  }) 
+}
 
-export const CONVERT_FILE = gql`
+export const convertFile = (fileId, targetFormat) => {
+  client.mutate({
+    mutation: gql`
     mutation ConvertFile($fileId: ID, $targetFormat:String){
       convertFile(fileId: $fileId, targetFormat: $targetFormat){
         msg
         error
       }
     }
-`
+  `,
+    variables: {
+      fileId,
+      targetFormat
+    }
+  }).then((r) => r.data.convertFile)
+}
+
+export const getConverters = () => {
+  return client.query({
+    query: gql`
+      query GetConverters{
+        converters{
+          id
+          name
+          sourceFormat
+          targetFormat
+          installed
+        }
+      }
+    `
+  }).then((r) => r.data.converters)
+}
+
+export const installConverter = (id) => {
+  return client.mutate({
+    mutation: gql`
+      mutation InstallConverter($converterId: ID){
+        installConverter(converterId: $converterId)
+      }
+    `,
+    variables: {
+      converterId: id
+    }
+  })
+}
 
 export const addFile = (file) => {
   return (dispatch) => {
@@ -54,6 +101,10 @@ export const getFiles = () => {
             filename
             cid
             extension
+            conversion{
+              extension
+              cid
+            }
           }
         }
       `

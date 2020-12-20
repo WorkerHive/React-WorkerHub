@@ -12,8 +12,11 @@ export const addTeamMember = (member) => {
     addTeamMember(member: $member){
       id
       name
+      username
       email
+      status
       phoneNumber
+      admin
     }
   }
 `,
@@ -26,15 +29,28 @@ export const addTeamMember = (member) => {
   }
 }
 
-export const UPDATE_TEAM_MEMBER = gql`
-  mutation UpdateTeam($memberId: ID, $member: TeamMemberInput){
+export const updateTeamMember = (memberId, member) => {
+  return (dispatch) => {
+     client.mutate({
+       mutation: gql`
+  mutation UpdateTeam($memberId: String, $member: TeamMemberInput){
     updateTeamMember(memberId: $memberId, member: $member){
       name
       email
       phoneNumber
+      admin
     }
   }
-`
+`,
+    variables: {
+      memberId: memberId,
+      member: member
+    }
+  }).then((r) => r.data.updateTeamMember).then((r) => {
+    dispatch({type: types.UPDATE_TEAM_MEMBER, member: member, id: memberId})
+  })
+  }
+}
 
 export const removeTeamMember = (id) => {
   return (dispatch, getState) => {
@@ -60,11 +76,13 @@ export const getTeam = () => {
         query GetTeam {
           team {
             id
+            status
             name
             username
             password
             phoneNumber
             email
+            admin
           }
         }
       `

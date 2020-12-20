@@ -32,7 +32,7 @@ function DashboardHeader(props){
           <Notifications />
           <div className="user-info">
             <Typography variant="subtitle1">{props.user.name}</Typography>
-            <span>Online</span>
+            <span style={{color: props.status =="connected" ? 'green': 'red'}}>{props.status == "connected" ? "Online" : "Offline"}</span>
           </div>
         </div>
         </Paper>
@@ -40,6 +40,7 @@ function DashboardHeader(props){
 }
 
 export default connect((state) => ({
+    status: state.auth.status,
     user: jwt_decode(state.auth.token)
 }), (dispatch) => ({
 

@@ -11,6 +11,8 @@ import {
     TextField,
     DialogActions,
     Button,
+    Checkbox,
+    FormControlLabel,
     DialogContent
 } from '@material-ui/core';
 
@@ -36,7 +38,8 @@ export default function PermissionForm(props){
     
         for(var k in type.typeDef){
             const typeKey = k;
-            if(type.typeDef[k] == "String"){
+            switch(type.typeDef[k]){
+                case "String":
                 fields.push((
                     <TextField value={dataObj[typeKey]} onChange={(e) => {
                         let d = Object.assign({}, dataObj);
@@ -47,6 +50,23 @@ export default function PermissionForm(props){
                         setChanges(changed)
                     }} label={typeKey} ></TextField>
                 ))
+                break;
+                case "Boolean":
+                    fields.push((
+                        <FormControlLabel
+                            control={(
+                                <Checkbox checked={dataObj[typeKey]} onChange={(e) => {
+                                    let d = Object.assign({}, dataObj)
+                                    let changed = Object.assign({}, changes)
+                                    d[typeKey] = e.target.checked;
+                                    changed[typeKey] = e.target.checked;
+                                    setDataObj(d)
+                                    setChanges(changed)
+                                }}/>
+                            )}
+                            label={typeKey} />
+
+                    ))
             }
         }
         return fields;

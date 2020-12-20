@@ -8,31 +8,62 @@ import {
     Button
 } from '@material-ui/core';
 
+import GLBCard from '../glb-card'
 import PDFCard from '../pdf-card';
 
 export default function FilePreviewDialog(props){
 
     const file = props.file || {}
+    const [data, setData] = React.useState(null)
 
     const renderContent = () => {
+        if(data){
         switch(file.extension){
             case 'pdf':
                 return (
-                    <PDFCard file={{data:file.content}}/>
+                    <PDFCard data={data}/>
+                )
+            case 'glb':
+                return (
+                    <GLBCard data={data}/>
+                )
+            case 'png':
+                return (
+                    <img style={{width: '33%', height: '100%'}} src={data} />
                 )
             default:
                 return null;
         }
     }
+    }
+
+    React.useEffect( async () => {
+        if(data) URL.revokeObjectURL(data)
+        if(props.file && props.ipfs){
+            console.log("Fetching", props.file.cid)
+            let file =  props.ipfs.cat(props.file.cid)
+            let data = Buffer.from('')
+            for await (const chunk of file){
+              data = Buffer.concat([data, chunk])
+            }
+            console.log("Setting data")
+            setData(URL.createObjectURL(new Blob([data])))
+        }
+    }, [props.file, props.ipfs])
+
+    const onClose = () => {
+        if(data) URL.revokeObjectURL(data)
+        if(props.onClose) props.onClose();
+    }
 
     return (
-        <Dialog fullWidth open={props.open} onClose={props.onClose}>
+        <Dialog fullWidth maxWidth="lg" open={props.open} onClose={onClose}>
             <DialogTitle>{file.name}</DialogTitle>
             <DialogContent style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 {renderContent()}
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.onClose}>Close</Button>
+                <Button onClick={onClose}>Close</Button>
             </DialogActions>
         </Dialog>
     )

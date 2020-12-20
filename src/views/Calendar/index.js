@@ -14,15 +14,17 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { getBookings } from '../../actions/calendarActions';
 import { connect } from 'react-redux';
+import { setStatus } from '../../actions/authActions'
 import YActions from '../../graph/yjs';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 const localizer = momentLocalizer(moment)
-const doc = YActions();
 
 let yDoc;
 
 function CalendarView(props){
+    const doc = YActions(props.setStatus);
+
     const [ dialogOpen, openDialog ] = React.useState(false)
     const [ bookings, setBookings ] = React.useState([])
 
@@ -88,5 +90,6 @@ function CalendarView(props){
 export default connect((state) => ({
     bookings: state.calendar.bookings
 }), (dispatch) => ({
-    getBookings: () => dispatch(getBookings())
+    getBookings: () => dispatch(getBookings()),
+    setStatus: (status) => dispatch(setStatus(status))
 }))(CalendarView)

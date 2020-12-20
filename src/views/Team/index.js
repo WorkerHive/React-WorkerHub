@@ -2,26 +2,38 @@ import React from 'react';
 
 import {
   Paper,
+  Typography,
   List,
   ListItem
 } from '@material-ui/core';
+
+import {
+  SupervisedUserCircle,
+  SupervisorAccount,
+  Schedule,
+  Edit,
+  Delete,
+  Share
+} from '@material-ui/icons';
+
 import DashboardHeader from '../../components/dashboard-header';
 import SearchTable from '../../components/search-table';
 import { useMutation } from "@apollo/client";
-import { removeTeamMember, addTeamMember, UPDATE_TEAM_MEMBER, getTeam } from '../../actions/teamActions';
+import { removeTeamMember, addTeamMember, updateTeamMember, getTeam } from '../../actions/teamActions';
 import PermissionForm from '../../components/permission-form';
 import MoreMenu from '../../components/more-menu';
 import { connect } from 'react-redux';
+import jwt_decode from 'jwt-decode'
 import './index.css';
 
 function Teams(props){
   const [ selected, setSelected ] = React.useState(null)
 
-  const [ updateTeamMember ] = useMutation(UPDATE_TEAM_MEMBER)
-
   React.useEffect(() => {
     props.getTeam()
   }, [])
+
+  console.log(props.user)
 
   return [
     <DashboardHeader 
@@ -35,12 +47,10 @@ function Teams(props){
     <PermissionForm 
       onSave={(data) => {
         if(data.id){
-          let d = data;
+          let d = Object.assign({}, data);
           delete d.id;
-          updateTeamMember({variables: {
-            memberId: data.id,
-            member: d
-          }})
+          props.updateTeamMember(data.id, d)
+      
         }else{
           props.addTeamMember(data)
         }
@@ -53,12 +63,31 @@ function Teams(props){
         data={props.team}
         renderItem={(item) => (
           <div className="team-item">
-          <ListItem button >{item.name}</ListItem>
-          <MoreMenu onEdit={() => {
-              setSelected(item)
-          }} onDelete={() => {
-            props.removeTeamMember(item.id)
-          }}/>
+          <ListItem button >
+            {item.status == "pending" ? <Schedule /> : item.admin ? <SupervisorAccount /> : <SupervisedUserCircle />}
+            <Typography style={{marginLeft: 12}}>
+              {item.name}
+            </Typography>
+          </ListItem>
+          <MoreMenu 
+            menu={[
+            ].concat(item.status == "pending" ? [
+              {
+                icon: <Share />,
+                label: "Share Signup",
+                action: () => {}
+              }
+            ] : []).concat(props.user.admin ? [{
+              label: "Edit",
+              icon: <Edit />,
+              action: () => setSelected(item)
+            },
+            {
+              label: "Delete",
+              color: 'red',
+              icon: <Delete />,
+              action: () => props.removeTeamMember(item.id)
+            }] : [])} />
           </div>
         )} />
     </PermissionForm>
@@ -66,11 +95,13 @@ function Teams(props){
 }
 
 export default connect((state) => ({
+  user: jwt_decode(state.auth.token),
   team: state.team.list,
   type: state.dashboard.types.filter((a) => a.name == "Team Members"),
   permissions: state.dashboard.permissions.filter((a) => a.type == "Team Members")
 }), (dispatch) => ({
   getTeam: () => dispatch(getTeam()),
   addTeamMember: (member) => dispatch(addTeamMember(member)),
-  removeTeamMember: (id) => dispatch(removeTeamMember(id))
+  removeTeamMember: (id) => dispatch(removeTeamMember(id)),
+  updateTeamMember: (id, member) => dispatch(updateTeamMember(id, member))
 }))(Teams)

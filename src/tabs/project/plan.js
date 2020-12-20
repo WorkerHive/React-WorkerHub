@@ -7,7 +7,8 @@ import {
     Add,
     Dashboard as DashboardIcon,
     List as ListIcon,
-    EmojiNature
+    EmojiNature,
+    Edit
 } from '@material-ui/icons';
 
 import {
@@ -24,19 +25,25 @@ import {
     TreeItem,
 } from '@material-ui/lab'
 
-import HiveEditor from 'react-hive-flow'
+import PlanDialog from '../../components/plan-dialog';
+import HiveEditor, {HiveProvider, NodePanel} from 'react-hive-flow'
 import GraphKanban from '../../components/graph-kanban';
 
+import { merge } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { useSpring, animated } from 'react-spring/web.cjs';
+import { setStatus } from '../../actions/authActions';
+import { connect } from 'react-redux';
 import YActions from '../../graph/yjs';
 import qs from 'qs';
 import './plan.css';
 
-const ydoc = YActions()
 let yDoc;
 
-export default function PlanTab(props){
+function PlanTab(props){
+  const [ydoc] = React.useState(YActions(props.setStatus))
+
+  const [ selectedCard , setSelectedCard ] = React.useState(null)
   let query = qs.parse(window.location.search, {ignoreQueryPrefix: true})
   const [ selectedView, _setView ] = React.useState('list')
 
@@ -103,7 +110,16 @@ export default function PlanTab(props){
             let parent_pos = nodes.filter((a) => a.id == tree_branch.id)[0].position
 
             let item = (
-                <StyledTreeItem addChild={() => {
+                <StyledTreeItem 
+                  editChild={() => {
+                    setSelectedCard({
+                      id: tree_branch.id,
+                      title: tree_branch.data.label,
+                      description: tree_branch.data.description,
+                      dueDate: tree_branch.dueDate,
+                      members: tree_branch.members})
+                  }}
+                  addChild={() => {
                     let n = addNode({
                         type: 'baseNode',
                         data:{
@@ -115,6 +131,13 @@ export default function PlanTab(props){
                         }
                     })
                     addLink({target: n.id, source: tree_branch.id})
+
+                    setSelectedCard({
+                      id: n.id,
+                      title: "",
+                      dueDate: null,
+                      members: []
+                    })
         
                 }} nodeId={tree_branch.id} label={tree_branch && tree_branch.data && tree_branch.data.label}>
                     {(_children || []).map((x) => renderTree(x))}
@@ -147,6 +170,14 @@ export default function PlanTab(props){
     const renderKanban = () => {
       return (
         <GraphKanban 
+          onClick={(card) => {
+            setSelectedCard({
+              id: card.id,
+              title: card.title,
+              dueDate: card.dueDate,
+              members: card.members
+            })
+          }}
           onStatusChange={(card, status) => {
             let n = nodes.slice()
             let ix = n.map((x) => x.id).indexOf(card.id)
@@ -206,10 +237,17 @@ export default function PlanTab(props){
         defaultCollapseIcon={<MinusSquare />}
         defaultExpandIcon={<PlusSquare />}
         defaultEndIcon={<CloseSquare />}>
-         <StyledTreeItem addChild={() => {
+         <StyledTreeItem 
+          addChild={() => {
             let n = addNode({
                 type: 'baseNode',
                 data: {label: ''}
+            })
+            setSelectedCard({
+              id: n.id,
+              title: "",
+              dueDate: null,
+              members: []
             })
           //  addLink({target: n.id, source: 'root'})
                         
@@ -224,11 +262,8 @@ export default function PlanTab(props){
     const renderHive = () => {
       return (
         <div className="plan-hive">
-      <HiveEditor
-          nodes={nodes}
-          links={links}
-          onNodeChange={(nodes) => _setNodes(nodes)}
-          onLinkChange={(links) => _setLinks(links)} />
+        <NodePanel />
+        <HiveEditor />
         </div>
       )
     }
@@ -255,12 +290,63 @@ export default function PlanTab(props){
     }
 
     let view = query.view || 'kanban';
-    
+
     return (
+      <HiveProvider store={{
+        nodes: nodes,
+        links: links,
+        onNodeAdd: (node) => _setNodes(nodes.concat(node)),
+        onLinkAdd: (link) => _setLinks(links.concat(link)),
+        onLinkRemove: (_links) => {
+          _setLinks(links.filter((a) => _links.map((x) => x.id).indeOf(a.id) < 0))
+        },
+        onNodeRemove: (_nodes) => {
+          _setNodes(nodes.filter((a) => _nodes.map((x) => x.id).indexOf(a.id) < 0))
+        },
+        onNodeUpdate: (id, node) => {
+          let ix = nodes.map((x) => x.id).indexOf(id)
+          let n = nodes.slice()
+          n[ix] = merge(n[ix], node)
+          _setNodes(n)
+        },
+        statusColors: {
+          unfinished: 'orange',
+          blocked: 'red',
+          doing: '#d4faf4',
+          complete: 'green',
+  
+        },
+        onNodeChange: (nodes) => _setNodes(nodes),
+        onLinkChange: (links) => _setLinks(links)
+      }}>
         <div style={{padding: 4, display: 'flex', flex: 1, position: 'relative', flexDirection: 'column', width: 'calc(100% - 8px)'}}>
+            <PlanDialog 
+              onSave={(plan) => {
+                console.log(plan)
+                let n = nodes.slice()
+                let ix = n.map((x) => x.id).indexOf(plan.id)
+                let data = {}
+
+                if(plan.title) data.label = plan.title;
+                if(plan.description) data.description = plan.description
+                if(plan.dueDate) data.dueDate = plan.dueDate;
+                
+                n[ix] = {
+                  ...n[ix],
+                  data: {
+                    ...n[ix].data,
+                    ...data
+                  },
+                  members: plan.members
+                };
+                _setNodes(n)
+              }}
+              open={selectedCard} 
+              plan={selectedCard} 
+              onClose={() => setSelectedCard(null)}/>
             <div className="plan-header">
               <div>
-
+      
               </div>
               <ButtonGroup>
                 <Button variant={view == 'kanban' && 'contained'} onClick={() => setView('kanban')}><DashboardIcon /></Button>
@@ -273,8 +359,13 @@ export default function PlanTab(props){
             {renderPlan()}
             </div>
         </div>
+        </HiveProvider>
     )
 }
+
+export default connect(null, (dispatch) => ({
+  setStatus: (status) => dispatch(setStatus(status))
+}))(PlanTab)
 
 function MinusSquare(props) {
     return (
@@ -341,12 +432,20 @@ function TransitionComponent(props) {
     <TreeItem {...props} label={(
         <div className="tree-item" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
             {props.label}
+            <div style={{display: 'flex'}}>
+            <IconButton onClick={(e) => {
+                e.stopPropagation();
+                if(props.editChild) props.editChild()
+            }}>
+              <Edit />
+            </IconButton>
             <IconButton onClick={(e) => {
                 e.stopPropagation()
                 props.addChild()
             }}>
                 <Add />
             </IconButton>
+            </div>
         </div>
     )} TransitionComponent={TransitionComponent}/>
 

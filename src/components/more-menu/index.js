@@ -7,7 +7,8 @@ import {
 import {
     IconButton,
     Menu,
-    MenuItem
+    MenuItem,
+    Typography
 } from '@material-ui/core';
 
 export default function MoreMenu(props){
@@ -23,19 +24,21 @@ export default function MoreMenu(props){
         <IconButton className="more-menu" onClick={toggleMenu}>
             <MoreVert />
         </IconButton>,
-        <Menu open={menuOpen} onClose={() => openMenu(null)} anchorEl={menuOpen}>
-            <MenuItem onClick={() => {
-                if(props.onEdit){
-                    openMenu(null)
-                    props.onEdit()
-                }
-            }}>Edit</MenuItem>
-            <MenuItem onClick={() => {
-                if(props.onDelete) {
-                    openMenu(null)
-                 props.onDelete()
-                 }
-                 }} style={{color: 'red'}}>Delete</MenuItem>
+        <Menu open={props.menu.length > 0 && menuOpen} onClose={() => openMenu(null)} anchorEl={menuOpen}>
+            {props.menu.map((x) => {
+                return (
+                    <MenuItem onClick={(e) => {
+                        e.stopPropagation()
+                        openMenu(null)
+                        x.action()
+                    }} style={{color: x.color || 'black'}}>
+                        {x.icon}
+                        <Typography style={{marginLeft: 8}}>
+                            {x.label}
+                        </Typography>
+                    </MenuItem>
+                )
+            })}
         </Menu>
     ]
 }

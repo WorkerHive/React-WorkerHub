@@ -13,7 +13,7 @@ export default function PDFCard(props){
 
     return (
         <Document
-            file={props.file}
+            file={{data: props.data}}
             onLoadSuccess={onDocumentLoad}>
              {
               Array.from(

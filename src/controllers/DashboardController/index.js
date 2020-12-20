@@ -39,60 +39,35 @@ import { Switch, Route } from 'react-router-dom';
 
 import IPFS from 'ipfs';
 
+import { setStatus } from '../../actions/authActions';
 import { getTypes, getPermissions } from '../../actions/adminActions'
-
+import Sidebar from '../../components/sidebar';
 import YActions from '../../graph/yjs';
 
 import './index.css';
 
-const doc = YActions()
 
 function DashboardController(props){
+  const doc = YActions(props.setStatus)
+
   let query_string = qs.parse(props.location.search, {ignoreQueryPrefix: true})
 
   const currentPath = window.location.pathname.replace(/\/dashboard/g, '')
 
   const [ ipfsNode, setIPFS ] = React.useState(null)
 
-  const menu = [
-    {
-      icon: <Dashboard />,
-      label: "Dashboard",
-      path: ""
-    },
-    {
-      icon: <CalendarToday />,
-      label: "Calendar",
-      path: "/calendar"
-    },
-    {
-      icon: <AccountTree />,
-      label: "Projects",
-      path: "/projects"
-    },
-    {
-      icon: <SupervisorAccount />,
-      label: "Team",
-      path: "/team"
-    },
-    {
-      icon: <BusinessCenter /> ,
-      label: "Equipment",
-      path: "/equipment"
-    },
-    {
-      icon: <Description />,
-      label: "Files",
-      path: "/files"
-    },
-  ]
-
   React.useEffect(async () => {
     props.getTypes()
     props.getPermissions()
     let node;
     if(!ipfsNode){
-      node = await IPFS.create()
+      node = await IPFS.create({
+        config: {
+          Addresses: {
+           
+          }
+        }
+      })
     setIPFS(node)
     }
   
@@ -144,25 +119,7 @@ function DashboardController(props){
 
   return (
     <div className="dashapp">
-      <Drawer variant="permanent" style={{width: 200}}>
-        <List style={{flex: 1, width: 200}}> 
-          <ListItem style={{fontWeight: 'bold', padding: 12, fontSize: 20}}>
-            WorkHub
-          </ListItem>
-          <Divider />
-          {menu.map((x, ix) => (
-            <ListItem 
-              className={menu.map((x) => x.path).indexOf(window.location.pathname.split(props.match.url)[1]) == ix ? 'selected menu-item': 'menu-item'}
-              onClick={() => props.history.push(`${props.match.url}${x.path}`)}
-              button >{x.icon} {x.label}</ListItem>
-          ))}
-          </List>
-          <Divider />
-          <ListItem button onClick={() => props.history.push(`${props.match.url}/settings`)}>
-            <Settings style={{marginRight: 12}} />
-              Settings
-          </ListItem>
-      </Drawer>
+      <Sidebar match={props.match} />
       <div className="dashapp-body">
 
         <Switch>
@@ -191,5 +148,6 @@ export default connect((state) => ({
   user: jwt_decode(state.auth.token)
 }), (dispatch) => ({
   getTypes: () => dispatch(getTypes()),
-  getPermissions: () => dispatch(getPermissions())
+  getPermissions: () => dispatch(getPermissions()),
+  setStatus: (status) => dispatch(setStatus(status))
 }))(DashboardController)

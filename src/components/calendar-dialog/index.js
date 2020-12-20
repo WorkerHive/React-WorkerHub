@@ -27,17 +27,17 @@ import {
 
 import { useMutation } from '@apollo/client';
 import { addBooking } from '../../actions/calendarActions';
+import { setStatus } from '../../actions/authActions';
 import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import { connect } from 'react-redux';
 import YActions from '../../graph/yjs';
 
 import moment from 'moment';
-const doc = YActions();
 
 let yDoc; 
 
 function CalendarDialog(props){
-    
+    const doc = YActions(props.setStatus)
     const [ step, setStep ] = React.useState(0)
     const [ searchTab, setSearchTab ] = React.useState(0)
     const [ search, setSearch ] = React.useState(null)
@@ -253,5 +253,6 @@ export default connect((state) => ({
     team: state.team.list,
     equipment: state.equipment.list
 }), (dispatch) => ({
-    addBooking: (time, project, booking) => dispatch(addBooking(time, project, booking))
+    addBooking: (time, project, booking) => dispatch(addBooking(time, project, booking)),
+    setStatus: (status) => dispatch(setStatus(status))
 }))(CalendarDialog)

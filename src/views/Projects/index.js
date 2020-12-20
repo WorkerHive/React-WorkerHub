@@ -29,6 +29,7 @@ import SearchTable from '../../components/search-table';
 import PermissionForm from '../../components/permission-form';
 import { updateProject, addProject, removeProject,   getProjects } from '../../actions/projectActions';
 import qs from 'qs';
+import jwt_decode from 'jwt-decode';
 
 import './index.css';
 
@@ -87,13 +88,18 @@ function Projects(props){
               <Typography style={{flex: 1}} variant="subtitle1">{item.name}</Typography>
             </ListItem>
             <MoreMenu 
-              onEdit={() => {
-                setSelected(item)
-
-              }}
-            onDelete={() => {
-              props.removeProject(item.id)
-            }} />
+              menu={[
+              ].concat(props.user.admin ? [
+                {
+                  label: "Edit",
+                  action: () => setSelected(item)
+                },
+                {
+                  label: "Delete",
+                  color: 'red',
+                  action: () => props.removeProject(item.id)
+                }
+              ] : [])} />
           </div>
         ]} />
 
@@ -103,6 +109,7 @@ function Projects(props){
 }
 
 export default connect((state) => ({
+  user: jwt_decode(state.auth.token),
   projects: state.projects.list,
   type: state.dashboard.types.filter((a) => a.name == "Projects"),
   permissions: state.dashboard.permissions.filter((a) => a.type == "Projects")

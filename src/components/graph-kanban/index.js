@@ -52,7 +52,9 @@ export default function GraphKanban(props){
 return {
                     id: x.id,
                     title: x.data.label,
-                    description: parents.length > 0 && parents[0].data.label
+                    description: parents.length > 0 && parents[0].data.label,
+                    dueDate: x.data.dueDate,
+                    members: x.members || []
 }
                 })
             }
@@ -62,6 +64,22 @@ return {
   
     return (
         <Board 
+            renderCard={(card) => {
+                return (
+                    <div onClick={() => {
+                        if(props.onClick){
+                            props.onClick(card)
+                        }
+                    }} className="react-kanban-card">
+                        <div className="react-kanban-card__title">
+                            {card.title}
+                        </div>
+                        <div>
+                            {card.description}    
+                        </div>
+                    </div>
+                )
+            }}
             onCardDragEnd={(card, source, destination) => {
                 console.log(source, destination)
                 let cols = columns.slice()
@@ -70,7 +88,6 @@ return {
                 let toIx = cols.map((x) => x.id).indexOf(destination.toColumnId)
 
                 let spliced = cols[fromIx].cards.splice(source.fromPosition, 1)
-                //spliced.column = destination.toColumnId
                 cols[toIx].cards.splice(destination.toPosition, 0, spliced[0])
 
 

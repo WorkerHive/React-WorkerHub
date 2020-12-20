@@ -13206,15 +13206,16 @@ react-flow-renderer@^8.0.0:
     fast-deep-equal "^3.1.3"
     react-draggable "^4.4.3"
 
-react-hive-flow@1.0.62:
-  version "1.0.62"
-  resolved "https://registry.yarnpkg.com/react-hive-flow/-/react-hive-flow-1.0.62.tgz#31791cefcee46e31545cde1e60d9c284675adf8f"
-  integrity sha512-zBrWPaO0bOrV3KEa8B+X/4dL3kuZZ/4rhDLKKInpvCRHH7JvNnmc0moecTH1hkuk/h4Ca8XJVj/zvXpT4CZo0Q==
+react-hive-flow@^1.0.64:
+  version "1.0.64"
+  resolved "https://registry.yarnpkg.com/react-hive-flow/-/react-hive-flow-1.0.64.tgz#c846574d4487f9de3d1f49cb7cd70f34dd384546"
+  integrity sha512-Pouv+ed5vsnuNKxyntc17UfYaIVoiP3wcrETvGrtRaNoe6u53TCYiJcjTOSADa/ycudKG3ELuKo6OCla02RbSA==
   dependencies:
     "@material-ui/core" "^4.11.1"
     "@material-ui/icons" "^4.9.1"
     "@thetechcompany/react-flow-renderer" "^8.0.0"
     create-react-class "^15.7.0"
+    lodash "^4.17.20"
     prop-types "^15.7.2"
     react-flow-renderer "^8.0.0"
     react-tappable "^1.0.4"
