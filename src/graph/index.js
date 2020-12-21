@@ -2,6 +2,7 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client'
 
 export default () => {
+  try{
   return new ApolloClient({
     link: createUploadLink({
       uri: (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 
@@ -12,4 +13,7 @@ export default () => {
       addTypename: false
     })
   })
+  }catch(e){
+    console.log(e)
+  }
 }

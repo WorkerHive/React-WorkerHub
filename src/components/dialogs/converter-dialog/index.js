@@ -17,7 +17,7 @@ import {
     TextField
 } from '@material-ui/core';
 
-import { getConverters, convertFile } from '../../actions/fileActions';
+import { getConverters, convertFile } from '../../../actions/fileActions';
 
 export default function ConverterDialog(props){
     const [ outputFormat, setOutputFormat ] = React.useState('')
@@ -35,6 +35,9 @@ export default function ConverterDialog(props){
 
     const convert = () => {
         convertFile(props.selected.id, outputFormat.toLowerCase())
+        props.onClose();
+        setOutputFormat('')
+        
     }
 
     return (

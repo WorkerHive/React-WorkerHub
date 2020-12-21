@@ -21,9 +21,11 @@ import DashboardHeader from '../../components/dashboard-header';
 import PermissionForm from '../../components/permission-form';
 import SearchTable from '../../components/search-table';
 
-import FilePreviewDialog from '../../components/file-preview-dialog';
+import FileBrowser from '../../components/file-browser';
 
-import ConverterDialog from '../../components/converter-dialog';
+import FilePreviewDialog from '../../components/dialogs/file-preview-dialog';
+import FileUploadDialog from '../../components/dialogs/file-upload-dialog';
+import ConverterDialog from '../../components/dialogs/converter-dialog';
 
 import { useMutation } from '@apollo/client';
 import { addFile, CONVERT_FILE, getFiles, UPLOAD_FILE } from '../../actions/fileActions';
@@ -33,6 +35,7 @@ import { connect } from 'react-redux';
 import './index.css';
 
 function Files(props){
+  const [ dialogOpen, openDialog ] = React.useState(false);
   const [ uploadFile, {data} ] = useMutation(UPLOAD_FILE)
   const [ convertDoc, setConvertDoc ] = React.useState(null)
   const [ selectedData, setData ] = React.useState(null)
@@ -70,15 +73,20 @@ function Files(props){
     title={"Files"} />,
 
     <PermissionForm
+      style={{marginTop: 12}}
       type={props.type}
       permissions={props.permissions}
       >
         <FilePreviewDialog ipfs={props.ipfs} open={selectedData} file={selectedData} onClose={() => setData(null)} />
         <ConverterDialog open={convertDoc} selected={convertDoc} onClose={() => setConvertDoc(null)}/>
+        <FileUploadDialog open={dialogOpen} onClose={() => openDialog(false)} />
         <div className={isDragActive ? 'file-list selected' : 'file-list'} {...getRootProps()} >
         <input {...getInputProps()} />
-
-        <SearchTable 
+        <Fab color="primary" onClick={() => openDialog(true)} style={{zIndex: 12, position: 'absolute', right: 12, bottom: 12}}>
+          <Add />
+        </Fab>
+        <FileBrowser files={props.files} />
+        {/*<SearchTable 
           data={props.files}
           renderItem={(x) => (
             <div className="file-item">
@@ -122,7 +130,7 @@ function Files(props){
                     }
                     
                   }
-                  //get(x)*/
+                  //get(x)
 
                 
               }}>
@@ -150,14 +158,14 @@ function Files(props){
                 }
               ]} />
             </div>
-          )}/>
+          )}/>*/}
           </div>
     </PermissionForm>
   ]
 }
 
 export default connect((state) => ({
-  files: state.files.list
+  files: state.files.list,
 }), (dispatch) => ({
   addFile: (file) => dispatch(addFile(file)),
   getFiles: () => dispatch(getFiles())

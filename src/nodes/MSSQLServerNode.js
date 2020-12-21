@@ -50,7 +50,7 @@ export const node = withEditor((props) => {
     return (
     <NodeWrapper {...props}>
       <div style={{padding: 8}} className="mssql-adapter">
-        {props.data.label || "MSSQL Server"}
+        {props.id && props.data.label || "MSSQL Server"}
      </div>
     </NodeWrapper>
     )

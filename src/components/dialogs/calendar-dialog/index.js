@@ -26,18 +26,18 @@ import {
 } from '@material-ui/icons';
 
 import { useMutation } from '@apollo/client';
-import { addBooking } from '../../actions/calendarActions';
-import { setStatus } from '../../actions/authActions';
+import { addBooking } from '../../../actions/calendarActions';
+import { setStatus } from '../../../actions/authActions';
 import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import { connect } from 'react-redux';
-import YActions from '../../graph/yjs';
+import {YContext} from '../../../graph/yjs';
 
 import moment from 'moment';
 
 let yDoc; 
 
 function CalendarDialog(props){
-    const doc = YActions(props.setStatus)
+    const {ydoc} = React.useContext(YContext)
     const [ step, setStep ] = React.useState(0)
     const [ searchTab, setSearchTab ] = React.useState(0)
     const [ search, setSearch ] = React.useState(null)
@@ -51,7 +51,7 @@ function CalendarDialog(props){
     const [ selectedItems, setSelectedItems ] = React.useState({})
 
     React.useEffect(() => {
-       yDoc = doc.getMap('calendar')    
+       yDoc = ydoc.getMap('calendar')    
     }, [])
 
     const stepButton = () => {

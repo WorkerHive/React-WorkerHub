@@ -10,6 +10,11 @@
     position: relative;
 }
 
+.react-kanban-card__title{
+    display: flex;
+    flex-direction: column;
+}
+
 .react-kanban-column{
     height: calc(100% - 40px) !important;
 }

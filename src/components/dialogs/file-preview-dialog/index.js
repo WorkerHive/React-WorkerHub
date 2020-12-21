@@ -8,13 +8,17 @@ import {
     Button
 } from '@material-ui/core';
 
-import GLBCard from '../glb-card'
-import PDFCard from '../pdf-card';
+import GLBCard from '../../glb-card'
+import PDFCard from '../../pdf-card';
 
-export default function FilePreviewDialog(props){
+import { connect } from 'react-redux';
+import { useIPFS } from '../../../graph/ipfs';
+
+function FilePreviewDialog(props){
 
     const file = props.file || {}
     const [data, setData] = React.useState(null)
+    const { ipfs } = useIPFS(props.swarmKey);
 
     const renderContent = () => {
         if(data){
@@ -39,9 +43,10 @@ export default function FilePreviewDialog(props){
 
     React.useEffect( async () => {
         if(data) URL.revokeObjectURL(data)
-        if(props.file && props.ipfs){
+        console.log(props.file, props.ipfs)
+        if(props.file && ipfs){
             console.log("Fetching", props.file.cid)
-            let file =  props.ipfs.cat(props.file.cid)
+            let file =  ipfs.cat(props.file.cid)
             let data = Buffer.from('')
             for await (const chunk of file){
               data = Buffer.concat([data, chunk])
@@ -68,3 +73,7 @@ export default function FilePreviewDialog(props){
         </Dialog>
     )
 }
+
+export default connect(state => ({
+    swarmKey: state.auth.swarmKey
+}))(FilePreviewDialog)

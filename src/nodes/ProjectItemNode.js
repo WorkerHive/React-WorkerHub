@@ -12,6 +12,7 @@ import { NodeWrapper, withEditor } from 'react-hive-flow';
 
 import { getColumns, getTables, getViews } from '../actions/adminActions'
 import async from 'async';
+import moment from 'moment';
 import './MSSQLNode.css';
 
 export const type = 'mssqlAdapter'
@@ -120,14 +121,10 @@ export const modal = withEditor((props) => {
 export const node = withEditor((props) => {
     return (
     <NodeWrapper {...props}>
-      <div style={{padding: 8}} className="mssql-adapter">
-        <div className="adapter-header">
-        {props.id && props.data.label || "MSSQL Adapter"}
+        <textarea rows={4} placeholder="Node" />
+        <div style={{display: 'flex'}}>
+            {props.data && props.data.dueDate && "ETA:"} {props.data && moment(new Date(props.data.dueDate * 1000)).format('DD/MM/yyyy')}
         </div>
-        <div className="adapter-info">
-          {props.id && props.data && props.data.table && props.data.table.name}
-        </div>
-     </div>
     </NodeWrapper>
     )
 })

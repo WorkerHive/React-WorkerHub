@@ -60,6 +60,7 @@ function Teams(props){
       type={props.type} 
       permissions={props.permissions}>
       <SearchTable 
+        filter={(item, search) => item.name.indexOf(search) > -1}
         data={props.team}
         renderItem={(item) => (
           <div className="team-item">

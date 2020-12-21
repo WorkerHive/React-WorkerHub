@@ -1,5 +1,5 @@
 import React from 'react';
-import YActions from '../../graph/yjs';
+import {YContext} from '../../graph/yjs';
 import { connect } from 'react-redux';
 import { setStatus } from '../../actions/authActions';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
@@ -10,7 +10,7 @@ let yDoc;
 
 const localizer = momentLocalizer(moment)
 function CalendarTab(props){
-  const ydoc = YActions(props.setStatus)
+    const {ydoc} = React.useContext(YContext);
 
     const [ bookings, setBookings ] = React.useState([])
     const [ nodes, setNodes ] = React.useState([])

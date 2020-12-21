@@ -11,10 +11,13 @@ import {
     Tabs,
     Tab
 } from '@material-ui/core';
-
+import { YContext } from '../../graph/yjs';
 import { connect } from 'react-redux';
+import './index.css';
 
 function DashboardHeader(props){
+    const { status } = React.useContext(YContext)
+
     return (
         <Paper className="dashapp-header">
         <Typography variant="h6">{props.title}</Typography>
@@ -32,7 +35,7 @@ function DashboardHeader(props){
           <Notifications />
           <div className="user-info">
             <Typography variant="subtitle1">{props.user.name}</Typography>
-            <span style={{color: props.status =="connected" ? 'green': 'red'}}>{props.status == "connected" ? "Online" : "Offline"}</span>
+            <div className={status}><div className="bubble" />{status == "connected" ? "Online" : "Offline"}</div>
           </div>
         </div>
         </Paper>

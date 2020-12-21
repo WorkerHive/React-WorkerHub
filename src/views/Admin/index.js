@@ -8,7 +8,7 @@ import * as MSSQLServer from '../../nodes/MSSQLServerNode';
 import { useMutation } from '@apollo/client';
 import { getTypes, getIntegrationMap, UPDATE_INTEGRATION_MAP} from '../../actions/adminActions'
 import { connect } from 'react-redux';
-import HiveEditor from 'react-hive-flow';
+import HiveEditor, { HiveProvider, NodePanel } from 'react-hive-flow';
 import 'react-hive-flow/dist/index.css';
 import './index.css'
 
@@ -43,10 +43,23 @@ function Admin(props){
 
     return (
         <div className="admin-view">
-        <HiveEditor
-            nodeTypes={[TypeDefNode, MSSQLNode, MSSQLServer]}
-            nodes={(props.types||[]).concat(nodes)}
-            links={links}
+        <HiveProvider store={{
+            nodes: (props.types || []).concat(nodes),
+            links: links,
+            statusColors: {
+
+            },
+            exploreNode: () => {},
+            onNodeAdd: () => {},
+            onLinkAdd: () => {},
+            onNodeUpdate: () => {},
+            onNodeRemove: () => {},
+            onLinkRemove: () => {},
+            nodeTypes: [TypeDefNode, MSSQLNode, MSSQLServer]
+        }}>
+            <NodePanel />
+            <HiveEditor
+
             onNodeChange={(nodes) => {
                 let n = nodes.filter((a) => props.types.map((x) => x.id).indexOf(a.id) < 0)
                 updateIntegrationMap({variables: {
@@ -62,6 +75,8 @@ function Admin(props){
                 }})
                 setLinks(link)
             }} />
+        </HiveProvider>
+       
         </div>
     )
 }

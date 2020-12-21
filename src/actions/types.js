@@ -25,6 +25,8 @@ export const ADD_BOOKING = "ADD_BOOKING";
 export const SET_TOKEN = 'SET_TOKEN';
 export const SET_STATUS = 'SET_STATUS';
 
+export const SET_NODE_CONF = 'SET_NODE_CONF';
+
 export const ADD_FILE = 'ADD_FILE';
 
 export const SET_DASHBOARD_TYPES = 'SET_DASHBOARD_TYPES';

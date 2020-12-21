@@ -1,5 +1,6 @@
 import React from 'react';
 
+import moment from 'moment';
 import Board from '@lourenci/react-kanban'
 import '@lourenci/react-kanban/dist/styles.css'
 import './index.css';
@@ -39,15 +40,20 @@ export default function GraphKanban(props){
 
         return template.map((col) => {
             let col_id = col.id;
-            console.log(props.graph.nodes)
+
             let cards = props.graph.nodes.filter((a) => {
                 return a.data.status == col.status
             }) || []
 
-            console.log(props.graph.links)
             return {
                 ...col,
-                cards: cards.map((x) => {
+                cards: cards.sort((a, b) => {
+
+                    if(!(a.data && a.data.dueDate)) a.data.dueDate = Infinity;
+                    if(!(b.data && b.data.dueDate)) b.data.dueDate = Infinity
+
+                    return a.data.dueDate - b.data.dueDate
+                }).map((x) => {
                     let parents = props.graph.links.filter((a) => a.target == x.id).map((y) => props.graph.nodes.filter((a) => a.id == y.source)[0])
 return {
                     id: x.id,
@@ -73,10 +79,15 @@ return {
                     }} className="react-kanban-card">
                         <div className="react-kanban-card__title">
                             {card.title}
+                          
                         </div>
+                        {card.dueDate != Infinity && <div style={{textAlign: 'left'}}>
+                                ETA: {moment(new Date(card.dueDate * 1000)).format('DD/MM/yyyy')}
+                            </div>}
                         <div>
                             {card.description}    
                         </div>
+                      
                     </div>
                 )
             }}

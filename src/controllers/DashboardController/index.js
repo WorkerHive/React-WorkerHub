@@ -39,43 +39,31 @@ import { Switch, Route } from 'react-router-dom';
 
 import IPFS from 'ipfs';
 
-import { setStatus } from '../../actions/authActions';
+import { setStatus, getNodeConf } from '../../actions/authActions';
 import { getTypes, getPermissions } from '../../actions/adminActions'
 import Sidebar from '../../components/sidebar';
-import YActions from '../../graph/yjs';
+import YActions, {YProvider} from '../../graph/yjs';
+import {useIPFS} from '../../graph/ipfs'
 
 import './index.css';
 
 
 function DashboardController(props){
-  const doc = YActions(props.setStatus)
 
   let query_string = qs.parse(props.location.search, {ignoreQueryPrefix: true})
 
   const currentPath = window.location.pathname.replace(/\/dashboard/g, '')
 
-  const [ ipfsNode, setIPFS ] = React.useState(null)
+  console.log(props.swarmKey)
+  const { ipfs } = useIPFS(props.swarmKey);
 
   React.useEffect(async () => {
     props.getTypes()
     props.getPermissions()
-    let node;
-    if(!ipfsNode){
-      node = await IPFS.create({
-        config: {
-          Addresses: {
-           
-          }
-        }
-      })
-    setIPFS(node)
-    }
-  
+
     //console.log(await node.id())
 
-    return async () => {
-      await (ipfsNode || node).stop()
-    }
+    
   }, [])
 
   const renderTitle = () => {
@@ -118,20 +106,21 @@ function DashboardController(props){
   }
 
   return (
+    <YProvider>
     <div className="dashapp">
       <Sidebar match={props.match} />
       <div className="dashapp-body">
 
         <Switch>
           <Route path={`${props.match.url}/calendar`} render={(props) => (
-            <Calendar {...props} y={doc} />
+            <Calendar {...props} />
           )} />
           <Route path={`${props.match.url}/projects`} component={Projects} exact />
           <Route path={`${props.match.url}/projects/:id`} render={(props) => (
-            <ProjectView {...props} y={doc}/>
+            <ProjectView {...props} />
           )} />
           <Route path={`${props.match.url}/files`} render={(props) => {
-            return <Files {...props} ipfs={ipfsNode} />
+            return <Files {...props} ipfs={ipfs} />
           }} />
           <Route path={`${props.match.url}/team`} component={Teams} />
           <Route path={`${props.match.url}/equipment`} component={Equipment} />
@@ -140,12 +129,14 @@ function DashboardController(props){
         </Switch>
       </div>
     </div>
+    </YProvider>
   );
 }
 
 export default connect((state) => ({
   projects: state.projects.list,
-  user: jwt_decode(state.auth.token)
+  user: jwt_decode(state.auth.token),
+  swarmKey: state.auth.swarmKey
 }), (dispatch) => ({
   getTypes: () => dispatch(getTypes()),
   getPermissions: () => dispatch(getPermissions()),

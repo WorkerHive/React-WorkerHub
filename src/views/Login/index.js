@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core'
 
 import { useMutation } from '@apollo/client';
-import { getQuote, LOGIN, setToken } from '../../actions/authActions';
+import { getQuote, getNodeConf, LOGIN, setToken } from '../../actions/authActions';
 import { connect } from 'react-redux';
 
 import './index.css';
@@ -28,6 +28,7 @@ function Login(props){
             password: password
         }}).then((r) => {
             if(r.data.login && r.data.login.token){
+                props.getNodeConf()
                 props.setToken(r.data.login.token)
                 props.history.push('/dashboard')
             }else if(r.data.login && r.data.login.error){
@@ -83,5 +84,6 @@ function Login(props){
 }
 
 export default connect(null, (dispatch) => ({
-    setToken: (token) => dispatch(setToken(token))
+    setToken: (token) => dispatch(setToken(token)),
+    getNodeConf: () => dispatch(getNodeConf())
 }))(Login)

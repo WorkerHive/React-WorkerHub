@@ -9,13 +9,13 @@ import {
 } from '@material-ui/icons';
 
 import DashboardHeader from '../../components/dashboard-header'
-import CalendarDialog from '../../components/calendar-dialog'
+import CalendarDialog from '../../components/dialogs/calendar-dialog'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { getBookings } from '../../actions/calendarActions';
 import { connect } from 'react-redux';
 import { setStatus } from '../../actions/authActions'
-import YActions from '../../graph/yjs';
+import {YContext} from '../../graph/yjs';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 const localizer = momentLocalizer(moment)
@@ -23,7 +23,7 @@ const localizer = momentLocalizer(moment)
 let yDoc;
 
 function CalendarView(props){
-    const doc = YActions(props.setStatus);
+    const {ydoc} = React.useContext(YContext);
 
     const [ dialogOpen, openDialog ] = React.useState(false)
     const [ bookings, setBookings ] = React.useState([])
@@ -39,7 +39,7 @@ function CalendarView(props){
         }
     }
     React.useEffect(() => {
-        yDoc = doc.getMap('calendar')
+        yDoc = ydoc.getMap('calendar')
         yDoc.observe(observer)
         
         let obj = yDoc.toJSON()

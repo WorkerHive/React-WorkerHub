@@ -17,6 +17,8 @@ import jwt_decode from 'jwt-decode';
 import './index.css';
 
 function Equipment(props){
+  const [ selectedTab, setSelectedTab ] = React.useState('');
+
   const [ selected, setSelected] = React.useState(null)
 
   React.useEffect(() => {
@@ -27,10 +29,10 @@ function Equipment(props){
     <DashboardHeader 
     tabs={[...new Set(props.equipment.filter((a) => a.type).map((x) => x.type))]}
     onTabSelect={(tab) => {
-        //setSelectedTab(tab)
+        setSelectedTab(tab)
         //props.history.push(`${props.match.url}/${tab.toLowerCase()}`)
     }}
-    selectedTab={''}
+    selectedTab={selectedTab}
     title={'Equipment'} />,
     <PermissionForm 
       onSave={(data) => {
@@ -48,7 +50,11 @@ function Equipment(props){
       type={props.type} 
       permissions={props.permissions}>
     <SearchTable
-      data={props.equipment}
+      filter={(item, search) => item.name.indexOf(search) > -1}
+      data={props.equipment.filter((a) => {
+        if(!selectedTab) return true;
+        return a.type == selectedTab
+      })}
       renderItem={(item) => (
         <div className="equipment-item">
         <ListItem button onClick={(e) => {

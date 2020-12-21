@@ -17,7 +17,7 @@ export const node = withEditor((props) => {
     return (
     <NodeWrapper {...props}>
       <div style={{padding: 8}} className="type-def">
-        {props.data.label}
+        {props.id && props.data.label || "Type Def"}
      </div>
     </NodeWrapper>
     )

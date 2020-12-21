@@ -5,3 +5,7 @@
     justify-content: space-between;
   }
   
+.grid-list{
+  overflow-y: auto;
+  flex: 1;
+}

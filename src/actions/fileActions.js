@@ -19,6 +19,23 @@ export const UPLOAD_FILE = gql`
     }
   `
 
+export const uploadFile = (file, cb) => {
+  return (dispatch) => {
+    return client.mutate({
+      mutation: UPLOAD_FILE,
+      variables: {
+        file: file
+      }
+    }).then((r) => r.data.uploadFile).then((r) => {
+      console.log("Upload file")
+      cb(r.file)
+      if(!r.duplicate){
+        dispatch(addFile(r.file))
+      }
+    })
+  }
+}
+
 export const attachFile = (projectId, fileId) => {
   client.mutate({
     mutation: gql`

@@ -84,7 +84,7 @@ export default function PermissionForm(props){
     }
 
     return (
-        <div className="permission-form">
+        <div className="permission-form" style={props.style}>
             <Dialog fullWidth open={props.selected || dialogOpen} onClose={() => {
                onClose()
             }}>

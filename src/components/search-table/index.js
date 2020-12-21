@@ -20,14 +20,20 @@ import {
 import './index.css';
 
 export default function SearchTable(props){
+    const [ search, setSearch ] = React.useState('')
+
     return (
-        <Paper style={{flex: 1, marginTop: 12}}>
+        <Paper style={{flex: '1 1 auto', marginTop: 12, height: 0, display: 'flex', flexDirection: 'column'}}>
             <div className="options-bar">
                 <TextField
                     InputProps={{
                         startAdornment: <InputAdornment position="start"><Search /></InputAdornment>
                     }}
                     label="Search"
+                    value={search}
+                    onChange={(e) => {
+                        setSearch(e.target.value)
+                    }}
                     variant="outlined"
                     size="small" />
                 <ButtonGroup>
@@ -38,7 +44,12 @@ export default function SearchTable(props){
             <Divider />
             <div className="grid-list">
                 <List>
-                    {props.data.map((x) => (
+                    {props.data.filter((a) => {
+                        if(props.filter && search.length > 0){
+                            return props.filter(a, search)
+                        }
+                        return true;
+                    }).map((x) => (
                     <ListItem>
                         {props.renderItem(x)}
                     </ListItem>

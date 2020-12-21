@@ -72,6 +72,7 @@ function Projects(props){
       type={props.type} 
       permissions={props.permissions}>
       <SearchTable
+        filter={(item, search) => item.name.indexOf(search) > -1}
         data={props.projects.filter((a) => {
           if(query_string.status && a.status == query_string.status){
             return true;
