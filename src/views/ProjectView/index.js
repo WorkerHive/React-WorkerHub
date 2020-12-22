@@ -11,7 +11,7 @@ import {
 
 import {HiveProvider} from 'react-hive-flow'
 import * as ProjectItemNode from '../../nodes/ProjectItemNode';
-import { merge } from 'lodash';
+import { isArray, merge, mergeWith } from 'lodash';
 import { Switch, Route } from 'react-router-dom';
 import { YContext } from '../../graph/yjs';
 import DashboardHeader from '../../components/dashboard-header';
@@ -123,9 +123,21 @@ function ProjectView(props){
               _setNodes(nodes.filter((a) => _nodes.map((x) => x.id).indexOf(a.id) < 0))
             },
             onNodeUpdate: (id, node) => {
+              console.log("NODE UPDATE")
               let ix = nodes.map((x) => x.id).indexOf(id)
               let n = nodes.slice()
-              n[ix] = merge(n[ix], node)
+
+              console.log(node)
+              function customizer(objValue, srcValue) {
+                console.debug("CUSTOMIZER", objValue, srcValue)
+                if (Array.isArray(objValue)) {
+                  return srcValue
+                }
+              }
+
+              n[ix] = mergeWith(n[ix], node, customizer)
+
+              console.log(n[ix])
               _setNodes(n)
             },
             statusColors: {
@@ -150,15 +162,17 @@ function ProjectView(props){
                     if(plan.title) update.data.label = plan.title;
                     if(plan.description) update.data.description = plan.description;
                     if(plan.dueDate) update.data.dueDate = plan.dueDate;
-
+                    console.log(plan.members)
                     if(plan.members) update.members  = plan.members
+
+                    console.log(update, plan.id)
                     return update;
                 })
                 setSelectedCard(null)
 
               }}
               open={selectedCard} 
-              plan={selectedCard} 
+              plan={selectedCard ? Object.assign({}, nodes.filter((a) => a.id == selectedCard.id)[0]) : {}} 
               onClose={() => setSelectedCard(null)}/>
         <DashboardHeader 
             tabs={tabs}

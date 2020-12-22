@@ -2,26 +2,12 @@ import React from 'react';
 
 import moment from 'moment';
 import Board from '@lourenci/react-kanban'
-import { Avatar } from '@material-ui/core';
+import TeamCircles from '../team-circles';
 import { connect } from 'react-redux';
+
 import '@lourenci/react-kanban/dist/styles.css'
 import './index.css';
 
-function hashCode(str) { // java String#hashCode
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-       hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return hash;
-} 
-
-function intToRGB(i){
-    var c = (i & 0x00FFFFFF)
-        .toString(16)
-        .toUpperCase();
-
-    return "00000".substring(0, 6 - c.length) + c;
-}
 
 function GraphKanban(props){
     const [ columns, setColumns ] = React.useState([
@@ -75,11 +61,9 @@ function GraphKanban(props){
                 }).map((x) => {
                     let parents = props.graph.links.filter((a) => a.target == x.id).map((y) => props.graph.nodes.filter((a) => a.id == y.source)[0])
 return {
-                    id: x.id,
+                    ...x,
                     title: x.data.label,
                     description: parents.length > 0 && parents[0].data.label,
-                    dueDate: x.data.dueDate,
-                    members: x.members || []
 }
                 })
             }
@@ -100,20 +84,13 @@ return {
                             {card.title}
                           
                         </div>
-                        {card.dueDate != Infinity && <div style={{textAlign: 'left'}}>
-                                ETA: {moment(new Date(card.dueDate * 1000)).format('DD/MM/yyyy')}
+                        {card.data.dueDate != Infinity && <div style={{textAlign: 'left'}}>
+                                ETA: {moment(new Date(card.data.dueDate * 1000)).format('DD/MM/yyyy')}
                             </div>}
                         <div>
                             {card.description}    
                         </div>
-                        <div className="card-members">
-                            {card.members.map((x) => {
-                                let member = props.team.filter((a) => a.id == x)[0]
-                                return (
-                                    <Avatar style={{backgroundColor: '#'+ intToRGB(hashCode(member.name))}}>{member.name.split(' ').map((x) => x.substring(0, 1))}</Avatar>
-                                )
-                            })}
-                        </div>
+                        <TeamCircles members={(!Array.isArray(card.members) && typeof(card.members) == "typeof") ? [] : card.members || []} />
                       
                     </div>
                 )

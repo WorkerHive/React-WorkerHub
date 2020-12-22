@@ -19,6 +19,7 @@ import {
     Check
 } from '@material-ui/icons';
 
+import TeamCircles from '../../team-circles';
 import FileDrop from '../../file-drop';
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
 import jwt_decode from 'jwt-decode';
@@ -40,13 +41,14 @@ function PlanDialog(props){
     const [ memberAnchor, setMemberAnchor ] = React.useState(null);
 
     React.useEffect(() => {
-        if(props.plan){
-            setID(props.plan.id)
-            setTitle(props.plan.title)
-            setDescription(props.plan.description)
-            setMembers(props.plan.members || [])
-            setAttachments(props.plan.attachments || [])
-            if(props.plan.dueDate) setDueDate(moment(new Date(props.plan.dueDate * 1000)))
+        if(props.plan && props.plan.data){
+            if(props.plan.id) setID(props.plan.id)
+            if(props.plan.data.label) setTitle(props.plan.data.label)
+            if(props.plan.data.description) setDescription(props.plan.data.description)
+            console.log("MEMBERS", props.plan.members)
+            if(props.plan.members) setMembers(Array.isArray(props.plan.members) ? props.plan.members : [])
+            if(props.plan.attachments) setAttachments(props.plan.data.attachments || [])
+            if(props.plan.data.dueDate) setDueDate(moment(new Date(props.plan.data.dueDate * 1000)))
         }
     }, [props.plan])
 
@@ -55,10 +57,12 @@ function PlanDialog(props){
             id: ID,
             title: title,
             description: description,
+            members: [...new Set(members)] || [],
             dueDate: dueDate && dueDate.valueOf() / 1000,
-            members: members
         }
 
+        
+        
         if(props.onSave){
             props.onSave(plan)
             props.onClose();
@@ -89,6 +93,26 @@ function PlanDialog(props){
 
         setMemberAnchor(!memberAnchor ? e.currentTarget : null)
 
+    }
+
+    const toggleUser = (user) => {
+        console.log(ID)
+
+        
+        
+        let m = members.slice();
+        console.log(m, user, m.indexOf(user))
+        if(m.indexOf(user) > -1){
+            m.splice(m.indexOf(user), 1)
+            console.log("Removing ", )
+        }else{
+            m.push(user)
+        }
+            console.log([...new Set(m)])
+            setMembers([...new Set(m)])
+            //return {members: [...new Set(m)]}
+        
+    
     }
 
     return (
@@ -131,21 +155,19 @@ function PlanDialog(props){
                             <div>{x.name}</div>
                         ))}
                     </div>
+                    <div>
+                        <Typography variant="subtitle1">Members</Typography>
+                        <TeamCircles members={members} />
+                    </div>
 
                 </div>
                 <div className="plan-actions">
                     <Button 
                         onClick={() => {
-                            let m = members.slice();
-                            if(members.indexOf(props.user.id) > -1){
-                                m.splice(members.indexOf(props.user.id), 1)
-                            }else{
-                                m.push(props.user.id)
-                            }
-                            setMembers(m)
+                            toggleUser(props.user.id)
                         }}
-                        color={members.indexOf(props.user.id) > -1 ? "" : "primary"}
-                        variant="contained">{members.indexOf(props.user.id) > -1 ? "Leave" : "Join"}</Button>
+                        color={[...members].indexOf(props.user.id) > -1 ? "" : "primary"}
+                        variant="contained">{[...members].indexOf(props.user.id) > -1 ? "Leave" : "Join"}</Button>
                     <Button color="primary" variant="contained" onClick={(e) => {
                         toggleMembersMenu(e);
                     }}>Members</Button>
@@ -162,18 +184,9 @@ function PlanDialog(props){
                         <List>
                             {props.team.map((x) => (
                                 <ListItem button onClick={() => {
-                                    props.editor.updateNode(ID, (node) => {
-                                        let mem = node.members;
-                                        if(mem.indexOf(x.id) > -1){
-                                            mem.splice(mem.indexOf(x.id), 1)
-                                        }else{
-                                            mem.push(x.id)
-                                        }
-                                        return {
-                                            members: mem
-                                        }
-                                    })
-                                }}>{members.indexOf(x.id) > -1 && <Check style={{marginRight: 8}}/>} {x.name}</ListItem>
+                                   toggleUser(x.id)
+                                  
+                                }}>{[...members].indexOf(x.id) > -1 && <Check style={{marginRight: 8}}/>} {x.name}</ListItem>
                             ))}
                         </List>
                         
