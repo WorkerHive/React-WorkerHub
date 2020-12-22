@@ -4,6 +4,7 @@ import moment from 'moment';
 import Board from '@lourenci/react-kanban'
 import TeamCircles from '../team-circles';
 import { connect } from 'react-redux';
+import jwt_decode from 'jwt-decode';
 
 import '@lourenci/react-kanban/dist/styles.css'
 import './index.css';
@@ -52,7 +53,10 @@ function GraphKanban(props){
             console.log(cards)
             return {
                 ...col,
-                cards: cards.sort((a, b) => {
+                cards: cards.filter((a) => {
+                    if(!props.selfish) return true;
+                    if(props.selfish) return (a.members || []).indexOf(props.user.id) > -1
+                  }).sort((a, b) => {
 
                     if(!(a.data && a.data.dueDate)) a.data.dueDate = Infinity;
                     if(!(b.data && b.data.dueDate)) b.data.dueDate = Infinity
@@ -123,5 +127,6 @@ return {
 }
 
 export default connect((state) => ({
-    team: state.team.list
+    team: state.team.list,
+    user: jwt_decode(state.auth.token)
 }))(GraphKanban)

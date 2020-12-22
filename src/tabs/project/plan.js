@@ -17,7 +17,9 @@ import {
     Collapse,
     ButtonGroup,
     Divider,
-    Button
+    Button,
+    Switch,
+    FormControlLabel
 } from "@material-ui/core"
 
 
@@ -31,11 +33,15 @@ import { setStatus } from '../../actions/authActions';
 import { connect } from 'react-redux';
 import {YContext} from '../../graph/yjs';
 import qs from 'qs';
+import jwt_decode from 'jwt-decode';
 import './plan.css';
 
 let yDoc;
 
 function PlanTab(props){
+
+  const [ selfish, setSelfish ] = React.useState(false);
+
   const {ydoc} = React.useContext(YContext)
 
   const [ selectedCard , setSelectedCard ] = React.useState(null)
@@ -98,6 +104,7 @@ function PlanTab(props){
             }
           ]}
           map={columnMap}
+          selfish={selfish}
           graph={{nodes: props.editor.nodes, links: props.editor.links}} />
       )
     }
@@ -148,8 +155,10 @@ function PlanTab(props){
         <div style={{padding: 4, display: 'flex', flex: 1, position: 'relative', flexDirection: 'column', width: 'calc(100% - 8px)'}}>
  
             <div className="plan-header">
-              <div>
-      
+              <div style={{marginLeft: 12}}>
+                <FormControlLabel
+                  control={<Switch checked={selfish} onChange={(e) => setSelfish(e.target.checked)} />}
+                  label="My tasks" />
               </div>
               <ButtonGroup>
                 <Button variant={view == 'kanban' && 'contained'} onClick={() => setView('kanban')}><DashboardIcon /></Button>
@@ -165,7 +174,9 @@ function PlanTab(props){
             )
 }
 
-export default connect(null, (dispatch) => ({
+export default connect((state) => ({
+  user: jwt_decode(state.auth.token)
+}), (dispatch) => ({
   setStatus: (status) => dispatch(setStatus(status))
 }))(withEditor(PlanTab))
 

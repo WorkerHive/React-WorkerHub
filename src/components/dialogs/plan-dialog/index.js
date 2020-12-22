@@ -52,6 +52,16 @@ function PlanDialog(props){
         }
     }, [props.plan])
 
+    const onClose = () => {
+        setMembers([])
+        setID('')
+        setTitle('')
+        setDescription('')
+        setDueDate(null)
+        setAttachments([])
+        props.onClose()
+    }
+
     const onSave = () => {
         let plan = {
             id: ID,
@@ -65,7 +75,7 @@ function PlanDialog(props){
         
         if(props.onSave){
             props.onSave(plan)
-            props.onClose();
+            onClose();
         }
     }
 
@@ -117,7 +127,7 @@ function PlanDialog(props){
 
     return (
 
-        <Dialog fullWidth open={props.open} onClose={props.onClose}>
+        <Dialog fullWidth open={props.open} onClose={onClose}>
             <FileDrop onDrop={addFilesToPlan} noClick>
             {(isDragActive) => (
                 <>
@@ -203,7 +213,7 @@ function PlanDialog(props){
                 </div>
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.onClose}>Cancel</Button>
+                <Button onClick={onClose}>Cancel</Button>
                 <Button onClick={onSave} color="primary" variant="contained">Save</Button>
             </DialogActions>
             </>
