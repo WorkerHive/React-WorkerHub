@@ -65,6 +65,8 @@ function ProjectView(props){
 
             let obj = doc.toJSON();
             if(obj.nodes != null) setNodes(obj.nodes)
+            if(obj.links != null) setLinks(obj.links)
+            if(obj.attachments != null) setAttachments(obj.attachments)
         }
     }, [props.project])
 
@@ -106,6 +108,7 @@ function ProjectView(props){
               setSelectedCard({
                 id: id,
                 title: node.data.label,
+                description: node.data.description,
                 dueDate: node.data.dueDate,
                 members: node.members,
                 attachments: node.data.attachments
@@ -114,7 +117,7 @@ function ProjectView(props){
             onNodeAdd: (node) => _setNodes(nodes.concat(node)),
             onLinkAdd: (link) => _setLinks(links.concat(link)),
             onLinkRemove: (_links) => {
-              _setLinks(links.filter((a) => _links.map((x) => x.id).indeOf(a.id) < 0))
+              _setLinks(links.filter((a) => _links.map((x) => x.id).indexOf(a.id) < 0))
             },
             onNodeRemove: (_nodes) => {
               _setNodes(nodes.filter((a) => _nodes.map((x) => x.id).indexOf(a.id) < 0))

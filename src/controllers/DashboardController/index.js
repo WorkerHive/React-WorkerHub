@@ -26,7 +26,7 @@ import { connect } from 'react-redux';
 
 import Projects from '../../views/Projects';
 import ProjectView from '../../views/ProjectView';
-
+import DashboardView from '../../views/Dashboard';
 import Files from '../../views/Files';
 import Calendar from '../../views/Calendar';
 import SettingsView from '../../views/Settings';
@@ -43,7 +43,7 @@ import { setStatus, getNodeConf } from '../../actions/authActions';
 import { getTypes, getPermissions } from '../../actions/adminActions'
 import Sidebar from '../../components/sidebar';
 import YActions, {YProvider} from '../../graph/yjs';
-import {useIPFS} from '../../graph/ipfs'
+import { IPFSProvider } from '../../graph/ipfs'
 
 import './index.css';
 
@@ -55,7 +55,6 @@ function DashboardController(props){
   const currentPath = window.location.pathname.replace(/\/dashboard/g, '')
 
   console.log(props.swarmKey)
-  const { ipfs } = useIPFS(props.swarmKey);
 
   React.useEffect(async () => {
     props.getTypes()
@@ -106,12 +105,14 @@ function DashboardController(props){
   }
 
   return (
+    <IPFSProvider swarmKey={props.swarmKey}>
     <YProvider>
     <div className="dashapp">
       <Sidebar match={props.match} />
       <div className="dashapp-body">
 
         <Switch>
+          <Route path={`${props.match.url}`} exact component={DashboardView} />
           <Route path={`${props.match.url}/calendar`} render={(props) => (
             <Calendar {...props} />
           )} />
@@ -120,7 +121,7 @@ function DashboardController(props){
             <ProjectView {...props} />
           )} />
           <Route path={`${props.match.url}/files`} render={(props) => {
-            return <Files {...props} ipfs={ipfs} />
+            return <Files {...props}  />
           }} />
           <Route path={`${props.match.url}/team`} component={Teams} />
           <Route path={`${props.match.url}/equipment`} component={Equipment} />
@@ -130,6 +131,7 @@ function DashboardController(props){
       </div>
     </div>
     </YProvider>
+    </IPFSProvider>
   );
 }
 

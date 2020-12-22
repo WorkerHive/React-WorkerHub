@@ -121,7 +121,11 @@ export const modal = withEditor((props) => {
 export const node = withEditor((props) => {
     return (
     <NodeWrapper {...props}>
-        <textarea rows={4} placeholder="Node" />
+        <textarea 
+          onChange={(e) => props.editor.updateNode(props.id, (node) => {return {data: {label: e.target.value}}})}
+          value={props.data && props.data.label} 
+          rows={4}
+          placeholder="Project Title" />
         <div style={{display: 'flex'}}>
             {props.data && props.data.dueDate && "ETA:"} {props.data && moment(new Date(props.data.dueDate * 1000)).format('DD/MM/yyyy')}
         </div>

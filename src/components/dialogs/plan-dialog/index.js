@@ -7,8 +7,17 @@ import {
     DialogTitle,
     TextField,
     Button,
-    Typography
+    Typography,
+    Menu,
+    MenuItem,
+    List,
+    ListItem,
+    Divider
 } from '@material-ui/core';
+
+import {
+    Check
+} from '@material-ui/icons';
 
 import FileDrop from '../../file-drop';
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
@@ -27,6 +36,8 @@ function PlanDialog(props){
     const [ dueDate, setDueDate ] = React.useState(null);
     const [ members, setMembers ] = React.useState([])
     const [ attachments, setAttachments ] = React.useState([])
+
+    const [ memberAnchor, setMemberAnchor ] = React.useState(null);
 
     React.useEffect(() => {
         if(props.plan){
@@ -74,6 +85,12 @@ function PlanDialog(props){
         }
     }
 
+    const toggleMembersMenu = (e) => {
+
+        setMemberAnchor(!memberAnchor ? e.currentTarget : null)
+
+    }
+
     return (
 
         <Dialog fullWidth open={props.open} onClose={props.onClose}>
@@ -106,7 +123,7 @@ function PlanDialog(props){
                         onChange={(e) => setDescription(e.target.value)}
                         fullWidth 
                         label="Description" 
-                        rows={3} multiline rowsMax={6} />
+                        rows={4} multiline rowsMax={6} />
                     
                     <div>
                         <Typography style={{fontWeight: 'bold', marginTop: 4}} variant="subtitle1">Attachments</Typography>
@@ -129,7 +146,38 @@ function PlanDialog(props){
                         }}
                         color={members.indexOf(props.user.id) > -1 ? "" : "primary"}
                         variant="contained">{members.indexOf(props.user.id) > -1 ? "Leave" : "Join"}</Button>
-                    <Button color="primary" variant="contained">Members</Button>
+                    <Button color="primary" variant="contained" onClick={(e) => {
+                        toggleMembersMenu(e);
+                    }}>Members</Button>
+                    <Menu 
+                        onClose={() => setMemberAnchor(null)}
+                        transformOrigin={{vertical: 'top', horizontal: 'center'}}
+                        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+                        open={memberAnchor} 
+                        anchorEl={memberAnchor}>
+                            <Divider />
+                        <div style={{padding: 4}}>
+                        <TextField label="Name" />
+                        </div>
+                        <List>
+                            {props.team.map((x) => (
+                                <ListItem button onClick={() => {
+                                    props.editor.updateNode(ID, (node) => {
+                                        let mem = node.members;
+                                        if(mem.indexOf(x.id) > -1){
+                                            mem.splice(mem.indexOf(x.id), 1)
+                                        }else{
+                                            mem.push(x.id)
+                                        }
+                                        return {
+                                            members: mem
+                                        }
+                                    })
+                                }}>{members.indexOf(x.id) > -1 && <Check style={{marginRight: 8}}/>} {x.name}</ListItem>
+                            ))}
+                        </List>
+                        
+                    </Menu>
                     <KeyboardDateTimePicker
                         style={{marginTop: 4}}
                         label="Due Date"
@@ -153,7 +201,8 @@ function PlanDialog(props){
 }
 
 export default connect((state) => ({
-    user: jwt_decode(state.auth.token)
+    user: jwt_decode(state.auth.token),
+    team: state.team.list,
 }), (dispatch) => ({
     uploadFile: (file, cb) => dispatch(uploadFile(file, cb))
 }))(withEditor(PlanDialog))

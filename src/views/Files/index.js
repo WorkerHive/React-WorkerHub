@@ -9,6 +9,7 @@ import {
 
 import {
   Paper,
+  LinearProgress,
   Fab,
   List,
   IconButton,
@@ -35,6 +36,7 @@ import { connect } from 'react-redux';
 import './index.css';
 
 function Files(props){
+  const [ progress, setProgress ] = React.useState(null)
   const [ dialogOpen, openDialog ] = React.useState(false);
   const [ uploadFile, {data} ] = useMutation(UPLOAD_FILE)
   const [ convertDoc, setConvertDoc ] = React.useState(null)
@@ -77,15 +79,25 @@ function Files(props){
       type={props.type}
       permissions={props.permissions}
       >
-        <FilePreviewDialog ipfs={props.ipfs} open={selectedData} file={selectedData} onClose={() => setData(null)} />
+        {progress != null && <LinearProgress variant="determinate" value={progress} />}
+
+        <FilePreviewDialog open={selectedData} file={selectedData} onClose={() => setData(null)} />
         <ConverterDialog open={convertDoc} selected={convertDoc} onClose={() => setConvertDoc(null)}/>
         <FileUploadDialog open={dialogOpen} onClose={() => openDialog(false)} />
-        <div className={isDragActive ? 'file-list selected' : 'file-list'} {...getRootProps()} >
-        <input {...getInputProps()} />
+        <div className={isDragActive ? 'file-list selected' : 'file-list'} >
         <Fab color="primary" onClick={() => openDialog(true)} style={{zIndex: 12, position: 'absolute', right: 12, bottom: 12}}>
           <Add />
         </Fab>
-        <FileBrowser files={props.files} />
+        <FileBrowser 
+          onDownloadProgress={(progress) => {
+            setProgress(progress)
+          }}
+          onDownloadEnd={() => setProgress(null)}
+          onFileOpen={(file) => {
+            if(viewable.indexOf(file.extension) > -1){
+              setData({filename: file.name, cid: file.cid, extension: file.extension})
+            }
+        }} files={props.files} />
         {/*<SearchTable 
           data={props.files}
           renderItem={(x) => (

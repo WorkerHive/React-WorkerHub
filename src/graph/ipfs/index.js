@@ -1,38 +1,65 @@
 import React from 'react';
-import MPLEX from 'libp2p-mplex';
 import IPFS from 'ipfs';
-import {NOISE} from 'libp2p-noise';
-import Protector, {generate} from 'libp2p/src/pnet';
-import WebRTCStar from 'libp2p-webrtc-star'
 import { encode, decode } from 'uint8-to-base64'
+import { P2PStack } from './p2p-stack';
+import { withContext } from "with-context";
+export const IPFSContext = React.createContext({})
 
-const transportKey = WebRTCStar.prototype[Symbol.toStringTag]
+export const withIPFS = withContext(IPFSContext, "ipfs")
 
-const P2PStack = (swarmKey) => ({
-    modules: {
-        transport: [WebRTCStar],
-        streamMuxer: [MPLEX],
-        connEncryption: [NOISE],
-        connProtector: new Protector(Buffer.from(swarmKey))
-    },
-    config: {
-        transport: {
-            [transportKey]: {
-                enabled: true
+export const IPFSProvider = (props) => {
+
+    const [ isReady, setReady ] = React.useState(false)
+    const [ ipfs, setIPFS ] = React.useState(null)
+    const host = "thetechcompany.workhub.services";
+
+    React.useEffect(() => {
+        async function startIPFS(){
+            let node = ipfs;
+            if(ipfs){
+                console.info("=> IPFS Already Started")
+            }else{
+                console.time('IPFS Started')
+
+                try{
+                    node = await IPFS.create({
+                        repo: 'workhub',
+                        config: {
+                            Addresses: {
+                                Swarm: [`/dns4/${host}/tcp/6969/ws/p2p-webrtc-star`]
+                            }
+                        },
+                        relay: {enabled: true, hop: {enabled: true}},
+                        libp2p: P2PStack(decode(props.swarmKey))
+                    })
+                    console.log(await node.id())
+                }catch(e){
+                    console.error(e)
+                }
+                console.timeEnd('IPFS Started')
             }
-        },
-        peerDiscovery: {
-            autoDial: true,
-            [WebRTCStar.tag]: {
-                enabled: true
+            setIPFS(node)
+            setReady(node != null)
+
+        }    
+        if(props.swarmKey) startIPFS()
+        return function cleanup(){
+            if(ipfs && ipfs.stop){
+                console.log('Stopping IPFS')
+                ipfs.stop().catch(err => console.error(err))
+                ipfs = null
             }
         }
-    }
-})
+    }, [props.swarmKey])
 
-let ipfs = null;
+    return (
+        <IPFSContext.Provider value={{node: ipfs, isReady}}>
+            {props.children}
+        </IPFSContext.Provider>
+    )
+}
 
-export const useIPFS = (swarmKey) => {
+/*export const useIPFS = (swarmKey) => {
     console.log("SWARM KEY", swarmKey)
     swarmKey = decode(swarmKey)
 
@@ -76,10 +103,10 @@ export const useIPFS = (swarmKey) => {
                 ipfs.stop().catch(err => console.error(err))
                 ipfs = null
             }
-        }*/
+        }
     }, [ipfs])
     return {ipfs}
-}
+}*/
 
 export const IPFSStack = async (swarmKey = 'L2tleS9zd2FybS9wc2svMS4wLjAvCi9iYXNlMTYvCmJlMGI3MmJkNGRmODAwNzkwYjU5ZWZhNzA3YjcxNzExYWIwYjNhNGI0OTAyMWNiNDUwMGQxMDZkMWUwZGVmNTg=') => {
     console.log("IPFS Node Starting")

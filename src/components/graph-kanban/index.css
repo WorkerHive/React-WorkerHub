@@ -20,5 +20,9 @@
 }
 
 .react-kanban-column > div:last-child{
-    overflow-y: scroll;
+    overflow-y: auto;
+}
+
+.card-members{
+    display: flex;
 }

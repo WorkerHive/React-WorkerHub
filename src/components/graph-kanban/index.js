@@ -2,10 +2,28 @@ import React from 'react';
 
 import moment from 'moment';
 import Board from '@lourenci/react-kanban'
+import { Avatar } from '@material-ui/core';
+import { connect } from 'react-redux';
 import '@lourenci/react-kanban/dist/styles.css'
 import './index.css';
 
-export default function GraphKanban(props){
+function hashCode(str) { // java String#hashCode
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+       hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
+} 
+
+function intToRGB(i){
+    var c = (i & 0x00FFFFFF)
+        .toString(16)
+        .toUpperCase();
+
+    return "00000".substring(0, 6 - c.length) + c;
+}
+
+function GraphKanban(props){
     const [ columns, setColumns ] = React.useState([
         {
             id: 0,
@@ -45,6 +63,7 @@ export default function GraphKanban(props){
                 return a.data.status == col.status
             }) || []
 
+            console.log(cards)
             return {
                 ...col,
                 cards: cards.sort((a, b) => {
@@ -87,6 +106,14 @@ return {
                         <div>
                             {card.description}    
                         </div>
+                        <div className="card-members">
+                            {card.members.map((x) => {
+                                let member = props.team.filter((a) => a.id == x)[0]
+                                return (
+                                    <Avatar style={{backgroundColor: '#'+ intToRGB(hashCode(member.name))}}>{member.name.split(' ').map((x) => x.substring(0, 1))}</Avatar>
+                                )
+                            })}
+                        </div>
                       
                     </div>
                 )
@@ -117,3 +144,7 @@ return {
             children={{columns: getColumns()}} />
     )
 }
+
+export default connect((state) => ({
+    team: state.team.list
+}))(GraphKanban)
