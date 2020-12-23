@@ -41,7 +41,7 @@ function App() {
 
       <div className="App">
         <Route path="/" exact render={(props) => {
-          if(isElectron() && !localStorage.getItem('workhub-api') || localStorage.getItem('workhub-api').length < 1){
+          if(isElectron() && (!localStorage.getItem('workhub-api') || localStorage.getItem('workhub-api').length < 1)){
             return <Redirect to="/setup" />
           }else{
             return <Login {...props} />
