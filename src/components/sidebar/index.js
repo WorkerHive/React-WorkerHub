@@ -20,6 +20,8 @@ import {
 
 import { withRouter } from 'react-router-dom'
 
+import WorkhubLogo from '../../assets/teal.png';
+
 function Sidebar(props){
     const menu = [
         {
@@ -58,7 +60,7 @@ function Sidebar(props){
         <Drawer variant="permanent" style={{width: 200}}>
         <List style={{flex: 1, width: 200}}> 
         <ListItem style={{color: 'teal', padding: 12, fontSize: 20}}>
-           <img src="/assets/teal.png" style={{height: 33, marginRight: 8}} /> WorkHub
+           <img src={WorkhubLogo} style={{height: 33, marginRight: 8}} /> WorkHub
         </ListItem>
         <Divider />
         {menu.map((x, ix) => (
