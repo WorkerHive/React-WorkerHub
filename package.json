@@ -2,6 +2,7 @@
   "name": "react-workerhub",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "@apollo/client": "^3.3.4",
     "@date-io/date-fns": "^2.10.6",
