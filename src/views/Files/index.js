@@ -29,7 +29,7 @@ import FileUploadDialog from '../../components/dialogs/file-upload-dialog';
 import ConverterDialog from '../../components/dialogs/converter-dialog';
 
 import { useMutation } from '@apollo/client';
-import { addFile, CONVERT_FILE, getFiles, UPLOAD_FILE } from '../../actions/fileActions';
+import { addFile, CONVERT_FILE, getFiles, uploadFile } from '../../actions/fileActions';
 import {useDropzone} from 'react-dropzone'
 import { connect } from 'react-redux';
 
@@ -38,22 +38,20 @@ import './index.css';
 function Files(props){
   const [ progress, setProgress ] = React.useState(null)
   const [ dialogOpen, openDialog ] = React.useState(false);
-  const [ uploadFile, {data} ] = useMutation(UPLOAD_FILE)
   const [ convertDoc, setConvertDoc ] = React.useState(null)
   const [ selectedData, setData ] = React.useState(null)
 
   const onDrop = useCallback(async (acceptedFiles) => {
     if(acceptedFiles && acceptedFiles.length > 0){
-      console.log(acceptedFiles)
-      uploadFile({variables: {file: acceptedFiles[0]}}).then((r) => {
-        if(r.data && r.data.uploadFile && !r.data.uploadFile.duplicate){
-          props.addFile(r.data.uploadFile.file)
-        }
-      })
-     
+      
+      Promise.all(acceptedFiles.map((x) => {
+        return (async () => {
+          props.uploadFile(x)
+        })()
+      }))     
     }
     // Do something with the files
-  }, [data])
+  })
 
 
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
@@ -85,10 +83,10 @@ function Files(props){
         <ConverterDialog open={convertDoc} selected={convertDoc} onClose={() => setConvertDoc(null)}/>
         <FileUploadDialog open={dialogOpen} onClose={() => openDialog(false)} />
         <div className={isDragActive ? 'file-list selected' : 'file-list'} >
-        <Fab color="primary" onClick={() => openDialog(true)} style={{zIndex: 12, position: 'absolute', right: 12, bottom: 12}}>
-          <Add />
-        </Fab>
+        
         <FileBrowser 
+          onUploadFiles={() => openDialog(true)}
+          onFileUpload={onDrop}
           onDownloadProgress={(progress) => {
             setProgress(progress)
           }}
@@ -180,5 +178,6 @@ export default connect((state) => ({
   files: state.files.list,
 }), (dispatch) => ({
   addFile: (file) => dispatch(addFile(file)),
-  getFiles: () => dispatch(getFiles())
+  getFiles: () => dispatch(getFiles()),
+  uploadFile: (file) => dispatch(uploadFile(file))
 }))(Files)

@@ -4,6 +4,12 @@ import { ChonkyActions, EssentialFileActions, FileHelper, FileBrowser, FileNavba
 
 import { useCustomFileMap, useFiles } from './file-hooks'
 
+import {
+    Backup
+} from '@material-ui/icons'
+
+import FileDrop from '../file-drop';
+
 import FolderDialog from './folder-dialog'
 import { v4 as uuidv4 } from 'uuid'
 import JSZip from 'jszip'
@@ -16,6 +22,9 @@ import { connect } from 'react-redux';
 import async from 'async'
 import { saveAs } from 'file-saver';
 import downloadjs from 'downloadjs'
+
+import { useDropzone } from 'react-dropzone'
+
 import './index.css';
 
 
@@ -64,6 +73,9 @@ function WorkhubFileBrowser(props){
         switch(action.id){
             case "create_folder":
                 dialogFolder(true)
+                break;
+            case 'upload_files':
+                if(props.onUploadFiles) props.onUploadFiles();
                 break;
             case "open_files":
                 if(action.payload.targetFile.isDir){
@@ -148,7 +160,8 @@ function WorkhubFileBrowser(props){
                     isDir: true
                 }]))}
                 onClose={() => dialogFolder(false)} />
-            <FullFileBrowser 
+
+            <FileBrowser 
                 fileActions={[ChonkyActions.CreateFolder, ChonkyActions.UploadFiles, ChonkyActions.DownloadFiles]}
                 disableDragAndDropProvider={true}
                 instanceId="workhub-fs"
@@ -163,9 +176,27 @@ function WorkhubFileBrowser(props){
                     name: x.id ? x.filename : x.name
                 }))}
                  folderChain={folderChain} >
-                
+                        <FileNavbar />
+                        <FileToolbar />
 
-            </FullFileBrowser>
+                        <FileContextMenu />
+                        <FileDrop noClick onDrop={props.onFileUpload} >
+                            {isDragActive => {
+                                return [
+                                    <FileList />,
+                                    isDragActive && (
+                                        <div className="ipfs-loader">
+                                            <Backup style={{fontSize: 44}} />
+                                            <Typography variant="h6" style={{fontWeight: 'bold'}}>Drop files here</Typography>
+                                        </div>
+                                    )]
+                            }}
+                        
+                        </FileDrop> 
+                           
+
+
+            </FileBrowser>
             {!props.ipfs.isReady && (
                     <div className="ipfs-loader">
                         <Spinner />

@@ -74,10 +74,12 @@ function Projects(props){
       <SearchTable
         filter={(item, search) => item.name.indexOf(search) > -1}
         data={props.projects.filter((a) => {
-          if(query_string.status && a.status == query_string.status){
+          if(query_string.status && a.status && a.status.toLowerCase() == query_string.status.toLowerCase()){
             return true;
           }else if(!query_string.status){
             return true;
+          }else if(!a.status){
+            return false;
           }
           return false;
         }).filter((a) => a.name)}

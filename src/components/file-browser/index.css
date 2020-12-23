@@ -17,3 +17,14 @@
     flex-direction: column;
     z-index: 9;
 }
+
+.workhub-fs .file-drop{
+    flex: 1;
+    z-index: 0;
+    padding: 4px;
+
+}
+
+.workhub-fs .file-drop.active{
+
+}

@@ -28,7 +28,7 @@ export const uploadFile = (file, cb) => {
       }
     }).then((r) => r.data.uploadFile).then((r) => {
       console.log("Upload file")
-      cb(r.file)
+      if(cb) cb(r.file)
       if(!r.duplicate){
         dispatch(addFile(r.file))
       }
