@@ -93,7 +93,10 @@ function Files(props){
           onDownloadEnd={() => setProgress(null)}
           onFileOpen={(file) => {
             if(viewable.indexOf(file.extension) > -1){
-              setData({filename: file.name, cid: file.cid, extension: file.extension})
+              return setData({filename: file.name, cid: file.cid, extension: file.extension})
+            }
+            if(file.conversion && viewable.indexOf(file.conversion.extension) > -1){
+              return setData({filename: file.name, cid: file.conversion.cid, extension: file.conversion.extension})
             }
         }} files={props.files} />
         {/*<SearchTable 

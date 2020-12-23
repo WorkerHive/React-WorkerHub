@@ -81,6 +81,7 @@ function WorkhubFileBrowser(props){
                 if(action.payload.targetFile.isDir){
                     console.log("DsIR")
                 }else{
+                    console.log(action.payload)
                     if(props.onFileOpen) props.onFileOpen(action.payload.targetFile)
                 }
                 break;
