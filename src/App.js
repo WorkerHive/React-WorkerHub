@@ -36,6 +36,7 @@ function App() {
             return <Redirect to="/" />
           }
         }} />
+        <Route render={() => <Redirect to="/"/>}/>
       </div>
       </PersistGate>
     </Router>
