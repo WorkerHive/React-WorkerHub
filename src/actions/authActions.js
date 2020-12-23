@@ -14,10 +14,6 @@ export const LOGIN = gql`
     }
 `
 
-export const getQuote = () => {
-    return fetch('https://zenquotes.io/api/today').then((r) => r.json())
-}
-
 export const getNodeConf = () => {
     return (dispatch) => {
         return client.mutate({

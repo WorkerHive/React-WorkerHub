@@ -1,0 +1,29 @@
+.hub-setup{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.hub-setup__header{
+    position: absolute;
+    right:0;
+    left: 0;
+    top: 10vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hub-setup .hub-box{
+    flex-direction: column;
+    display: flex;
+
+}
+
+.hub-setup .hub-actions{
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
