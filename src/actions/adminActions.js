@@ -1,9 +1,9 @@
 import * as types from './types';
 import { gql } from '@apollo/client';
 
-import GClient from '../graph';
+import GClient, {withGraph} from '../graph';
 
-const client = GClient()
+const graph = withGraph()
 
 export const UPDATE_INTEGRATION_MAP = gql`
   mutation UpdateIntegrationMap($nodes: [MapNodeInput], $links: [MapLinkInput]){
@@ -28,7 +28,7 @@ export const UPDATE_INTEGRATION_MAP = gql`
 
 export const getPermissions = () => {
   return (dispatch) => {
-    return client.query({
+    return graph.getClient().query({
       query: gql`
       query GetPermissions{
         typePermissions{
@@ -48,7 +48,7 @@ export const getPermissions = () => {
 }
 
 export const getIntegrationMap = () => {
-  return client.query({
+  return graph.getClient().query({
     query: gql`
       query GetIntegrations{
         integrationMap{
@@ -74,7 +74,7 @@ export const getIntegrationMap = () => {
 
 export const getTypes = () => {
   return (dispatch, getState) => {
-    return client.query({
+    return graph.getClient().query({
       query: gql`
         query GetTypes{
           adminTypes{
@@ -92,7 +92,7 @@ export const getTypes = () => {
 }
 
 export const getTables = (store) => {
-    return client.query({
+    return graph.getClient().query({
       query: gql`
         query GetLayout{
           connectionLayout(storeId: "${store}"){
@@ -106,7 +106,7 @@ export const getTables = (store) => {
 }
 
 export const getColumns = (store, table) => {
-    return client.query({
+    return graph.getClient().query({
         query: gql`
           query GetProjects {
             bucketLayout(storeId: "${store}", bucketId: "${table}"){
@@ -121,7 +121,7 @@ export const getColumns = (store, table) => {
 }
 
 export const getViews = () => {
-    return client.query({
+    return graph.getClient().query({
         query: gql`
           query GetProjects {
             getSQLViews{

@@ -11,7 +11,7 @@ import {
 
 import isElectron from 'is-electron';
 import { useMutation } from '@apollo/client';
-import { getNodeConf, LOGIN, setToken } from '../../actions/authActions';
+import { getNodeConf, login, setToken } from '../../actions/authActions';
 import { connect } from 'react-redux';
 import HubSetup from './hub-setup'
 import WorkhubLogo from '../../assets/teal.png'
@@ -25,19 +25,16 @@ function Login(props){
     const [ username, setUsername ] = React.useState('')
     const [ password, setPassword ] = React.useState('')
 
-    const [ doLogin ] = useMutation(LOGIN)
 
-    const login = () => {
-        doLogin({variables: {
-            username: username,
-            password: password
-        }}).then((r) => {
-            if(r.data.login && r.data.login.token){
+    const tryLogin = () => {
+        login(username, password).then((r) => {
+            console.log(r)
+            if(r.token){
                 props.getNodeConf()
-                props.setToken(r.data.login.token)
+                props.setToken(r.token)
                 props.history.push('/dashboard')
-            }else if(r.data.login && r.data.login.error){
-                setError(r.data.login.error)
+            }else if(r.error){
+                setError(r.error)
             }
         })
     }
@@ -85,7 +82,7 @@ function Login(props){
                     onKeyDown={(e) => {if(e.keyCode == 13) {login()}}}
                     onChange={(e) => setPassword(e.target.value)}/>
                 <Button 
-                    onClick={login}
+                    onClick={tryLogin}
                     style={{marginTop: 33}} 
                     color="primary" 
                     variant="contained">Login</Button>
@@ -95,11 +92,11 @@ function Login(props){
         )
     }
 
-    return isElectron() && (!workhub || workhub.length < 1) ? (
+    return renderLogin() /*isElectron() && (!workhub || workhub.length < 1) ? (
         <HubSetup onHub={(url) => {
             setWorkhub(url)  
         }}/>
-    ) : renderLogin()
+    ) : renderLogin()*/
 
    
 }

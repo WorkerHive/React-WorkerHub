@@ -1,9 +1,9 @@
 import * as types from './types';
 import { gql, useMutation } from '@apollo/client';
 
-import GClient from '../graph';
+import GClient, {withGraph} from '../graph';
 
-const client = GClient()
+const graph = withGraph()
 
 export const UPLOAD_FILE = gql`
     mutation UploadFile($file: Upload!){
@@ -21,7 +21,7 @@ export const UPLOAD_FILE = gql`
 
 export const uploadFile = (file, cb) => {
   return (dispatch) => {
-    return client.mutate({
+    return graph.getClient().mutate({
       mutation: UPLOAD_FILE,
       variables: {
         file: file
@@ -37,7 +37,7 @@ export const uploadFile = (file, cb) => {
 }
 
 export const attachFile = (projectId, fileId) => {
-  client.mutate({
+  graph.getClient().mutate({
     mutation: gql`
     mutation AttachFile($projectId: ID, $fileId: ID){
       attachFileToProject(projectId: $projectId, fileId: $fileId){
@@ -57,7 +57,7 @@ export const attachFile = (projectId, fileId) => {
 }
 
 export const convertFile = (fileId, targetFormat) => {
-  client.mutate({
+  graph.getClient().mutate({
     mutation: gql`
     mutation ConvertFile($fileId: ID, $targetFormat:String){
       convertFile(fileId: $fileId, targetFormat: $targetFormat){
@@ -74,7 +74,7 @@ export const convertFile = (fileId, targetFormat) => {
 }
 
 export const getConverters = () => {
-  return client.query({
+  return graph.getClient().query({
     query: gql`
       query GetConverters{
         converters{
@@ -90,7 +90,7 @@ export const getConverters = () => {
 }
 
 export const installConverter = (id) => {
-  return client.mutate({
+  return graph.getClient().mutate({
     mutation: gql`
       mutation InstallConverter($converterId: ID){
         installConverter(converterId: $converterId)
@@ -110,7 +110,7 @@ export const addFile = (file) => {
 
 export const getFiles = () => {
   return (dispatch, getState) => {
-    return client.query({
+    return graph.getClient().query({
       query: gql`
         query GetFiles{
           files{

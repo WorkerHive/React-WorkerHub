@@ -7,10 +7,20 @@ import {
     Button
 } from '@material-ui/core'
 
+import { withRouter } from 'react-router-dom';
+import { withGraph } from '../../graph';
+
 import './hub-setup.css';
 
-export default function HubSetup(props){
+const graph = withGraph();
+
+function HubSetup(props){
     const [ hubUrl, setHubUrl ] = React.useState(localStorage.getItem('workhub-api'))
+
+    const setURL = (url) => {
+        graph.setURL(`https://${url}.workhub.services/graphql`)
+        props.history.push('/')
+    }
 
     return (
         <div className="hub-setup">
@@ -22,6 +32,11 @@ export default function HubSetup(props){
                 <TextField 
                     placeholder="Hub URL"
                     value={hubUrl}
+                    onKeyDown={(e) => {
+                        if(e.keyCode == 13){
+                            setURL(hubUrl)
+                        }
+                    }}
                     onChange={e => {
                         setHubUrl(e.target.value)
                         localStorage.setItem('workhub-api', e.target.value)
@@ -30,7 +45,10 @@ export default function HubSetup(props){
                         endAdornment: <InputAdornment position="end">.workhub.services</InputAdornment>
                     }}/>
                 <div className="hub-actions">
-                    <Button onClick={() => props.onHub(hubUrl)} disabled={!hubUrl || hubUrl.length < 1} color="primary" variant="contained">
+                    <Button onClick={() => {
+                        if(props.onHub) props.onHub(hubUrl)
+                        setURL(hubUrl)
+                    }} disabled={!hubUrl || hubUrl.length < 1} color="primary" variant="contained">
                         Next
                     </Button>
                 </div>
@@ -39,3 +57,5 @@ export default function HubSetup(props){
         </div>
     )
 }
+
+export default withRouter(HubSetup)

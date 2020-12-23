@@ -1,13 +1,12 @@
 import { gql } from '@apollo/client';
-import GClient from '../graph';
+import GClient, {withGraph} from '../graph';
 import * as types from './types';
 
-const client = GClient()
-
+const graph = withGraph()
 
 export const addBooking = (time, projectId, booking) => {
     return (dispatch) => {
-    client.mutate({
+    graph.getClient().mutate({
         mutation: gql`
     mutation AddBooking($time: CalendarInput, $projectId: ID, $booking: BookingInput){
         addBooking(time: $time, projectId: $projectId, booking: $booking){
@@ -44,7 +43,7 @@ export const addBooking = (time, projectId, booking) => {
 
   export const getBookings = () => {
       return (dispatch, getState) => {
-    client.query({
+    graph.getClient().query({
         query: gql`
             query GetBookings{
                 calendar{

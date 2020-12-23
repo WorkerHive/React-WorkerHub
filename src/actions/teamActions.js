@@ -1,12 +1,12 @@
 import { gql } from '@apollo/client';
 import * as types from './types';
-import GClient from '../graph';
+import GClient, {withGraph} from '../graph';
 
-const client = GClient()
+const graph = withGraph()
 
 export const addTeamMember = (member) => {
   return (dispatch) => {
-    client.mutate({
+    graph.getClient().mutate({
       mutation: gql`
   mutation AddTeamMember($member: TeamMemberInput){
     addTeamMember(member: $member){
@@ -31,7 +31,7 @@ export const addTeamMember = (member) => {
 
 export const updateTeamMember = (memberId, member) => {
   return (dispatch) => {
-     client.mutate({
+    graph.getClient().mutate({
        mutation: gql`
   mutation UpdateTeam($memberId: String, $member: TeamMemberInput){
     updateTeamMember(memberId: $memberId, member: $member){
@@ -54,7 +54,7 @@ export const updateTeamMember = (memberId, member) => {
 
 export const removeTeamMember = (id) => {
   return (dispatch, getState) => {
-    return client.mutate({
+    return graph.getClient().mutate({
       mutation: gql`
         mutation RemoveMember($memberId: ID){
           removeTeamMember(memberId: $memberId)
@@ -71,7 +71,7 @@ export const removeTeamMember = (id) => {
 
 export const getTeam = () => {
   return (dispatch) => {
-    return client.query({
+    return graph.getClient().query({
       query: gql`
         query GetTeam {
           team {

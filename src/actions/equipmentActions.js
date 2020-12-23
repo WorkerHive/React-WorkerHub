@@ -1,12 +1,12 @@
 import { gql } from '@apollo/client';
 import * as types from './types';
-import GClient from '../graph';
+import GClient, {withGraph} from '../graph';
 
-const client = GClient()
+const graph = withGraph()
 
 export const addEquipment = (equipment) => {
   return (dispatch) => {
-    client.mutate({
+    graph.getClient().mutate({
       mutation: gql`
   mutation AddEquipment($equipment: EquipmentInput){
     addEquipment(equipment: $equipment){
@@ -29,7 +29,7 @@ export const addEquipment = (equipment) => {
 export const updateEquipment = (id, equipment) => {
   console.log(id, equipment)
   return (dispatch) => {
-    return client.mutate({
+    return graph.getClient().mutate({
       mutation:  gql`
       mutation UpdateEquipment($equipmentId: String, $equipment: EquipmentInput){
         updateEquipment(equipmentId: $equipmentId, equipment: $equipment){
@@ -51,7 +51,7 @@ export const updateEquipment = (id, equipment) => {
 
 export const removeEquipment = (id) => {
   return (dispatch) => {
-    return client.mutate({
+    return graph.getClient().mutate({
       mutation: gql`
         mutation RemoveEquipment($id: String){
           removeEquipment(equipmentId: $id)
@@ -69,7 +69,7 @@ export const removeEquipment = (id) => {
 
 export const getEquipment = () => {
   return (dispatch) => {
-    return client.query({
+    return graph.getClient().query({
       query: gql`
         query GetEquipment {
           equipment {

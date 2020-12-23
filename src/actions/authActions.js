@@ -1,22 +1,30 @@
 import * as types from './types';
 import { gql } from '@apollo/client';
 
-import GClient from '../graph';
+import GClient, {withGraph} from '../graph';
 
-const client = GClient()
+const graph = withGraph()
 
-export const LOGIN = gql`
-    mutation Login($username: String, $password: String){
-        login(username: $username, password: $password){
+export const login = (username, password) => {
+    return graph.getClient().mutate({
+        mutation: gql`
+        mutation Login($username: String, $password: String){
+            login(username: $username, password: $password){
             token
             error
         }
     }
-`
+    `,
+    variables: {
+        username,
+        password
+    }
+    }).then((r) => r.data.login)
+}
 
 export const getNodeConf = () => {
     return (dispatch) => {
-        return client.mutate({
+        return graph.getClient().mutate({
             mutation: gql`
                 mutation GetNode{
                     connectNode{

@@ -1,13 +1,13 @@
 import * as types from './types';
 import { gql } from '@apollo/client';
 import { cloneDeep } from 'lodash';
-import GClient from '../graph';
+import GClient, {withGraph} from '../graph';
 
-const client = GClient()
+const graph = withGraph()
 
 export const addProject = (project) => {
   return (dispatch) => {
-    return client.mutate({
+    return graph.getClient().mutate({
       mutation: gql`
       mutation AddProject($project: ProjectInput){
         addProject(project: $project){
@@ -29,7 +29,7 @@ export const addProject = (project) => {
 
 export const updateProject = (projectId, project) => {
   return (dispatch) => {
-    return client.mutate({
+    return graph.getClient().mutate({
       mutation: gql`
   mutation UpdateProject($projectId: ID, $project: ProjectInput){
     updateProject(projectId: $projectId, project: $project){
@@ -51,7 +51,7 @@ variables: {
 
   export const removeProject = (projectId) => {
     return (dispatch) => {
-      return client.mutate({
+      return graph.getClient().mutate({
         mutation: gql`
           mutation RemoveProject($projectId: ID){
             removeProject(projectId: $projectId)
@@ -69,7 +69,7 @@ variables: {
 
 export const getProjects = () => {
   return (dispatch) => {
-    return client.query({
+    return graph.getClient().query({
       query: gql`
         query GetProjects {
           projects{

@@ -15,7 +15,7 @@ import {
   MuiPickersUtilsProvider
 } from '@material-ui/pickers'
 
-import GClient from './graph';
+import GClient,{withGraph} from './graph';
 import configureStore from './configureStore';
 import './App.css';
 
@@ -28,24 +28,28 @@ if(isElectron()){
 
 
 const { store, persistor } = configureStore();
-const client = GClient();
+const graph = withGraph()
+
 
 function App() {
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <Provider store={store}>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={graph.getClient()}>
       <Router>
       <PersistGate loading={null} persistor={persistor}>
 
       <div className="App">
         <Route path="/" exact render={(props) => {
           if(isElectron() && !localStorage.getItem('workhub-api') || localStorage.getItem('workhub-api').length < 1){
-            return <HubSetup {...props} />
+            return <Redirect to="/setup" />
           }else{
             return <Login {...props} />
           }
         }} />
+        {isElectron() && (
+          <Route path="/setup" component={HubSetup} />
+        )}
         <Route path="/dashboard" render={(props) => {
           if(store.getState().auth.token){
             return <DashboardController {...props} />
