@@ -1,8 +1,9 @@
 import React from 'react';
 import IPFS from 'ipfs';
-import { encode, decode } from 'uint8-to-base64'
+import { decode } from 'uint8-to-base64'
 import { P2PStack } from './p2p-stack';
 import { withContext } from "with-context";
+import isElectron from 'is-electron'
 export const IPFSContext = React.createContext({})
 
 export const withIPFS = withContext(IPFSContext, "ipfs")
@@ -11,7 +12,7 @@ export const IPFSProvider = (props) => {
 
     const [ isReady, setReady ] = React.useState(false)
     const [ ipfs, setIPFS ] = React.useState(null)
-    const host = `${localStorage.getItem('workhub-api')}.workhub.services`;
+    const host = isElectron() ? `${localStorage.getItem('workhub-api')}.workhub.services` : window.location.hostname;
 
     React.useEffect(() => {
         async function startIPFS(){
