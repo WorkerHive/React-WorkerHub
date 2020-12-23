@@ -11,7 +11,7 @@ export const IPFSProvider = (props) => {
 
     const [ isReady, setReady ] = React.useState(false)
     const [ ipfs, setIPFS ] = React.useState(null)
-    const host = "thetechcompany.workhub.services";
+    const host = `${localStorage.getItem('workhub-api')}.workhub.services`;
 
     React.useEffect(() => {
         async function startIPFS(){
@@ -116,7 +116,7 @@ export const IPFSStack = async (swarmKey = 'L2tleS9zd2FybS9wc2svMS4wLjAvCi9iYXNl
         config: {
           Addresses: {
             Swarm: [
-                '/dns4/thetechcompany.workhub.services/tcp/6969/ws/p2p-webrtc-star',
+                `/dns4/${localStorage.getItem('workhub-api')}.workhub.services/tcp/6969/ws/p2p-webrtc-star`,
                '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star'
             ],
             Bootstrap: []

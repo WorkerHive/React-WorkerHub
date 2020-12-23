@@ -97,6 +97,7 @@ function WorkhubFileBrowser(props){
                     (async () => {
                         let buff = Buffer.from('')
                         for await (const chunk of props.ipfs.node.cat(file.cid)){
+                            console.log("Chunking Crumping")
                             buff = Buffer.concat([buff, chunk])
                             progress += chunk.length
                             props.onDownloadProgress((progress / downloadSize) * 100)
@@ -173,6 +174,7 @@ function WorkhubFileBrowser(props){
                     size: x.size,
                     ext: x.extension,
                     extension: x.extension,
+                    conversion: x.conversion,
                     isDir: x.isDir,
                     name: x.id ? x.filename : x.name
                 }))}

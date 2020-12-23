@@ -58,6 +58,7 @@ function Login(props){
                         InputProps={{
                             endAdornment: <InputAdornment position="end">.workhub.services</InputAdornment>
                         }}
+                        disabled
                         marin="normal"
                         value={workhub}
                         onChange={e => {
@@ -79,7 +80,7 @@ function Login(props){
                     label="Password" 
                     type="password" 
                     value={password} 
-                    onKeyDown={(e) => {if(e.keyCode == 13) {login()}}}
+                    onKeyDown={(e) => {if(e.keyCode == 13) {tryLogin()}}}
                     onChange={(e) => setPassword(e.target.value)}/>
                 <Button 
                     onClick={tryLogin}

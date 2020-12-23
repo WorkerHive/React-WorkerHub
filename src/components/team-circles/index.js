@@ -32,7 +32,7 @@ function TeamCircles(props){
         <div className="team-circles">
             {props.members && (Array.isArray(props.members) ? props.members : []).map((mbr) => {
                 let member = getMember(mbr)
-                return <Avatar style={{backgroundColor: '#'+ intToRGB(hashCode(member.name))}}>{member.name.split(' ').map((x) => x.substring(0, 1))}</Avatar>
+                if(member)                return <Avatar style={{backgroundColor: '#'+ intToRGB(hashCode(member.name))}}>{member.name.split(' ').map((x) => x.substring(0, 1))}</Avatar>
             })}
         </div>
     )
