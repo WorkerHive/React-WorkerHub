@@ -2,6 +2,10 @@
     display: flex;
 }
 
+.plan-actions > .contained{
+    background: #dfdfdf;
+}
+
 .tree-item{
     height: 58px;
 }

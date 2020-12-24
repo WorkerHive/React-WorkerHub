@@ -5,9 +5,22 @@ import {
     TreeItem,
 } from '@material-ui/lab'
 
-export default function PlanTree(props){
 
-    const renderTree = (tree_branch) => {
+import {
+  ArrowDropDown,
+  ArrowRight
+} from '@material-ui/icons'
+
+import Branch from './branch';
+
+export default function PlanTree(props){
+  const [ expanded, setExpanded ] = React.useState(['root'])
+
+  const { nodes, links } = props.graph || {};
+
+  const rootNodes = nodes.filter((x) => links.filter((a) => a.target == x.id).length == 0)
+
+  /*  const renderTree = (tree_branch) => {
         if(tree_branch){
             let _links = links.filter((a) => a.source == tree_branch.id)
             let _children = _links.map((x) => nodes.filter((a) => a.id == x.target)[0])
@@ -53,42 +66,63 @@ export default function PlanTree(props){
             )
             return item;
         }
+    }*/
+
+    const renderBranch = (branch) => {
+      let _links = links.filter((a) => a.source == branch.id)
+      let _children = _links.map((x) => nodes.filter((a) => a.id == x.target)[0]) || []
+      
+      let _branches = _children.map((x) => renderBranch(x))
+
+      let count = _branches.map((x) => x.children.length + x.total).concat([0]).reduce((a,b) => a+b)
+      let completeCount = _branches.map((x) => x.complete.length + x.completed).concat([0]).reduce((a, b) => a+b)
+      console.log(count)
+      //let totalChildren = _children.length + _branches.reduce((a, b) => a.children.length + b.children.length)
+
+      return {
+        branch: (
+          <Branch 
+            children={_children}
+            total={completeCount + "/" + (_children.length + count)}
+            nodeId={branch.id} 
+            data={branch.data}>
+            {_branches.map((x) => x.branch)}
+          </Branch>
+        ),
+        children: _children,
+        complete: _children.filter((a) => a.data.status == "COMPLETE"),
+        completed: completeCount,
+        total: count
+      }
+      
     }
+
+    const branches = rootNodes.map((x) => renderBranch(x))
+
+    const total = branches.map((x) => x.children.length + x.total).concat([0]).reduce((a,b) => a+b)
 
     return (
         <TreeView
-        multiSelect
-        defaultExpanded={['1']}
-        expanded={expanded}
-        onNodeToggle={(event, newExpanded) => {
+          multiSelect
+          expanded={expanded}
+          defaultCollapseIcon={<ArrowDropDown />}
+          defaultExpandIcon={<ArrowRight />}
+          onNodeToggle={(event, newExpanded) => {
             console.log(event, newExpanded)
             setExpanded(newExpanded)
-        }}
-        defaultCollapseIcon={<MinusSquare />}
-        defaultExpandIcon={<PlusSquare />}
-        defaultEndIcon={<CloseSquare />}>
-         <StyledTreeItem 
-          addChild={() => {
-            let n = addNode({
-                type: 'baseNode',
-                data: {label: ''}
-            })
-            setSelectedCard({
-              id: n.id,
-              title: "",
-              dueDate: null,
-              members: [],
-              attachments: []
-            })
-          //  addLink({target: n.id, source: 'root'})
-                        
-            console.log(nodes, links)
-         }} nodeId="root" label={props.project.name}>
-             {rootNodes.map((x) => renderTree(x))}
-        </StyledTreeItem>
-     </TreeView>
+          }}>
+          <Branch 
+            total={total}
+            children={branches}
+            nodeId="root" 
+            data={{label: props.title}}> 
+            {branches.map((x) => x.branch)}
+          </Branch> 
+        </TreeView>
     )
 }
+
+/*
 
 const StyledTreeItem = withStyles((theme) => ({
     iconContainer: {
@@ -132,4 +166,4 @@ const StyledTreeItem = withStyles((theme) => ({
       flexGrow: 1,
       maxWidth: 400,
     },
-  });
+  });*/

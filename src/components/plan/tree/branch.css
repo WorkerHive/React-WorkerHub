@@ -1,0 +1,13 @@
+.tree-branch .MuiTreeItem-label{
+    height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+.tree-branch.COMPLETE{
+    background: green;
+}
+
+.tree-branch__inner{
+    height: 44px;
+}
