@@ -2,7 +2,6 @@
   "name": "react-workerhub",
   "version": "0.0.4",
   "private": true,
-  "homepage": "./",
   "dependencies": {
     "@apollo/client": "^3.3.4",
     "@date-io/date-fns": "^2.10.6",
@@ -62,6 +61,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build-electron": "PUBLIC_URL=./ react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -20,11 +20,13 @@ export const withGraph = () => {
     if(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') platform = 'dev';
     if(isElectron()) platform = 'electron';
 
+    if(window.location.hostname == "localhost" && localStorage.getItem('workhub-api')) platform = 'dev';
+
     switch(platform){
       case 'web':
         return '/graphql';
       case 'dev':
-        return 'https://thetechcompany.workhub.services/graphql'
+        return `https://${localStorage.getItem('workhub-api')}.workhub.services/graphql`
       case 'electron':
         return `https://${localStorage.getItem('workhub-api')}.workhub.services/graphql`
     }
