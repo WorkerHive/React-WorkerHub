@@ -5,14 +5,18 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    Button
+    Button,
+    Typography
 } from '@material-ui/core';
 
+import Spinner from 'react-spinkit'
 import GLBCard from '../../glb-card'
 import PDFCard from '../../pdf-card';
 
 import { connect } from 'react-redux';
 import { withIPFS } from '../../../graph/ipfs';
+
+import './index.css';
 
 function FilePreviewDialog(props){
 
@@ -21,23 +25,31 @@ function FilePreviewDialog(props){
 
     const renderContent = () => {
         if(data){
-        switch(file.extension){
-            case 'pdf':
-                return (
-                    <PDFCard data={data}/>
-                )
-            case 'glb':
-                return (
-                    <GLBCard data={data}/>
-                )
-            case 'png':
-                return (
-                    <img style={{width: '33%', height: '100%'}} src={data} />
-                )
-            default:
-                return null;
+            switch(file.extension){
+                case 'pdf':
+                    return (
+                        <PDFCard data={data}/>
+                    )
+                case 'glb':
+                    return (
+                        <GLBCard data={data}/>
+                    )
+                case 'png':
+                    return (
+                        <img style={{width: '33%', height: '100%'}} src={data} />
+                    )
+                default:
+                    return null;
+            }
+        }else{
+            return (
+                <div className="preview-loading">
+                    <Spinner name="double-bounce"/>
+                    <Typography variant="h6" style={{fontWeight: 'bold'}}>Loading please wait...</Typography>
+                </div>
+            
+            )
         }
-    }
     }
 
     React.useEffect( async () => {
@@ -56,14 +68,17 @@ function FilePreviewDialog(props){
     }, [props.file, props.ipfs])
 
     const onClose = () => {
-        if(data) URL.revokeObjectURL(data)
+        if(data) {
+            URL.revokeObjectURL(data)
+            setData(null)
+        }
         if(props.onClose) props.onClose();
     }
 
     return (
-        <Dialog fullWidth maxWidth="lg" open={props.open} onClose={onClose}>
+        <Dialog fullWidth maxWidth={data ? "lg" : 'md'} open={props.open}  onClose={onClose}>
             <DialogTitle>{file.filename}</DialogTitle>
-            <DialogContent style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <DialogContent style={{display: 'flex', flexDirection: 'column', minHeight: 300, maxHeight: (data) ? 639 : 300, transition: 'max-height 200ms ease-out', alignItems: 'center'}}>
                 {renderContent()}
             </DialogContent>
             <DialogActions>

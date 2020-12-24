@@ -90,6 +90,12 @@ function Files(props){
           onDownloadProgress={(progress) => {
             setProgress(progress)
           }}
+          onConvertFiles={(files) => {
+            if(files.length > 0){
+              setConvertDoc(files[0])
+            }
+           
+          }}
           onDownloadEnd={() => setProgress(null)}
           onFileOpen={(file) => {
             if(viewable.indexOf(file.extension) > -1){

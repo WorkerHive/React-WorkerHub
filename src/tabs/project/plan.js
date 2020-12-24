@@ -56,9 +56,45 @@ function PlanTab(props){
     const [ docProject, setProject ] = React.useState({})
     const [ doc, setDoc ] = React.useState(null)
     
-
-
     const [ columnMap, setColumnMap ] = React.useState([])
+
+    const editChild = (tree_branch) => {
+      props.editor.explore(tree_branch)
+    }
+      
+    const addChild = (parent) => {
+
+      console.log("Add child", parent)
+      
+      if(!parent) {
+        let parents = props.editor.nodes.filter((a) => props.editor.links.filter((link) => link.target == a.id).length < 1)
+        if(parents.length > 0){
+          parent = {position: {
+            x: parents.length * 121,
+            y: parents[0].position.y
+          }}
+        }else{
+          parent = {
+            position: {
+              x: 300,
+              y: 300
+            }
+          }
+        }
+      }
+
+      let node = props.editor.addNode('baseNode', {x: parent.position.x, y: parent.position.y + 121})
+      
+      if(parent.id) {
+        console.log("ADD LINK")
+        props.editor.addLink(parent.id, node.id)
+      }
+    
+      console.log(node)
+  
+      props.editor.explore(node)
+    }
+    
 
     const renderKanban = () => {
       return (
@@ -116,8 +152,11 @@ function PlanTab(props){
 
       return (
         <PlanTree 
+          onAdd={addChild}
+          onEdit={editChild}
           title={props.project.name}
-          graph={props.editor}/>
+          graph={props.editor}
+          />
       )
     }
 

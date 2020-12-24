@@ -1,13 +1,27 @@
-.tree-branch .MuiTreeItem-label{
-    height: 44px;
+
+.treeActions {
+    transition: opacity 150ms ease-in;
+    opacity: 0;
+}
+
+.labelRoot{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+}
+
+.labelText{
+    flex: 1;
+    height: 50px;
     display: flex;
     align-items: center;
 }
 
-.tree-branch.COMPLETE{
-    background: green;
+.labelIcon{
+    margin-right: 8px;
 }
 
-.tree-branch__inner{
-    height: 44px;
+.labelRoot:hover .treeActions{
+    opacity: 1;
 }

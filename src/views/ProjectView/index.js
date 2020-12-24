@@ -92,16 +92,19 @@ function ProjectView(props){
     }
 
 
-    const tabs = ["Plan", "Calendar", "Team", "Files"]
+    const tabs = ["Plan", "Calendar", "Team", "Files", "Settings"]
 
     return (
         <HiveProvider store={{
             nodes: nodes,
-            links: links,
+            links: links.filter((a) => a.target),
             nodeTypes: [ProjectItemNode],
             attachments: attachments,
             attachFile: (name, cid) => {
               _setAttachments([...new Set(attachments.concat([{name, cid}]))])
+            },
+            explore: (node) => {
+              setSelectedCard(node)
             },
             exploreNode: (id) => {
               let node = nodes.filter((a) => a.id == id)[0]
@@ -154,6 +157,9 @@ function ProjectView(props){
               <>
             <PlanDialog 
               project={props.project}
+              onDelete={(plan) => {
+                editor.onNodeRemove([{id: plan}])
+              }}
               onSave={(plan) => {
                 console.log(plan)
                 editor.updateNode(plan.id, (node) => {
@@ -196,6 +202,10 @@ function ProjectView(props){
                 <Route path={`${props.match.url}/files`} render={(props) => {
                     return <ProjectTabs.FileTab {...props} y={projectDoc} project={project} />
                 }} />
+                <Route path={`${props.match.url}/settings`} render={(props) => {
+                  return <ProjectTabs.SettingsTab {...props} project={project} />
+                }} />
+
             </Switch>
         </Paper>
         </>

@@ -79,6 +79,11 @@ function PlanDialog(props){
         }
     }
 
+    const onDelete = () => {
+        if(props.onDelete && ID)props.onDelete(ID)
+        onClose();
+    }
+
     const addFilesToPlan = (files) => {
         if(files.length > 0){
             for(var i = 0; i < files.length; i++){
@@ -213,6 +218,9 @@ function PlanDialog(props){
                 </div>
             </DialogContent>
             <DialogActions>
+                {ID && (
+                    <Button onClick={onDelete} color="secondary">Delete</Button>
+                )}
                 <Button onClick={onClose}>Cancel</Button>
                 <Button onClick={onSave} color="primary" variant="contained">Save</Button>
             </DialogActions>

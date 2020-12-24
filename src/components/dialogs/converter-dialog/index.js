@@ -42,7 +42,7 @@ export default function ConverterDialog(props){
 
     return (
         <Dialog fullWidth open={props.open} onClose={props.onClose}>
-            <DialogTitle>Convert {props.selected && props.selected.filename}</DialogTitle>
+            <DialogTitle>Convert {props.selected && props.selected.name}</DialogTitle>
             <DialogContent style={{display: 'flex', alignItems: 'center'}}>
                 <TextField 
                     fullWidth 

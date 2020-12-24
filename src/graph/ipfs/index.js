@@ -12,7 +12,9 @@ export const IPFSProvider = (props) => {
 
     const [ isReady, setReady ] = React.useState(false)
     const [ ipfs, setIPFS ] = React.useState(null)
-    const host = isElectron() ? `${localStorage.getItem('workhub-api')}.workhub.services` : window.location.hostname;
+    let host = isElectron() ? `${localStorage.getItem('workhub-api')}.workhub.services` : window.location.hostname;
+
+    if(host == "localhost") host = `${localStorage.getItem('workhub-api')}.workhub.services`
 
     React.useEffect(() => {
         async function startIPFS(){

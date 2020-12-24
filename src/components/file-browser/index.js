@@ -23,6 +23,7 @@ import async from 'async'
 import { saveAs } from 'file-saver';
 import downloadjs from 'downloadjs'
 
+import { ConvertFiles } from './convert-action';
 import { useDropzone } from 'react-dropzone'
 
 import './index.css';
@@ -70,6 +71,7 @@ function WorkhubFileBrowser(props){
     }, [props.files, props.ipfs])
 
     const onFileAction = (action) => {
+        let files = action.state.selectedFiles;
         switch(action.id){
             case "create_folder":
                 dialogFolder(true)
@@ -85,8 +87,10 @@ function WorkhubFileBrowser(props){
                     if(props.onFileOpen) props.onFileOpen(action.payload.targetFile)
                 }
                 break;
+            case 'convert_files':
+                if(props.onConvertFiles) props.onConvertFiles(files)
+                break;
             case "download_files":
-                let files = action.state.selectedFiles;
                 
                 let downloadSize = files.map((x) => x.size).reduce((a, b) => a+b)
 
@@ -164,7 +168,7 @@ function WorkhubFileBrowser(props){
                 onClose={() => dialogFolder(false)} />
 
             <FileBrowser 
-                fileActions={[ChonkyActions.CreateFolder, ChonkyActions.UploadFiles, ChonkyActions.DownloadFiles]}
+                fileActions={[ConvertFiles, ChonkyActions.CreateFolder, ChonkyActions.UploadFiles, ChonkyActions.DownloadFiles]}
                 disableDragAndDropProvider={true}
                 instanceId="workhub-fs"
                 onFileAction={onFileAction}

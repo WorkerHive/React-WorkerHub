@@ -30,7 +30,7 @@ export default function FileTab(props){
     }, [props.y])
 
     return (
-        <div style={{flex: 1, display: 'flex'}}>
+        <div style={{flex: 1, display: 'flex', position: 'relative'}}>
             <FileBrowser title={props.project.name} files={files}/>
             <FileDialog onAttach={(selected) => {
                 for(var k in selected){

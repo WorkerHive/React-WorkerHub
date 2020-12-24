@@ -1,0 +1,15 @@
+.settings-tab{
+    display: flex;
+    flex: 1;
+}
+
+.settings-menu{
+    display: flex;
+    width: 20%;
+    flex-direction: column;
+}
+
+.settings-body{
+    flex: 1;
+    background: black;
+}
