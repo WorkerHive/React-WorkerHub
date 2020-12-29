@@ -15,7 +15,8 @@ import {
     SupervisorAccount,
     BusinessCenter,
     Description,
-    Settings
+    Settings,
+    LocalLibrary
   } from '@material-ui/icons';
 
 import { withRouter } from 'react-router-dom'
@@ -54,6 +55,11 @@ function Sidebar(props){
           label: "Files",
           path: "/files"
         },
+        {
+          icon: <LocalLibrary />,
+          label: "Documentation",
+          path: '/kb'
+        }
       ]
 
     return (

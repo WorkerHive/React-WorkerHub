@@ -24,6 +24,7 @@ import {
 
 import { connect } from 'react-redux';
 
+import KnowledgeBase from '../../views/KnowledgeBase';
 import Projects from '../../views/Projects';
 import ProjectView from '../../views/ProjectView';
 import DashboardView from '../../views/Dashboard';
@@ -123,6 +124,7 @@ function DashboardController(props){
           <Route path={`${props.match.url}/files`} render={(props) => {
             return <Files {...props}  />
           }} />
+          <Route path={`${props.match.url}/kb`} component={KnowledgeBase} />
           <Route path={`${props.match.url}/team`} component={Teams} />
           <Route path={`${props.match.url}/equipment`} component={Equipment} />
           <Route path={`${props.match.url}/settings`} component={SettingsView} />

@@ -97,7 +97,7 @@ function ProjectView(props){
     return (
         <HiveProvider store={{
             nodes: nodes,
-            links: links.filter((a) => a.target),
+            links: links.filter((a) => a.source && a.target),
             nodeTypes: [ProjectItemNode],
             attachments: attachments,
             attachFile: (name, cid) => {

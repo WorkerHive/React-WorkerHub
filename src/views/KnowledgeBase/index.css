@@ -1,0 +1,22 @@
+.knowledge-base{
+    flex: 1;
+    display:flex;
+    text-align: left;
+    position: relative;
+    height: 100%;
+}
+
+.knowledge-base__menu {
+    background: red;
+    flex: 0.3;
+}
+
+.knowledge-base__editor{
+    flex: 0.7;
+    height: calc(100% - 16px);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow-y: scroll;
+}
