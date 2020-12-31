@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 
 import {
+  Contacts,
     Notifications,
     AccountTree,
     Dashboard,
@@ -59,6 +60,11 @@ function Sidebar(props){
           icon: <LocalLibrary />,
           label: "Documentation",
           path: '/kb'
+        },
+        {
+          icon: <Contacts />,
+          label: "Contacts",
+          path: "/contacts"
         }
       ]
 

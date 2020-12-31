@@ -4,29 +4,28 @@ import GClient, {withGraph} from '../graph';
 
 const graph = withGraph()
 
-export const addEquipment = (equipment) => {
+export const addKnowledge = (knowledge) => {
   return (dispatch) => {
     graph.getClient().mutate({
       mutation: gql`
-  mutation AddEquipment($equipment: EquipmentInput){
-    addEquipment(equipment: $equipment){
+  mutation AddKnowledge($knowledge: KnowledgeInput){
+    addKnowledge(knowledge: $knowledge){
       id
-      name
-      type
+      title
       description
     }
   }
 `,
     variables: {
-      equipment: equipment
+      knowledge: knowledge
     }
-  }).then((r) => r.data.addEquipment).then((r) => {
-    dispatch({type: types.ADD_EQUIPMENT, newItem: r})
+  }).then((r) => r.data.addKnowledge).then((r) => {
+    dispatch({type: types.ADD_KNOWLEDGE, newItem: r})
   })
 }
 }
 
-export const updateEquipment = (id, equipment) => {
+export const updateKnowledge = (id, equipment) => {
   console.log(id, equipment)
   return (dispatch) => {
     return graph.getClient().mutate({
@@ -49,7 +48,7 @@ export const updateEquipment = (id, equipment) => {
   }
 }
 
-export const removeEquipment = (id) => {
+export const removeKnowledge = (id) => {
   return (dispatch) => {
     return graph.getClient().mutate({
       mutation: gql`
@@ -67,21 +66,19 @@ export const removeEquipment = (id) => {
 }
 
 
-export const getEquipment = () => {
+export const getKnowledge = () => {
   return (dispatch) => {
     return graph.getClient().query({
       query: gql`
-        query GetEquipment {
-          equipments {
+        query GetKnowledge {
+          knowledges {
             id
-            name
-            type
-            description
+            title
           }
         }
       `
-    }).then((r) => r.data.equipments).then((r) => {
-      dispatch({type: types.SET_EQUIPMENT, equipment: r})
+    }).then((r) => r.data.knowledges).then((r) => {
+      dispatch({type: types.SET_KNOWLEDGE, knowledge: r})
     })
   }
  

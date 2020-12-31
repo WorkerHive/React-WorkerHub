@@ -6,6 +6,7 @@ import files from './files';
 import auth from './auth';
 import equipment from './equipment';
 import team from './team';
+import knowledge from './knowledge';
 import calendar from './calendar';
 
 export default combineReducers({
@@ -14,6 +15,7 @@ export default combineReducers({
   files,
   calendar,
   dashboard,
+  knowledge,
   equipment,
   team
 })

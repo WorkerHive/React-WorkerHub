@@ -8,11 +8,11 @@
 
 .knowledge-base__menu {
     background: red;
-    flex: 0.3;
+    flex: 0.25;
 }
 
 .knowledge-base__editor{
-    flex: 0.7;
+    flex: 0.75;
     height: calc(100% - 16px);
     padding: 8px;
     display: flex;

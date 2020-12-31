@@ -11,10 +11,13 @@ import {
 
 import Editor from 'rich-markdown-editor';
 
+import { getKnowledge, addKnowledge } from '../../actions/knowledgeActions'
+import { connect } from 'react-redux';
+
 import './index.css';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 
-export default function KnowledgeBase(props){
+function KnowledgeBase(props){
 
     const [branches, setBranches ] = React.useState([
         "Flows",
@@ -22,21 +25,29 @@ export default function KnowledgeBase(props){
         "Libraries"
     ])
 
+
+    React.useEffect(() => {
+        props.getKnowledge()
+     //   props.addKnowledge({title: "Linked Data Graphs", description: "The start of an explanation"})
+    }, [])
+
     return (
         <div className="knowledge-base">
             <Paper className="knowledge-base__menu">
                 <TreeView
+                    defaultExpanded={['root']}
                     defaultCollapseIcon={<ExpandLess />}
                     defaultExpandIcon={<ExpandMore />}>
                     <TreeItem nodeId="root" label="Homepage">
-                        {branches.map((x) => (
-                            <TreeItem nodeId={x} label={x} />
+                        {props.list.map((x) => (
+                            <TreeItem nodeId={x.id} label={x.title} />
                         ))}
                     </TreeItem>
                 </TreeView>
             </Paper>
             <div className="knowledge-base__editor">
             <Editor 
+                value={"## Title Block"}
                 style={{
                     border: '1px solid #dfdfdf', 
                     flex: 1, 
@@ -45,11 +56,10 @@ export default function KnowledgeBase(props){
                     borderRadius: 7,
                     display: 'flex', 
                     justifyContent: 'flex-start', 
-                    minWidth: 'calc(49em + 48px)', 
-                    maxWidth: 'calc(49em + 48px)', 
+                    minWidth: 'calc(40em + 48px)', 
+                    maxWidth: 'calc(40em + 48px)', 
                     padding: '12px 24px'
                 }}
-                 defaultValue=""
                  onSearchLink={(search) => {
                      return branches.filter((a) => a.indexOf(search) > -1).map((x) => ({title: x, url: `/kb/${x}`}))
                      return [{title: "Flow programming", subtitle:"Flow spec", url: "[[Flow Spec]]"}]
@@ -59,3 +69,10 @@ export default function KnowledgeBase(props){
         </div>
     )
 }
+
+export default connect((state) => ({
+    list: state.knowledge.kb
+}), (dispatch) => ({
+    getKnowledge: () => dispatch(getKnowledge()),
+    addKnowledge: (input) => dispatch(addKnowledge(input))
+}))(KnowledgeBase)

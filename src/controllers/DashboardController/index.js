@@ -58,8 +58,8 @@ function DashboardController(props){
   console.log(props.swarmKey)
 
   React.useEffect(async () => {
-    props.getTypes()
-    props.getPermissions()
+   // props.getTypes()
+    //props.getPermissions()
 
     //console.log(await node.id())
 
