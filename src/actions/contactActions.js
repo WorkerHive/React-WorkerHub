@@ -4,51 +4,51 @@ import GClient, {withGraph} from '../graph';
 
 const graph = withGraph()
 
-export const addKnowledge = (knowledge) => {
+export const addContact = (contact) => {
   return (dispatch) => {
     graph.getClient().mutate({
       mutation: gql`
-  mutation AddKnowledge($knowledge: KnowledgeInput){
-    addKnowledge(knowledge: $knowledge){
+  mutation AddContact($contact: ContactInput){
+    addContact(contact: $contact){
       id
-      title
-      description
-      content
+      name
+      phoneNumber
+      email
     }
   }
 `,
     variables: {
-      knowledge: knowledge
+      contact: contact
     }
-  }).then((r) => r.data.addKnowledge).then((r) => {
-    dispatch({type: types.ADD_KNOWLEDGE, newItem: r})
+  }).then((r) => r.data.addContact).then((r) => {
+    dispatch({type: types.ADD_CONTACT, newItem: r})
   })
 }
 }
 
-export const updateKnowledge = (id, knowledge) => {
-  let kb = {
-    title: knowledge.title,
-    description: knowledge.description,
-    content: knowledge.content
+export const updateContact = (id, contact) => {
+  let _contact = {
+    name: contact.name,
+    phoneNumber: contact.phoneNumber,
+    email: contact.email
   }
   return (dispatch) => {
     return graph.getClient().mutate({
       mutation:  gql`
-      mutation UpdateKnowledge($id: ID, $knowledge: KnowledgeInput){
-        updateKnowledge(id: $id, knowledge: $knowledge){
-          title
-          description
-          content
+      mutation UpdateContact($id: ID, $contact: ContactInput){
+        updateContact(id: $id, contact: $contact){
+          name
+          phoneNumber
+          email
         }
       }
     `,
     variables: {
       id: id,
-      knowledge: kb
+      contact: _contact
     }
-    }).then((r) => r.data.updateKnowledge).then((r) => {
-      dispatch({type: types.UPDATE_KNOWLEDGE, knowledge, id})
+    }).then((r) => r.data.updateContact).then((r) => {
+      dispatch({type: types.UPDATE_CONTACT, contact: _contact, id})
     })
   }
 }

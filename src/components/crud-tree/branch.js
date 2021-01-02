@@ -53,6 +53,8 @@ export default function Branch(props){
                         ))}
                     </div>
                 </div>
-            )}></TreeItem>
+            )}>
+            {props.children}
+        </TreeItem>
     )
 }

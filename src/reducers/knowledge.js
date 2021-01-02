@@ -20,10 +20,13 @@ export default function kbReducer(state = INIT, action = {}){
             let kb = state.kb.slice();
             let ix = kb.map((x) => x.id).indexOf(action.id);
 
+            console.log(kb, ix)
             kb[ix] = {
                 ...kb[ix],
                 ...action.knowledge
             }
+
+            console.log(kb)
             return {
                 ...state,
                 kb: kb

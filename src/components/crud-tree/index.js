@@ -33,13 +33,23 @@ export default function CRUDTree(props){
             defaultCollapseIcon={<ExpandLess />}
             defaultExpandIcon={<ExpandMore />}
             >
-            {props.tree.map((x) => (
+            {props.tree.filter((a) => !a.parent).map((x) => (
                 <Branch 
                     onAdd={() => onAdd(x)}
                     onEdit={() => onEdit(x)}
                     onClick={() => onClick(x)}
                     id={x.id} 
-                    label={x.title} />
+                    label={x.title}>
+                        {props.tree.filter((a) => a.parent == x.id).map((y) => (
+                            <Branch
+                                id={y.id}
+                                label={y.title}
+                                onAdd={() => onAdd(y)}
+                                onEdit={() => onEdit(y)}
+                                onClick={() => onClick(y)}
+                             />
+                        ))}
+                </Branch>
             ))}
         </TreeView>
     )

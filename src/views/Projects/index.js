@@ -114,7 +114,7 @@ function Projects(props){
 export default connect((state) => ({
   user: jwt_decode(state.auth.token),
   projects: state.projects.list,
-  type: state.dashboard.types.filter((a) => a.name == "Projects"),
+  type: state.dashboard.types.filter((a) => a.name == "Project"),
   permissions: state.dashboard.permissions.filter((a) => a.type == "Projects")
 }), (dispatch) => ({
   getProjects: () => dispatch(getProjects()),

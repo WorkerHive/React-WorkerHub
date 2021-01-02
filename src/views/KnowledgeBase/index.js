@@ -13,16 +13,20 @@ import Editor from 'rich-markdown-editor';
 
 import { getKnowledge, addKnowledge, updateKnowledge } from '../../actions/knowledgeActions'
 import { connect } from 'react-redux';
-
+import { Switch, Route } from 'react-router-dom'
 import './index.css';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import MutableDialog from '../../components/dialogs/mutable-dialog';
 import CRUDTree from '../../components/crud-tree';
+import _ from 'lodash';
+import LinkEditor from '../../components/link-editor';
 
 function KnowledgeBase(props){
 
     const [ dialogOpen, openDialog ] = React.useState(false);
     const [ editorData, setEditorData ] = React.useState('')
+    const [ editorMap, setEditorMap ] = React.useState('')
+
     const [ modalData, setModalData ] = React.useState({})
 
     const [branches, setBranches ] = React.useState([
@@ -36,6 +40,11 @@ function KnowledgeBase(props){
      //   props.addKnowledge({title: "Linked Data Graphs", description: "The start of an explanation"})
     }, [])
 
+    const update = _.debounce((editorData, val) => {
+        console.log("DEBOUNCE")
+        props.updateKnowledge(editorData.id, {content: val})
+    }, 333)
+
     return (
         <div className="knowledge-base">
             <MutableDialog 
@@ -45,6 +54,7 @@ function KnowledgeBase(props){
                     if(data.id){
                         props.updateKnowledge(data.id, data)
                     }else{
+                        data.content = "## " + data.title;
                         props.addKnowledge(data)
                     }
                     openDialog(false);
@@ -59,7 +69,8 @@ function KnowledgeBase(props){
             <Paper className="knowledge-base__menu">
                 <CRUDTree 
                     onClick={(item) => {
-                        setEditorData('## ' + item.title)
+                      //  setEditorData(item)
+                        setEditorMap(item.content)
                         props.history.push(`${props.match.url}/${item.id}`)
                         console.log(item)
                     }}
@@ -67,36 +78,52 @@ function KnowledgeBase(props){
                         setModalData(item)
                         openDialog(true)
                     }}
-                    onAdd={() => {
+                    onAdd={(item) => {
+                        if(item) setModalData({parent: item.id})
                         openDialog(true)
                     }}
                     tree={props.list} />
             </Paper>
             <div className="knowledge-base__editor">
-            <Editor 
-                readOnly={false}
-                onChange={(valueFn) => {
-                    let val = valueFn();
-                   setEditorData('')
-                    console.log("Editor event", val)
-                }}
-                value={editorData}
-                style={{
-                    border: '1px solid #dfdfdf', 
-                    flex: 1, 
-                    background: 'white', 
-                    flexDirection: 'column', 
-                    borderRadius: 7,
-                    display: 'flex', 
-                    justifyContent: 'flex-start', 
-                    minWidth: 'calc(40em + 48px)', 
-                    maxWidth: 'calc(40em + 48px)', 
-                    padding: '12px 24px'
-                }}
-                 onSearchLink={(search) => {
-                     return branches.filter((a) => a.indexOf(search) > -1).map((x) => ({title: x, url: `/kb/${x}`}))
-                     return [{title: "Flow programming", subtitle:"Flow spec", url: "[[Flow Spec]]"}]
-                 }} />
+            <Switch>
+                <Route path={`${props.match.url}/:id`} render={(_props) => {
+
+                    let kbItem = props.list.filter((a) => a.id == _props.match.params.id)
+
+                    if(kbItem.length > 0 && kbItem[0].content){
+                        kbItem = Object.assign({}, kbItem[0]);
+                        console.log(kbItem)
+                    return (
+                        <div>
+                        <LinkEditor 
+                            data={kbItem}
+                            links={props.list}
+                            onChange={(value) => {
+                            if(kbItem.id){
+                                update(kbItem, value)
+                                
+                                setEditorMap(value)
+                            }
+                        }}/>
+                            <div>
+                            {((kbItem && kbItem.content.match(/\[([^\[\]]*)\]\((.*?)\)/gm)) || []).map((x) => {
+                                let data = x.match(/\[([^\[\]]*)\]\((.*?)\)/)
+                                return(
+                                    <div>
+                                        {data[1]}
+                                    </div>
+                                )
+                            })}
+                            </div>
+                        </div>
+                        
+
+                    )
+                        }
+                }} />
+            </Switch>
+
+            
             </div>
         
         </div>
