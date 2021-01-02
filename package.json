@@ -1,6 +1,6 @@
 {
   "name": "react-workerhub",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.4",
@@ -53,6 +53,8 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
+    "rich-markdown-editor": "^11.0.11",
+    "styled-components": "^5.2.1",
     "uint8-to-base64": "^0.2.0",
     "uuid": "^8.3.2",
     "web-vitals": "^0.2.4",

@@ -98,8 +98,8 @@ function Teams(props){
 export default connect((state) => ({
   user: jwt_decode(state.auth.token),
   team: state.team.list,
-  type: state.dashboard.types.filter((a) => a.name == "Team Members"),
-  permissions: state.dashboard.permissions.filter((a) => a.type == "Team Members")
+  type: state.dashboard.types.filter((a) => a.name == "TeamMember"),
+  permissions: state.dashboard.permissions.filter((a) => a.type == "TeamMember")
 }), (dispatch) => ({
   getTeam: () => dispatch(getTeam()),
   addTeamMember: (member) => dispatch(addTeamMember(member)),

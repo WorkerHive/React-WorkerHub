@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 
 import {
+  Contacts,
     Notifications,
     AccountTree,
     Dashboard,
@@ -15,7 +16,8 @@ import {
     SupervisorAccount,
     BusinessCenter,
     Description,
-    Settings
+    Settings,
+    LocalLibrary
   } from '@material-ui/icons';
 
 import { withRouter } from 'react-router-dom'
@@ -54,6 +56,16 @@ function Sidebar(props){
           label: "Files",
           path: "/files"
         },
+        {
+          icon: <LocalLibrary />,
+          label: "Documentation",
+          path: '/kb'
+        },
+        {
+          icon: <Contacts />,
+          label: "Contacts",
+          path: "/contacts"
+        }
       ]
 
     return (

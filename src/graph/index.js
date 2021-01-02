@@ -36,9 +36,11 @@ export const withGraph = () => {
 
 
   const startClient = () => {
+    let url = getURL();
+    console.log(url)
     return new ApolloClient({
       link: createUploadLink({
-        uri: getURL()
+        uri: url
       }),
       cache: new InMemoryCache({
         addTypename: false

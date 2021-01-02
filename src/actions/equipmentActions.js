@@ -72,7 +72,7 @@ export const getEquipment = () => {
     return graph.getClient().query({
       query: gql`
         query GetEquipment {
-          equipment {
+          equipments {
             id
             name
             type
@@ -80,7 +80,7 @@ export const getEquipment = () => {
           }
         }
       `
-    }).then((r) => r.data.equipment).then((r) => {
+    }).then((r) => r.data.equipments).then((r) => {
       dispatch({type: types.SET_EQUIPMENT, equipment: r})
     })
   }

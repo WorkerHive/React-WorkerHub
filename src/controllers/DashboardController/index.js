@@ -24,9 +24,11 @@ import {
 
 import { connect } from 'react-redux';
 
+import KnowledgeBase from '../../views/KnowledgeBase';
 import Projects from '../../views/Projects';
 import ProjectView from '../../views/ProjectView';
 import DashboardView from '../../views/Dashboard';
+import Contacts from '../../views/Contacts';
 import Files from '../../views/Files';
 import Calendar from '../../views/Calendar';
 import SettingsView from '../../views/Settings';
@@ -58,7 +60,7 @@ function DashboardController(props){
 
   React.useEffect(async () => {
     props.getTypes()
-    props.getPermissions()
+    //props.getPermissions()
 
     //console.log(await node.id())
 
@@ -123,6 +125,8 @@ function DashboardController(props){
           <Route path={`${props.match.url}/files`} render={(props) => {
             return <Files {...props}  />
           }} />
+          <Route path={`${props.match.url}/contacts`} component={Contacts} />
+          <Route path={`${props.match.url}/kb`} component={KnowledgeBase} />
           <Route path={`${props.match.url}/team`} component={Teams} />
           <Route path={`${props.match.url}/equipment`} component={Equipment} />
           <Route path={`${props.match.url}/settings`} component={SettingsView} />

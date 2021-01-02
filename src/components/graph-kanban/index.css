@@ -23,6 +23,10 @@
     overflow-y: auto;
 }
 
+.react-kanban-column .react-kanban-card-skeleton{
+    max-width: 275px;
+}
+
 .card-members{
     display: flex;
 }

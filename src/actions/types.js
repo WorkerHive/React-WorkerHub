@@ -29,5 +29,15 @@ export const SET_NODE_CONF = 'SET_NODE_CONF';
 
 export const ADD_FILE = 'ADD_FILE';
 
+//Dashboard acitons
 export const SET_DASHBOARD_TYPES = 'SET_DASHBOARD_TYPES';
 export const SET_DASHBOARD_PERMS = 'SET_DASHBOARD_PERMS';
+
+//Knowledge Actions
+export const SET_KNOWLEDGE = "SET_KNOWLEDGE";
+export const ADD_KNOWLEDGE = "ADD_KNOWLEDGE";
+export const UPDATE_KNOWLEDGE = "UPDATE_KNOWLEDGE";
+
+//Contact Actions
+export const ADD_CONTACT = 'ADD_CONTACT';
+export const UPDATE_CONTACT = 'UPDATE_CONTACT';

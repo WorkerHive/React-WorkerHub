@@ -74,7 +74,7 @@ export const getTeam = () => {
     return graph.getClient().query({
       query: gql`
         query GetTeam {
-          team {
+          teamMembers {
             id
             status
             name
@@ -86,7 +86,7 @@ export const getTeam = () => {
           }
         }
       `
-    }).then((r) => r.data.team).then((r) => {
+    }).then((r) => r.data.teamMembers).then((r) => {
       dispatch({type: types.SET_TEAM, team: r})
     })
   }

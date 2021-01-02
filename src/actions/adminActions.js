@@ -84,7 +84,7 @@ export const getTypes = () => {
         }
       `
     }).then((r) => r.data.adminTypes).then((r) => {
-      console.log(r)
+      console.log("TYPES", r)
       dispatch({type: types.SET_DASHBOARD_TYPES, types: r})
     })
   }

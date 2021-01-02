@@ -73,13 +73,13 @@ export default function PermissionForm(props){
     }
 
     const onClose = () => {
-        props.onClose()
+        if(props.onClose) props.onClose()
         openDialog(false)
         setDataObj({})
     }
 
     const onSave = () => {
-        props.onSave(dataObj, changes)
+        if(props.onSave) props.onSave(dataObj, changes)
         onClose();
     }
 

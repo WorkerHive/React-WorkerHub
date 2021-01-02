@@ -57,10 +57,9 @@ function Admin(props){
             onLinkRemove: () => {},
             nodeTypes: [TypeDefNode, MSSQLNode, MSSQLServer]
         }}>
-            <NodePanel />
-            <HiveEditor
-
-            onNodeChange={(nodes) => {
+            {(editor) => [
+            <NodePanel />,
+            <HiveEditor      onNodeChange={(nodes) => {
                 let n = nodes.filter((a) => props.types.map((x) => x.id).indexOf(a.id) < 0)
                 updateIntegrationMap({variables: {
                     nodes: n,
@@ -75,6 +74,9 @@ function Admin(props){
                 }})
                 setLinks(link)
             }} />
+            ]}
+
+      
         </HiveProvider>
        
         </div>
