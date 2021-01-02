@@ -25,25 +25,27 @@ export const addKnowledge = (knowledge) => {
 }
 }
 
-export const updateKnowledge = (id, equipment) => {
-  console.log(id, equipment)
+export const updateKnowledge = (id, knowledge) => {
+  let kb = {
+    title: knowledge.title,
+    description: knowledge.description
+  }
   return (dispatch) => {
     return graph.getClient().mutate({
       mutation:  gql`
-      mutation UpdateEquipment($equipmentId: String, $equipment: EquipmentInput){
-        updateEquipment(equipmentId: $equipmentId, equipment: $equipment){
-          name
-          type
+      mutation UpdateKnowledge($id: ID, $knowledge: KnowledgeInput){
+        updateKnowledge(id: $id, knowledge: $knowledge){
+          title
           description
         }
       }
     `,
     variables: {
-      equipmentId: id,
-      equipment
+      id: id,
+      knowledge: kb
     }
-    }).then((r) => r.data.updateEquipment).then((r) => {
-      dispatch({type: types.UPDATE_EQUIPMENT, equipment, id})
+    }).then((r) => r.data.updateKnowledge).then((r) => {
+      dispatch({type: types.UPDATE_KNOWLEDGE, knowledge, id})
     })
   }
 }

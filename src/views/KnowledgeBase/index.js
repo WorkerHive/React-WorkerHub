@@ -11,20 +11,25 @@ import {
 
 import Editor from 'rich-markdown-editor';
 
-import { getKnowledge, addKnowledge } from '../../actions/knowledgeActions'
+import { getKnowledge, addKnowledge, updateKnowledge } from '../../actions/knowledgeActions'
 import { connect } from 'react-redux';
 
 import './index.css';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
+import MutableDialog from '../../components/dialogs/mutable-dialog';
+import CRUDTree from '../../components/crud-tree';
 
 function KnowledgeBase(props){
+
+    const [ dialogOpen, openDialog ] = React.useState(false);
+    const [ editorData, setEditorData ] = React.useState('')
+    const [ modalData, setModalData ] = React.useState({})
 
     const [branches, setBranches ] = React.useState([
         "Flows",
         "Graphs",
         "Libraries"
     ])
-
 
     React.useEffect(() => {
         props.getKnowledge()
@@ -33,21 +38,49 @@ function KnowledgeBase(props){
 
     return (
         <div className="knowledge-base">
+            <MutableDialog 
+                open={dialogOpen}
+                data={modalData}
+                onSave={(data) => {
+                    if(data.id){
+                        props.updateKnowledge(data.id, data)
+                    }else{
+                        props.addKnowledge(data)
+                    }
+                    openDialog(false);
+                    console.log(data)
+                }}
+                onClose={() => openDialog(false)} 
+                title={"Knowledge"}
+                structure={{
+                    title: "String",
+                    description: "String" 
+                }} />
             <Paper className="knowledge-base__menu">
-                <TreeView
-                    defaultExpanded={['root']}
-                    defaultCollapseIcon={<ExpandLess />}
-                    defaultExpandIcon={<ExpandMore />}>
-                    <TreeItem nodeId="root" label="Homepage">
-                        {props.list.map((x) => (
-                            <TreeItem nodeId={x.id} label={x.title} />
-                        ))}
-                    </TreeItem>
-                </TreeView>
+                <CRUDTree 
+                    onClick={(item) => {
+                        setEditorData('## ' + item.title)
+                        props.history.push(`${props.match.url}/${item.id}`)
+                        console.log(item)
+                    }}
+                    onEdit={(item) => {
+                        setModalData(item)
+                        openDialog(true)
+                    }}
+                    onAdd={() => {
+                        openDialog(true)
+                    }}
+                    tree={props.list} />
             </Paper>
             <div className="knowledge-base__editor">
             <Editor 
-                value={"## Title Block"}
+                readOnly={false}
+                onChange={(valueFn) => {
+                    let val = valueFn();
+                   setEditorData('')
+                    console.log("Editor event", val)
+                }}
+                value={editorData}
                 style={{
                     border: '1px solid #dfdfdf', 
                     flex: 1, 
@@ -74,5 +107,6 @@ export default connect((state) => ({
     list: state.knowledge.kb
 }), (dispatch) => ({
     getKnowledge: () => dispatch(getKnowledge()),
-    addKnowledge: (input) => dispatch(addKnowledge(input))
+    addKnowledge: (input) => dispatch(addKnowledge(input)),
+    updateKnowledge: (id, update) => dispatch(updateKnowledge(id, update))
 }))(KnowledgeBase)
