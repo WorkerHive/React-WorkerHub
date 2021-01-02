@@ -25,12 +25,12 @@ export default function ConverterDialog(props){
     const [ formats, setFormats ] = React.useState([])
 
     React.useEffect(() => {
-        getConverters().then((converters) => {
+   /*     getConverters().then((converters) => {
             setFormats(converters.map((x) => ({
                 from: x.sourceFormat,
                 to: [x.targetFormat]
             })))
-        })
+        })*/
     }, [])
 
     const convert = () => {
