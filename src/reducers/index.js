@@ -8,10 +8,12 @@ import equipment from './equipment';
 import team from './team';
 import contacts from './contacts';
 import knowledge from './knowledge';
+import admin from './admin';
 import calendar from './calendar';
 
 export default combineReducers({
   projects,
+  admin,
   auth,
   files,
   calendar,

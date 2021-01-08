@@ -39,5 +39,15 @@ export const ADD_KNOWLEDGE = "ADD_KNOWLEDGE";
 export const UPDATE_KNOWLEDGE = "UPDATE_KNOWLEDGE";
 
 //Contact Actions
+export const SET_CONTACTS = 'SET_CONTACTS';
 export const ADD_CONTACT = 'ADD_CONTACT';
+export const SET_CONTACT_ORGANIZATIONS = 'SET_CONTACT_ORGANIZATIONS';
+export const ADD_CONTACT_ORGANIZATION = 'ADD_CONTACT_ORGANIZATION';
 export const UPDATE_CONTACT = 'UPDATE_CONTACT';
+
+
+//Admin Actions
+export const ADD_STORE = "ADD_STORE";
+export const UPDATE_STORE = "UPDATE_STORE";
+export const SET_STORES = "SET_STORES";
+export const DELETE_STORE = "DELETE_STORE";

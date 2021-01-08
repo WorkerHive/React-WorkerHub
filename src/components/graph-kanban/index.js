@@ -46,11 +46,17 @@ function GraphKanban(props){
         return template.map((col) => {
             let col_id = col.id;
 
-            let cards = props.graph.nodes.filter((a) => {
-                return a.data.status == col.status
-            }) || []
+            let cards = [];
+            if(col.status){
+                cards = props.graph.nodes.filter((a) => {
+                    return a.data.status == col.status
+                }) || []
+            }else if(typeof(col.numParents) == "number"){
+                cards = props.graph.nodes.filter((node) => {
+                    return props.graph.links.filter((link) => link.target == node.id).length <= col.numParents
+                }) || []
+            }
 
-            console.log(cards)
             return {
                 ...col,
                 cards: cards.filter((a) => {

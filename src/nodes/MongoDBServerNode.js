@@ -6,7 +6,7 @@ import {
 
 import { NodeWrapper, withEditor } from 'react-hive-flow';
 
-export const type = 'mssql server'
+export const type = 'mongo server'
 
 export const modal = withEditor((props) => {
 
@@ -50,8 +50,8 @@ export const node = withEditor((props) => {
     return (
     <NodeWrapper {...props}>
       <div style={{padding: 8}} className="mssql-adapter">
-        <span style={{fontSize: 11}}>MSSQL</span>
-        <span>{props.id && props.data.label || "MSSQL Server"}</span>
+        <span style={{fontSize: 11}}>MongoDB</span>
+        <span>{props.id && props.data.label || "MongoDB Server"}</span>
      </div>
     </NodeWrapper>
     )

@@ -19,7 +19,7 @@ import {
 import DashboardHeader from '../../components/dashboard-header';
 import SearchTable from '../../components/search-table';
 import { useMutation } from "@apollo/client";
-import { removeTeamMember, addTeamMember, updateTeamMember, getTeam } from '../../actions/teamActions';
+import { getSignupLink, removeTeamMember, addTeamMember, updateTeamMember, getTeam } from '../../actions/teamActions';
 import PermissionForm from '../../components/permission-form';
 import MoreMenu from '../../components/more-menu';
 import { connect } from 'react-redux';
@@ -76,7 +76,12 @@ function Teams(props){
               {
                 icon: <Share />,
                 label: "Share Signup",
-                action: () => {}
+                action: () => {
+                  getSignupLink(item.id).then((link) => {
+                    console.log("SIGNUP TOKEN", link)
+                  })
+
+                }
               }
             ] : []).concat(props.user.admin ? [{
               label: "Edit",

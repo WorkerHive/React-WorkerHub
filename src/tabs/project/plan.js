@@ -121,8 +121,8 @@ function PlanTab(props){
           template={[
             {
               id: 0,
-              title: "Blocked",
-              status: "BLOCKED"
+              title: "Stories",
+              numParents: 0
             },
             {
               id: 1,

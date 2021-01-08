@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-    Add
+    Add, VpnLockTwoTone
 } from '@material-ui/icons';
 
 import {
@@ -16,9 +16,19 @@ import {
     DialogContent
 } from '@material-ui/core';
 
+import {
+    Autocomplete
+} from '@material-ui/lab'
+
+import { addContactOrganisation } from '../../actions/contactActions';
+import ForeignInput from '../foreign-input'
+import { connect } from 'react-redux'
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import './index.css';
 
-export default function PermissionForm(props){
+
+const filter = createFilterOptions();
+function PermissionForm(props){
     const [dialogOpen, openDialog] = React.useState(false)
 
     const [ changes, setChanges ] = React.useState({})
@@ -38,35 +48,61 @@ export default function PermissionForm(props){
     
         for(var k in type.typeDef){
             const typeKey = k;
-            switch(type.typeDef[k]){
-                case "String":
-                fields.push((
-                    <TextField value={dataObj[typeKey]} onChange={(e) => {
-                        let d = Object.assign({}, dataObj);
-                        let changed = Object.assign({}, changes)
-                        d[typeKey] = e.target.value;
-                        changed[typeKey] = e.target.value;
-                        setDataObj(d)
-                        setChanges(changed)
-                    }} label={typeKey} ></TextField>
-                ))
-                break;
-                case "Boolean":
-                    fields.push((
-                        <FormControlLabel
-                            control={(
-                                <Checkbox checked={dataObj[typeKey]} onChange={(e) => {
-                                    let d = Object.assign({}, dataObj)
-                                    let changed = Object.assign({}, changes)
-                                    d[typeKey] = e.target.checked;
-                                    changed[typeKey] = e.target.checked;
-                                    setDataObj(d)
-                                    setChanges(changed)
-                                }}/>
-                            )}
-                            label={typeKey} />
 
+            if(type.typeDef[k].kind == "NamedType"){
+                switch(type.typeDef[k].type){
+                    case "String":
+                    fields.push((
+                        <TextField value={dataObj[typeKey]} onChange={(e) => {
+                            let d = Object.assign({}, dataObj);
+                            let changed = Object.assign({}, changes)
+                            d[typeKey] = e.target.value;
+                            changed[typeKey] = e.target.value;
+                            setDataObj(d)
+                            setChanges(changed)
+                        }} label={typeKey} ></TextField>
                     ))
+                    break;
+                    case "Boolean":
+                        fields.push((
+                            <FormControlLabel
+                                control={(
+                                    <Checkbox checked={dataObj[typeKey]} onChange={(e) => {
+                                        let d = Object.assign({}, dataObj)
+                                        let changed = Object.assign({}, changes)
+                                        d[typeKey] = e.target.checked;
+                                        changed[typeKey] = e.target.checked;
+                                        setDataObj(d)
+                                        setChanges(changed)
+                                    }}/>
+                                )}
+                                label={typeKey} />
+
+                        ))
+                }
+            }else if(type.typeDef[k].kind == "ListType"){
+                fields.push((
+                    <ForeignInput 
+                        options={props.organisations.map((x) => ({title: x.name}))}
+                        onOptionsChange={(options, newOption) => {
+                            console.log(options, newOption)
+
+                            if(type.typeDef[k].type == "ContactOrganisation"){
+                                props.addContactOrganisation({name: newOption})
+                            }
+                        }}
+                        value={dataObj[typeKey]}
+                        label={typeKey}
+                        onChange={(val) => {
+                            /*let d = Object.assign({}, dataObj)
+                            let changed = Object.assign({}, changes);
+
+                            d[typeKey] = {name: val.title};
+                            changed[typeKey] = val;
+                            setDataObj(d);
+                            setChanges(changed);*/
+                        }}/>
+                ))
             }
         }
         return fields;
@@ -108,3 +144,9 @@ export default function PermissionForm(props){
         </div>
     )
 }
+
+export default connect((state) => ({
+    organisations: state.contacts.organisations || []
+}), (dispatch) => ({
+    addContactOrganisation: (org) => dispatch(addContactOrganisation(org))
+}))(PermissionForm)

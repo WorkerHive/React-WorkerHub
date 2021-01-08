@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import * as types from './types';
-import GClient, {withGraph} from '../graph';
+import GClient, { withGraph } from '../graph';
 
 const graph = withGraph()
 
@@ -17,13 +17,34 @@ export const addContact = (contact) => {
     }
   }
 `,
-    variables: {
-      contact: contact
-    }
-  }).then((r) => r.data.addContact).then((r) => {
-    dispatch({type: types.ADD_CONTACT, newItem: r})
-  })
+      variables: {
+        contact: contact
+      }
+    }).then((r) => r.data.addContact).then((r) => {
+      dispatch({ type: types.ADD_CONTACT, newItem: r })
+    })
+  }
 }
+
+export const addContactOrganisation = (contact) => {
+  return (dispatch) => {
+    graph.getClient().mutate({
+      mutation: gql`
+      mutation AddContactOrg($contact: ContactOrganisationInput){
+        addContactOrganisation(contactOrganisation: $contact){
+          id
+          name
+          location
+        }
+      }
+    `,
+      variables: {
+        contact: contact
+      }
+    }).then((r) => r.data.addContactOrganisation).then((r) => {
+      dispatch({ type: types.ADD_CONTACT_ORGANIZATION, newItem: r })
+    })
+  }
 }
 
 export const updateContact = (id, contact) => {
@@ -32,9 +53,14 @@ export const updateContact = (id, contact) => {
     phoneNumber: contact.phoneNumber,
     email: contact.email
   }
+
+  //console.log(_contact)
+  for (var k in _contact) {
+    if (!_contact[k]) delete _contact[k]
+  }
   return (dispatch) => {
     return graph.getClient().mutate({
-      mutation:  gql`
+      mutation: gql`
       mutation UpdateContact($id: ID, $contact: ContactInput){
         updateContact(id: $id, contact: $contact){
           name
@@ -43,12 +69,12 @@ export const updateContact = (id, contact) => {
         }
       }
     `,
-    variables: {
-      id: id,
-      contact: _contact
-    }
+      variables: {
+        id: id,
+        contact: _contact
+      }
     }).then((r) => r.data.updateContact).then((r) => {
-      dispatch({type: types.UPDATE_CONTACT, contact: _contact, id})
+      dispatch({ type: types.UPDATE_CONTACT, contact: _contact, id })
     })
   }
 }
@@ -65,28 +91,51 @@ export const removeKnowledge = (id) => {
         id: id
       }
     }).then((r) => r.data.removeEquipment).then((r) => {
-      dispatch({type: types.REMOVE_EQUIPMENT, id: id})
+      dispatch({ type: types.REMOVE_EQUIPMENT, id: id })
     })
   }
 }
 
-
-export const getKnowledge = () => {
+export const getContactOrganisations = () => {
   return (dispatch) => {
     return graph.getClient().query({
       query: gql`
-        query GetKnowledge {
-          knowledges {
+        query GetContactOrganisations {
+          contactOrganisations {
             id
-            title
-            content
-            parent
+            name
           }
         }
       `
-    }).then((r) => r.data.knowledges).then((r) => {
-      dispatch({type: types.SET_KNOWLEDGE, knowledge: r})
+    }).then((r) => r.data.contactOrganisations).then((r) => {
+    //  dispatch({ type: types.SET_CONTACT_ORGANIZATIONS, organisations: r })
     })
   }
- 
+
+}
+
+export const getContacts = () => {
+  return (dispatch) => {
+    return graph.getClient().query({
+      query: gql`
+        query GetContacts {
+          contacts {
+            id
+            name
+            phoneNumber
+            email
+          }
+
+          contactOrganisations { 
+            id
+            name
+          }
+        }
+      `
+    }).then((r) => r.data).then((r) => {
+      dispatch({ type: types.SET_CONTACTS, contacts: r.contacts });
+      dispatch({ type: types.SET_CONTACT_ORGANIZATIONS, organisations: r.contactOrganisations })
+    })
+  }
+
 }

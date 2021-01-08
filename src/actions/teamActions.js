@@ -69,6 +69,22 @@ export const removeTeamMember = (id) => {
   }
 }
 
+export const getSignupLink = (id) => {
+  return graph.getClient().query({
+    query: gql`
+      query GetSignupLink($user: ID){
+        getSignupLink(user: $user){
+          error
+          token
+        }
+      }
+    `,
+    variables: {
+      user: id
+    }
+  }).then((r) => r.data.getSignupLink);
+}
+
 export const getTeam = () => {
   return (dispatch) => {
     return graph.getClient().query({

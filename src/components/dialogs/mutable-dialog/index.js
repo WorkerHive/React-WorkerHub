@@ -6,7 +6,12 @@ import {
     TextField,
     Button,
     DialogContent,
-    DialogActions
+    DialogActions,
+    Select,
+    MenuItem,
+    InputLabel,
+    Typography,
+    FormControl
 } from '@material-ui/core'
 
 /*
@@ -18,6 +23,8 @@ import {
         key: type
     }
 */
+import CRUDKV from '../../crud-kv'
+import RWTable from '../../rw-table'
 
 export default function MutableDialog(props){
     
@@ -39,7 +46,50 @@ export default function MutableDialog(props){
     }
 
     const renderItem = (key, type) => {
-        switch(type){
+        switch(type.type ? type.type : type){
+            case 'KV':
+                return (
+                    <CRUDKV />
+                )
+            case 'Select':
+                return (
+                    <FormControl>
+                        <InputLabel>{uppercase(key)}</InputLabel>
+                        <Select value={data[key] ? data[key][type.key] : ''} onChange={(event, newValue) => {
+                            let d = Object.assign({}, data);
+                            d[key] = {[type.key]: event.target.value}
+                            console.log(d[key])
+                            setData(d)
+                        }} label={uppercase(key)}>
+                        {type.items.map((x) => (
+                            <MenuItem value={x.id}>
+                               {x.name}
+                            </MenuItem>
+                        ))}
+                        </Select>
+                    </FormControl>
+              
+                )
+            case 'Table':
+                return (
+                    <RWTable items={type.items} value={data[key] || {}} onChange={(permissions) => {
+                        let d = Object.assign({}, data);
+                        d[key] = permissions
+                        setData(d)
+                    }}/>
+                )
+            case 'Password':
+                return (
+                    <TextField
+                        label={uppercase(key)}
+                        type="password"
+                        value={data[key] || ''}
+                        onChange={e => {
+                            let d = Object.assign({}, data);
+                            d[key] = e.target.value;
+                            setData(d)
+                        }} />
+                )
             case 'String':
                 return (
                     <TextField 
@@ -49,7 +99,7 @@ export default function MutableDialog(props){
                             d[key] = e.target.value;
                             setData(d)
                         }}
-                        margin="normal" 
+                        margin="dense" 
                         label={uppercase(key)} />
                 )
             default:

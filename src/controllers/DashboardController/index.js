@@ -46,7 +46,7 @@ import { getTypes, getPermissions } from '../../actions/adminActions'
 import Sidebar from '../../components/sidebar';
 import YActions, {YProvider} from '../../graph/yjs';
 import { IPFSProvider } from '../../graph/ipfs'
-
+import HexagonGrid from './hexagon.svg';
 import './index.css';
 
 
@@ -111,7 +111,7 @@ function DashboardController(props){
     <YProvider>
     <div className="dashapp">
       <Sidebar match={props.match} />
-      <div className="dashapp-body">
+      <div className="dashapp-body" >
 
         <Switch>
           <Route path={`${props.match.url}`} exact component={DashboardView} />
