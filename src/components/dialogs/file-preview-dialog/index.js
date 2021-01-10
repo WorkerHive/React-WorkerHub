@@ -10,8 +10,9 @@ import {
 } from '@material-ui/core';
 
 import Spinner from 'react-spinkit'
-import GLBCard from '../../glb-card'
-import PDFCard from '../../pdf-card';
+
+
+import { GLBCard, PDFCard } from '@workerhive/react-ui'
 
 import { connect } from 'react-redux';
 import { withIPFS } from '../../../graph/ipfs';

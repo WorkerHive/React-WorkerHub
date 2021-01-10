@@ -46,7 +46,7 @@
 }
 
 .dashapp .menu-item.selected{
-  background: #dfdfdf;
+  background: rgba(137, 130, 233, 0.6);
 }
 
 .dashapp .menu-item{

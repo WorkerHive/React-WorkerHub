@@ -1,8 +1,0 @@
-.crud-branch .crud-branch__actions{
-    opacity: 0;
-    transition: opacity 200ms ease-in;
-}  
-
-.crud-branch:hover .crud-branch__actions{
-    opacity: 1;
-}

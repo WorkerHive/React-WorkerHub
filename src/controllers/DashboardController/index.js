@@ -39,7 +39,6 @@ import qs from 'qs';
 import jwt_decode from 'jwt-decode';
 import { Switch, Route } from 'react-router-dom';
 
-import IPFS from 'ipfs';
 
 import { setStatus, getNodeConf } from '../../actions/authActions';
 import { getTypes, getPermissions } from '../../actions/adminActions'

@@ -19,12 +19,11 @@ import {
     Check
 } from '@material-ui/icons';
 
-import TeamCircles from '../../team-circles';
-import FileDrop from '../../file-drop';
+import {TeamCircles, FileDrop} from '@workerhive/react-ui';
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
 import jwt_decode from 'jwt-decode';
 import { connect } from 'react-redux'
-import { withEditor } from 'react-hive-flow';
+import { withEditor } from '@workerhive/hive-flow';
 import { attachFile, uploadFile } from '../../../actions/fileActions';
 import moment from 'moment';
 

@@ -49,7 +49,11 @@ export default function MutableDialog(props){
         switch(type.type ? type.type : type){
             case 'KV':
                 return (
-                    <CRUDKV />
+                    <CRUDKV value={data[key]} onChange={(value) => { 
+                        let d = Object.assign({}, data);
+                        d[key] = value;
+                        setData(d)   
+                    }}/>
                 )
             case 'Select':
                 return (
@@ -61,7 +65,7 @@ export default function MutableDialog(props){
                             console.log(d[key])
                             setData(d)
                         }} label={uppercase(key)}>
-                        {type.items.map((x) => (
+                        {(Array.isArray(type.items) ? type.items : []).map((x) => (
                             <MenuItem value={x.id}>
                                {x.name}
                             </MenuItem>
