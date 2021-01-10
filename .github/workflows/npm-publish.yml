@@ -9,15 +9,9 @@ on:
       - v*
         
 jobs:
-  build:
+  make-release: 
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - run: yarn install
-
+    steps: 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -31,7 +25,15 @@ jobs:
             - First Change
             - Second Change
           prerelease: true
-      
+
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: yarn install
       - run: yarn build
         env: 
           CI: false
@@ -54,6 +56,14 @@ jobs:
           asset_name: webui.zip
           asset_content_type: application/zip
 
+  build-electron:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: yarn install
       - run: yarn build-electron
         env: 
           CI: false
