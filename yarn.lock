@@ -3168,10 +3168,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@workerhive/hive-flow@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@workerhive/hive-flow/-/hive-flow-1.1.1.tgz#093d6f7c44fba3368b5431271413cf49de6e6e9c"
-  integrity sha512-bdNNnbI19+buyfQesYKO4QKcWH8dfseLaAQPrs9yumT0xZiTxjtnSg3YdoK+SzuML8LrYam/+L0Nc4KWtgYgQQ==
+"@workerhive/hive-flow@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@workerhive/hive-flow/-/hive-flow-1.1.2.tgz#71995d722157da4a4c70a4266c016e0cc0134b06"
+  integrity sha512-okwZbWZoHEfXSpBEzccYFextSQzeTjtNdpuvfyCj4yLCNA8pwbuq5wCoDjm4TKUtnnvAMY4/x04Sn5Hx1IqLyg==
   dependencies:
     "@thetechcompany/react-flow-renderer" "^8.0.0"
     create-react-class "^15.7.0"

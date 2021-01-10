@@ -1,20 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
-
 import {
-    Add,
     Dashboard as DashboardIcon,
     List as ListIcon,
     EmojiNature,
-    Edit
 } from '@material-ui/icons';
 
 import {
-    IconButton,
-    SvgIcon,
-    Collapse,
     ButtonGroup,
     Divider,
     Button,
@@ -23,46 +14,30 @@ import {
 } from "@material-ui/core"
 
 
-import HiveEditor, {HiveProvider, withEditor, NodePanel} from '@workerhive/hive-flow'
+import {Editor, withEditor, NodePanel} from '@workerhive/hive-flow'
 import { GraphKanban } from '@workerhive/react-ui'
-import { merge } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
-import { useSpring, animated } from 'react-spring/web.cjs';
 import { setStatus } from '../../actions/authActions';
 import { connect } from 'react-redux';
-import {YContext} from '../../graph/yjs';
 import qs from 'qs';
+import { PlanTree } from '../../components/plan/tree';
 import jwt_decode from 'jwt-decode';
 import './plan.css';
 
 let yDoc;
 
-const PlanTree = require('../../components/plan/tree');
 
 export interface PlanTabProps {
-  editor: any;
-  project: any;
-  location: any;
-  history: any;
+  editor?: any;
+  project?: any;
+  location?: any;
+  history?: any;
 }
 
 const PlanTab : React.FC<PlanTabProps> = (props) => {
 
   const [ selfish, setSelfish ] = React.useState(false);
 
-  const {ydoc} = React.useContext(YContext)
-
-  const [ selectedCard , setSelectedCard ] = React.useState(null)
   let query = qs.parse(window.location.search, {ignoreQueryPrefix: true})
-  const [ selectedView, _setView ] = React.useState('list')
-
-   
-
-
-    const [ docProject, setProject ] = React.useState({})
-    const [ doc, setDoc ] = React.useState(null)
-    
-    const [ columnMap, setColumnMap ] = React.useState([])
 
     const editChild = (tree_branch : any) => {
       props.editor.explore(tree_branch)
@@ -169,7 +144,7 @@ const PlanTab : React.FC<PlanTabProps> = (props) => {
       return (
         <div className="plan-hive">
         <NodePanel />
-        <HiveEditor />
+        <Editor />
         </div>
       )
     }
@@ -208,9 +183,9 @@ const PlanTab : React.FC<PlanTabProps> = (props) => {
                   label="My tasks" />
               </div>
               <ButtonGroup className="plan-actions">
-                <Button className={`${view == 'kanban' && 'contained'}`} onClick={() => setView('kanban')}><DashboardIcon /></Button>
-                <Button className={`${view == 'list' && 'contained'}`} onClick={() => setView('list')}><ListIcon /></Button>
-                <Button className={`${view == 'hive' && 'contained'}`} onClick={() => setView('hive')}><EmojiNature /></Button>
+                <Button className={`${view === 'kanban' && 'contained'}`} onClick={() => setView('kanban')}><DashboardIcon /></Button>
+                <Button className={`${view === 'list' && 'contained'}`} onClick={() => setView('list')}><ListIcon /></Button>
+                <Button className={`${view === 'hive' && 'contained'}`} onClick={() => setView('hive')}><EmojiNature /></Button>
               </ButtonGroup>
             </div>
             <Divider />
@@ -218,11 +193,11 @@ const PlanTab : React.FC<PlanTabProps> = (props) => {
             {renderPlan()}
             </div>
         </div>
-            )
+    )
 }
 
-export default connect((state : any) => ({
+export default withEditor(connect((state : any) => ({
   user: jwt_decode(state.auth.token)
 }), (dispatch : any) => ({
   setStatus: (status : any) => dispatch(setStatus(status))
-}))(withEditor(PlanTab))
+}))(PlanTab))

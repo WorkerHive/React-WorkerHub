@@ -13,10 +13,17 @@ import {
 
 import Branch from './branch';
 
-export default function PlanTree(props){
+export interface PlanTreeProps {
+  title: string;
+  onAdd: Function;
+  onEdit: Function;
+  graph: any;
+}
+
+export const PlanTree : React.FC<PlanTreeProps> = (props ) => {
   const [ expanded, setExpanded ] = React.useState(['root'])
 
-  const { nodes, links } = props.graph || {};
+  const { nodes, links } = props.graph || {nodes: [], links: []};
 
   const rootNodes = nodes.filter((x) => links.filter((a) => a.target == x.id).length == 0)
 
@@ -39,14 +46,14 @@ export default function PlanTree(props){
           <Branch 
             onEdit={() => props.onEdit(branch)}
             onAdd={() => props.onAdd(branch)}
-            children={_children}
+            childs={_children}
             total={completeCount + "/" + (_children.length + count)}
             nodeId={branch.id} 
             data={branch.data}>
             {_branches.map((x) => x.branch)}
           </Branch>
         ),
-        children: _children,
+        childs: _children,
         complete: _children.filter((a) => a.data.status == "COMPLETE"),
         completed: completeCount,
         total: count
@@ -56,7 +63,7 @@ export default function PlanTree(props){
 
     const branches = rootNodes.map((x) => renderBranch(x))
 
-    const total = branches.map((x) => x.children.length + x.total).concat([0]).reduce((a,b) => a+b)
+    const total = branches.map((x) => x.childs.length + x.total).concat([0]).reduce((a,b) => a+b)
 
     return (
         <TreeView
@@ -71,7 +78,7 @@ export default function PlanTree(props){
           <Branch 
             onAdd={() => props.onAdd()}
             total={total}
-            children={branches}
+            childs={branches}
             nodeId="root" 
             data={{label: props.title}}> 
             {branches.map((x) => x.branch)}

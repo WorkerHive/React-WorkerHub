@@ -4,17 +4,18 @@ import {
 } from '@material-ui/core';
 
 
-import { HiveProvider } from '@workerhive/hive-flow'
+import { HiveProvider, withEditor } from '@workerhive/hive-flow'
 import * as ProjectItemNode from '../../nodes/ProjectItemNode';
 import { isArray, merge, mergeWith } from 'lodash';
 import { Switch, Route } from 'react-router-dom';
 import { YContext } from '../../graph/yjs';
-import ProjectTabs from '../../tabs/project'
+import * as ProjectTabs from '../../tabs/project'
 import * as Y from 'yjs';
 import { Header } from '@workerhive/react-ui'
 
 import { connect } from 'react-redux';
 import './index.css';
+import { PlanTab } from '../../tabs/project';
 
 const PlanDialog = require('../../components/dialogs/plan-dialog')
 
@@ -24,6 +25,7 @@ export interface ProjectViewProps {
   match: any;
   project: any;
 }
+
 
 const ProjectView: React.FC<ProjectViewProps> = (props) => {
   const { ydoc } = React.useContext(YContext)
@@ -38,6 +40,37 @@ const ProjectView: React.FC<ProjectViewProps> = (props) => {
   const [nodes, setNodes] = React.useState<Array<any>>([])
   const [links, setLinks] = React.useState<Array<any>>([])
   const [attachments, setAttachments] = React.useState<Array<any>>([])
+
+  const View = withEditor(({editor}) => (
+        <>
+          <PlanDialog
+            project={props.project}
+            onDelete={(plan: any) => {
+              editor.onNodeRemove([{ id: plan }])
+            }}
+            onSave={(plan: any) => {
+              console.log(plan)
+              editor.updateNode(plan.id, (node: any) => {
+                let update: any = { data: {} }
+
+                if (plan.title) update.data.label = plan.title;
+                if (plan.description) update.data.description = plan.description;
+                if (plan.dueDate) update.data.dueDate = plan.dueDate;
+                console.log(plan.members)
+                if (plan.members) update.members = plan.members
+
+                console.log(update, plan.id)
+                return update;
+              })
+              setSelectedCard(null)
+
+            }}
+            open={selectedCard}
+            plan={selectedCard ? Object.assign({}, nodes.filter((a) => a.id === selectedCard.id)[0]) : {}}
+            onClose={() => setSelectedCard(null)} />
+        
+          
+        </>))
 
   const observer = () => {
     if (projectDoc) {
@@ -95,14 +128,11 @@ const ProjectView: React.FC<ProjectViewProps> = (props) => {
   }
 
 
-  const tabs = ["Plan", "Calendar", "Team", "Files", "Settings"]
 
   return (
     <HiveProvider store={{
       nodes: nodes,
       links: links.filter((a) => a.source && a.target),
-      nodeTypes: [ProjectItemNode],
-      attachments: attachments,
       attachFile: (name: string, cid: string) => {
         _setAttachments([...new Set(attachments.concat([{ name, cid }]))])
       },
@@ -110,7 +140,7 @@ const ProjectView: React.FC<ProjectViewProps> = (props) => {
         setSelectedCard(node)
       },
       exploreNode: (id: string) => {
-        let node = nodes.filter((a) => a.id == id)[0]
+        let node = nodes.filter((a) => a.id === id)[0]
         setSelectedCard({
           id: id,
           title: node.data.label,
@@ -156,45 +186,18 @@ const ProjectView: React.FC<ProjectViewProps> = (props) => {
       onNodeChange: (nodes: any) => _setNodes(nodes),
       onLinkChange: (links: any) => _setLinks(links)
     }}>
-      {(editor: any) => (
-        <>
-          <PlanDialog
-            project={props.project}
-            onDelete={(plan: any) => {
-              editor.onNodeRemove([{ id: plan }])
-            }}
-            onSave={(plan: any) => {
-              console.log(plan)
-              editor.updateNode(plan.id, (node: any) => {
-                let update: any = { data: {} }
-
-                if (plan.title) update.data.label = plan.title;
-                if (plan.description) update.data.description = plan.description;
-                if (plan.dueDate) update.data.dueDate = plan.dueDate;
-                console.log(plan.members)
-                if (plan.members) update.members = plan.members
-
-                console.log(update, plan.id)
-                return update;
-              })
-              setSelectedCard(null)
-
-            }}
-            open={selectedCard}
-            plan={selectedCard ? Object.assign({}, nodes.filter((a) => a.id == selectedCard.id)[0]) : {}}
-            onClose={() => setSelectedCard(null)} />
-          <Header
-            tabs={tabs}
+        <Header
+            tabs={["Plan", "Calendar", "Team", "Files", "Settings"]}
             onTabSelect={(tab: any) => {
               setSelectedTab(tab)
               props.history.push(`${props.match.url}/${tab.toLowerCase()}`)
             }}
             selectedTab={selectedTab || props.location.pathname.replace(`${props.match.url}/`, '')}
             title={project.name} />
-          <Paper style={{ flex: 1, width: '100%', height: 'calc(100vh - 76px)', marginTop: 12, display: 'flex' }}>
+      <Paper style={{ flex: 1, width: '100%', height: 'calc(100vh - 76px)', marginTop: 12, display: 'flex' }}>
             <Switch>
               <Route path={`${props.match.url}/plan`} render={(props) => {
-                return <ProjectTabs.PlanTab {...props} />
+                return <PlanTab project={project} {...props} />
               }} />
               <Route path={`${props.match.url}/calendar`} render={(props) => {
                 return <ProjectTabs.CalendarTab {...props} project={project} />
@@ -210,14 +213,12 @@ const ProjectView: React.FC<ProjectViewProps> = (props) => {
               }} />
 
             </Switch>
-          </Paper>
-        </>
-      )}
+        </Paper>
     </HiveProvider>
 
   )
 }
 
 export default connect((state: any, ownProps: any) => ({
-  project: state.projects.list.filter((a: any) => a.id == ownProps.match.params.id)
+  project: state.projects.list.filter((a: any) => a.id === ownProps.match.params.id)
 }))(ProjectView)

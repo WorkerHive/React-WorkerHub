@@ -8,7 +8,7 @@ const graph = withGraph()
 export const updateIntegrationMap = (nodes : Array<any>, links : Array<any>) => {
   return graph.getClient().mutate({
     mutation: gql`
-    mutation UpdateIntegrationMap($nodes: [MapNodeInput], $links: [MapLinkInput]){
+    mutation UpdateIntegrationMap($nodes: [JSON], $links: [JSON]){
       updateIntegrationMap(id: "root", integrationMap: {nodes: $nodes, links: $links}){
         nodes{
           id

@@ -80,7 +80,7 @@ export default function Branch (props){
                     {renderIcon()}
                     </div>
                    <Typography variant="subtitle1" className={'labelText'}>
-                        {props.data.label} : ({props.children.length}) children ({props.total}) tasks
+                        {props.data.label} : ({props.childs.length}) children ({props.total}) tasks
                     </Typography> 
                     <div className={'treeActions'}>
                         {branchActions.map((x) => (

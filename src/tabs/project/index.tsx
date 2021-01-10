@@ -4,7 +4,7 @@ import PlanTab from './plan';
 import { TeamTab } from './team';
 import { SettingsTab } from './settings';
 
-export default {
+export {
     CalendarTab,
     FileTab,
     SettingsTab,
