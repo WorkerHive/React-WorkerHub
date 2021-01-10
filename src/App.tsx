@@ -16,7 +16,7 @@ import {
 } from '@material-ui/pickers'
 
 import GClient,{withGraph} from './graph';
-import configureStore from './configureStore';
+import setupStore from './configureStore';
 import './App.css';
 
 let Router;
@@ -26,12 +26,16 @@ if(isElectron()){
   Router = BrowserRouter
 }
 
+const { store, persistor } = setupStore();
+export interface AppProps {
 
-const { store, persistor } = configureStore();
-const graph = withGraph()
+}
+
+const App : React.FC<AppProps> = (props)  => {
 
 
-function App() {
+  const graph = withGraph()
+
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <Provider store={store}>

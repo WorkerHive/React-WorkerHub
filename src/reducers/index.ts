@@ -11,7 +11,7 @@ import knowledge from './knowledge';
 import admin from './admin';
 import calendar from './calendar';
 
-export default combineReducers({
+export default combineReducers<any>({
   projects,
   admin,
   auth,

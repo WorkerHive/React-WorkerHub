@@ -69,7 +69,7 @@ const Projects : React.FC<ProjectsProps> = (props) => {
         //props.history.push(`${props.match.url}/${tab.toLowerCase()}`)
     }}
     selectedTab={query_string.status && query_string.status.toString().toUpperCase() || 'ALL'}
-    title={"Projects"} />,
+    title={"Projects"} />
     <PermissionForm
       onSave={(obj : any, data : any) => {
         if(obj.id){

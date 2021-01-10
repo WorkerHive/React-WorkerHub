@@ -5,6 +5,7 @@
 
 .file-list{
   flex: 1;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
 }

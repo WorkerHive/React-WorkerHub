@@ -25,27 +25,35 @@ import {
     Search
 } from '@material-ui/icons';
 
-import { useMutation } from '@apollo/client';
 import { addBooking } from '../../../actions/calendarActions';
 import { setStatus } from '../../../actions/authActions';
 import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import { connect } from 'react-redux';
 import {YContext} from '../../../graph/yjs';
 
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 
 let yDoc; 
 
-function CalendarDialog(props){
+export interface CalendarDialogProps {
+    onClose: (e?: any) => void
+    open: boolean
+    projects: any;
+    team: any;
+    equipment: any;
+    y: any;
+}
+
+function CalendarDialog(props : CalendarDialogProps){
     const {ydoc} = React.useContext(YContext)
     const [ step, setStep ] = React.useState(0)
     const [ searchTab, setSearchTab ] = React.useState(0)
-    const [ search, setSearch ] = React.useState(null)
+    const [ search, setSearch ] = React.useState<string>()
 
-    const [ date, setDate ] = React.useState(null);
+    const [ date, setDate ] = React.useState<Moment>();
     const [ allDay, setAllDay ] = React.useState(false);
-    const [ startTime, setStart ] = React.useState(null)
-    const [ endTime, setEnd ] = React.useState(null)
+    const [ startTime, setStart ] = React.useState<Moment>()
+    const [ endTime, setEnd ] = React.useState<Moment>()
     const [ project, setProject ] = React.useState(null)
 
     const [ selectedItems, setSelectedItems ] = React.useState({})
@@ -59,8 +67,8 @@ function CalendarDialog(props){
             setStep(1)
         }else{
             //Book items
-            let equipment = [];
-            let team = [];
+            let equipment : Array<any> = [];
+            let team : Array<any> = [];
 
             for(var k in selectedItems){
                 if(selectedItems[k].selected){
@@ -75,7 +83,8 @@ function CalendarDialog(props){
                 }
             }
 
-            let sTime, eTime;
+            let sTime : Moment = moment();
+            let eTime :Moment = moment();
             if(startTime){
                 sTime = moment(date)
                 sTime.set('hour', startTime.get('hour'))
@@ -92,10 +101,10 @@ function CalendarDialog(props){
 
             let booking = new Y.Map();
             let _booking = {
-                date: date.valueOf() / 1000,
+                date: date!.valueOf() / 1000,
                 project: project,
-                startTime: sTime && parseInt(sTime.valueOf() / 1000),
-                endTime: eTime && parseInt(eTime.valueOf() / 1000),
+                startTime: `${sTime.valueOf() / 1000}`,
+                endTime: `${eTime.valueOf() / 1000}`,
                 allDay: allDay,
                 items: {
                     team: team,
@@ -144,7 +153,7 @@ function CalendarDialog(props){
                     value={project}
                     onChange={(e, newVal) => setProject(newVal)}
                     options={props.projects}
-                    getOptionLabel={(project) => project.name} 
+                    getOptionLabel={(project : any) => project!.name} 
                     renderInput={(params) => {
                         return (
                             <TextField {...params} label="Project"  />
@@ -153,7 +162,7 @@ function CalendarDialog(props){
                 <KeyboardDatePicker 
                     value={date}
                     format="DD/MM/yyyy"
-                    onChange={(e, newVal) => setDate(e)}
+                    onChange={(e : any, newVal) => setDate(e)}
                     margin="normal" 
                     label="Date" 
                     variant="inline" ></KeyboardDatePicker>
@@ -165,14 +174,14 @@ function CalendarDialog(props){
                 {!allDay && <div style={{display: 'flex', marginTop: 8}}>
                     <KeyboardTimePicker 
                         value={startTime}
-                        onChange={(e) => setStart(e)}
+                        onChange={(e : any) => setStart(e)}
                         label="Start Time"
                         fullWidth 
                         style={{marginRight: 4}} 
                         variant="inline" ></KeyboardTimePicker>
                     <KeyboardTimePicker 
                         value={endTime}
-                        onChange={(e) => setEnd(e)}
+                        onChange={(e : any) => setEnd(e)}
                         label="End Time"
                         fullWidth 
                         style={{marginLeft: 4}} 
@@ -241,18 +250,18 @@ function CalendarDialog(props){
                 {renderStep()}
             </DialogContent>
             <DialogActions>
-                <Button onClick={step == "0" ? props.onClose : () => setStep(0)}>{step == "0" ? "Cancel" : "Back"}</Button>
-                <Button color="primary" onClick={stepButton} variant="contained">{step == "1" ? "Book" : "Next"}</Button>
+                <Button onClick={`${step}` == "0" ? props.onClose : () => setStep(0)}>{`${step}` == "0" ? "Cancel" : "Back"}</Button>
+                <Button color="primary" onClick={stepButton} variant="contained">{`${step}` == "1" ? "Book" : "Next"}</Button>
             </DialogActions>
         </Dialog>
     )
 }
 
-export default connect((state) => ({
+export default connect((state : any) => ({
     projects: state.projects.list,
     team: state.team.list,
     equipment: state.equipment.list
-}), (dispatch) => ({
-    addBooking: (time, project, booking) => dispatch(addBooking(time, project, booking)),
-    setStatus: (status) => dispatch(setStatus(status))
+}), (dispatch : any) => ({
+    addBooking: (time : any, project : any, booking : any) => dispatch(addBooking(time, project, booking)),
+    setStatus: (status : any) => dispatch(setStatus(status))
 }))(CalendarDialog)

@@ -16,9 +16,8 @@ import { getBookings } from '../../actions/calendarActions';
 import { connect } from 'react-redux';
 import { setStatus } from '../../actions/authActions'
 import { YContext } from '../../graph/yjs';
+import CalendarDialog from '../../components/dialogs/calendar-dialog'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-
-const CalendarDialog = require('../../components/dialogs/calendar-dialog')
 
 const localizer = momentLocalizer(moment)
 
@@ -52,7 +51,7 @@ const CalendarView: React.FC<CalendarViewProps> = (props) => {
             setBookings(obj.bookings)
         }
         // props.getBookings()
-    }, [])
+    }, [ydoc])
 
     return (
         <>
@@ -99,5 +98,5 @@ export default connect((state: any) => ({
     bookings: state.calendar.bookings
 }), (dispatch: any) => ({
     getBookings: () => dispatch(getBookings()),
-    setStatus: (status: string) => dispatch(setStatus(status))
+    setStatus: (status: any) => dispatch(setStatus(status))
 }))(CalendarView)

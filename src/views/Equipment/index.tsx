@@ -43,7 +43,7 @@ function Equipment(props :EquipmentProps){
         //props.history.push(`${props.match.url}/${tab.toLowerCase()}`)
     }}
     selectedTab={selectedTab}
-    title={'Equipment'} />,
+    title={'Equipment'} />
     <PermissionForm 
       onSave={(data) => {
         if(data.id){
