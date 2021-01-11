@@ -1,25 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
+import isElectron from 'is-electron'
+import { HashRouter, BrowserRouter, Route, Redirect } from 'react-router-dom'
+
+import {Login} from './views/Login';
+
 import './App.css';
+import { Dashboard } from './views/Dashboard';
+
+let Router : any;
+
+if(isElectron()){
+  Router = HashRouter
+}else{
+  Router = BrowserRouter
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Route path="/login" component={Login} />
+        <Route path="/dashboard" component={Dashboard} />
+      </div>
+    </Router>
   );
 }
 
