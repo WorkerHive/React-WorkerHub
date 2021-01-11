@@ -1,9 +1,18 @@
 import { Button, Typography } from '@material-ui/core';
 import { CRUDList } from '@workerhive/react-ui';
+import { WorkhubClient } from '@workerhive/client'
 import React from 'react';
 
+let client = new WorkhubClient();
 
 export const SettingsMap = (props: any, storeTypes : any, converters : any, roles: any) => {
+  const [ models, setModels ] = React.useState<any>([]);
+  React.useEffect(() => {
+    client.getModels().then(models => {
+      setModels(models)
+    });
+  }, [])
+
   return [
     {
       title: <Typography variant="h6" style={{display: 'flex'}}>Add-ons</Typography>,
@@ -52,7 +61,7 @@ export const SettingsMap = (props: any, storeTypes : any, converters : any, role
     {
       title: <Typography variant="h6" style={{display: 'flex'}}>Data types</Typography>,
       body: (
-        <CRUDList title={"Types"} type={{name: 'String', def: 'KV'}} data={props.types} 
+        <CRUDList title={"Types"} type={{name: 'String', def: 'KV'}} data={models} 
           onSave={(obj : any) => { 
             console.log(obj) 
           }} />   

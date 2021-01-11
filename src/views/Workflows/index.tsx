@@ -6,6 +6,10 @@ import '@workerhive/hive-flow/dist/index.css'
 import './index.css';
 import { MenuView } from '../../components/menu-view';
 
+import { WorkhubClient } from '@workerhive/client'
+
+const client = new WorkhubClient();
+
 export interface WorkflowsProps{
 
 }
@@ -13,27 +17,58 @@ export interface WorkflowsProps{
 export default function Workflows(props: React.FC<WorkflowsProps>){
     const [ nodes, setNodes ] = React.useState<Array<any>>([])
     const [ links, setLinks ] = React.useState<Array<any>>([])
+    const [ workflow, setWorkflow ] = React.useState<any>({})
+    const [ workflows, setWorkflows ] = React.useState<Array<any>>([]);
+
+    React.useEffect(() => {
+        setTimeout(() => {
+
+        client.actions.getWorkflows().then((workflows : any) => {
+            setWorkflows(workflows)
+        })
+        }, 1000)
+    }, [])
 
     const _onNodeAdd = (node: any) => {
-        setNodes(nodes.concat([node]))
+        updateNodes(nodes.concat([node]))
     }  
 
     const _onLinkAdd = (link: any) => {
-        setLinks(links.concat([link]))
+        updateLinks(links.concat([link]))
     }
 
     const updateLinks = (links : any) => {
         setLinks(links)
+        if(workflow.id) client.actions.updateWorkflow(workflow.id, {links: links})
     }
 
     const updateNodes = (nodes : any) => {
         setNodes(nodes)
+        console.log(workflow)
+        if(workflow.id) client.actions.updateWorkflow(workflow.id, {nodes: nodes})
     }
 
     return (
         <div className="workflows-view">
             <Header tabs={[]} title="Workflows" />
-            <MenuView>
+            <MenuView 
+                title={"Workflows"}
+                structure={{name: 'String'}}
+                onClick={(item : any) => {
+                    client.actions.getWorkflow(item.id).then((workflow : any) => {
+                        console.log(workflow)
+                        setWorkflow(workflow)
+                        setNodes(workflow.nodes || [])
+                        setLinks(workflow.links || [])
+                    })
+                }}
+                onSave={(item: any) => {
+                    client.actions.addWorkflow(item).then((r : any) => {
+                        alert("Saved")
+                    })
+                    console.log(item)
+                }}
+                items={workflows}>
             <HiveProvider 
             store={{
                 direction: 'horizontal',

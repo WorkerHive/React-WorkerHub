@@ -13,6 +13,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
+    "@workerhive/client": "0.0.5",
     "@workerhive/hive-flow": "^1.1.4",
     "@workerhive/react-ui": "^1.0.17",
     "is-electron": "^2.2.0",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.7.7",
+    "@types/async": "^3.2.5",
     "@types/react-grid-layout": "^1.1.1",
     "@types/react-router-dom": "^5.1.7",
     "webpack": "4.44.2"
