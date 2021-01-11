@@ -18,9 +18,11 @@ const ConverterDialog = require('../../components/dialogs/converter-dialog')
 export interface FilesProps {
   uploadFile: Function;
   getFiles: Function;
-  type: any;
-  permissions: any;
-  files: any;
+  history: any;
+  location: any;
+  type?: any;
+  permissions?: any;
+  files?: any;
 }
 
 const Files: React.FC<FilesProps> = (props) => {

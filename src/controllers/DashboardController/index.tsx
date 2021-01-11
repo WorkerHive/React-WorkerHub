@@ -43,7 +43,7 @@ import { Switch, Route } from 'react-router-dom';
 import { setStatus, getNodeConf } from '../../actions/authActions';
 import { getTypes, getPermissions } from '../../actions/adminActions'
 import Sidebar from '../../components/sidebar';
-import YActions, {YProvider} from '../../graph/yjs';
+import {YProvider} from '../../graph/yjs';
 import { IPFSProvider } from '../../graph/ipfs'
 import HexagonGrid from './hexagon.svg';
 import './index.css';
@@ -57,7 +57,7 @@ function DashboardController(props){
 
   console.log(props.swarmKey)
 
-  React.useEffect(async () => {
+  React.useEffect(() => {
     props.getTypes()
     //props.getPermissions()
 
@@ -92,7 +92,7 @@ function DashboardController(props){
         console.log(project_set)
         return (
         <Tabs value={project_set.indexOf(query_string.status)}>
-          {project_set.map((x) => (
+          {project_set.map((x: any) => (
             <Tab label={x} onClick={() => {
               query_string.status = x;
             props.history.push(`${props.location.pathname}?${qs.stringify(query_string)}`)
@@ -138,12 +138,12 @@ function DashboardController(props){
   );
 }
 
-export default connect((state) => ({
+export default connect((state : any) => ({
   projects: state.projects.list,
   user: jwt_decode(state.auth.token),
   swarmKey: state.auth.swarmKey
-}), (dispatch) => ({
+}), (dispatch : any) => ({
   getTypes: () => dispatch(getTypes()),
   getPermissions: () => dispatch(getPermissions()),
-  setStatus: (status) => dispatch(setStatus(status))
+  setStatus: (status : any) => dispatch(setStatus(status))
 }))(DashboardController)
