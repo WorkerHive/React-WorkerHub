@@ -2146,10 +2146,10 @@
     "@types/prop-types" "*"
     csstype "^3.0.2"
 
-"@types/react@16.8.3":
-  version "16.8.3"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.3.tgz#7b67956f682bea30a5a09b3242c0784ff196c848"
-  integrity sha512-PjPocAxL9SNLjYMP4dfOShW/rj9FDBJGu3JFRt0zEYf77xfihB6fq8zfDpMrV6s82KnAi7F1OEe5OsQX25Ybdw==
+"@types/react@16.7.20":
+  version "16.7.20"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.7.20.tgz#13ae752c012710d0fa800985ca809814b51d3b58"
+  integrity sha512-Qd5RWkwl6SL7R2XzLk/cicjVQm1Mhc6HqXY5Ei4pWd1Vi8Fkbd5O0sA398x8fRSTPAuHdDYD9nrWmJMYTJI0vQ==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -2530,10 +2530,10 @@
     uuid "^8.3.1"
     with-context "^0.0.3"
 
-"@workerhive/react-ui@^1.0.20":
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/@workerhive/react-ui/-/react-ui-1.0.20.tgz#4538dde3586a1412804b701274d4ad216f93cdab"
-  integrity sha512-9ThjmVbOBHtRkHT6gG+RfciL38X3TGl9ikvbZ1PlvlZZ7MHjemN4LXkGgSrO56I/aHZX/txBjx6HshNb/dIDTw==
+"@workerhive/react-ui@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@workerhive/react-ui/-/react-ui-1.0.21.tgz#94ddd6a4f80e551c0e3fe4f9a5e80f7889491a34"
+  integrity sha512-vm2MeGd1tldwt+phZlXGmFahkQGsz3UlK5v6Vx5fXGHZfIobqvQTSj4cQkLt8mRBDkWLTLv7HLWNW9E1/sT+0A==
   dependencies:
     "@lourenci/react-kanban" "^2.1.0"
     "@material-ui/icons" "^4.11.2"
@@ -12512,6 +12512,11 @@ ts-toolbelt@^8.0.7:
   version "8.0.7"
   resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-8.0.7.tgz#4dad2928831a811ee17dbdab6eb1919fc0a295bf"
   integrity sha512-KICHyKxc5Nu34kyoODrEe2+zvuQQaubTJz7pnC5RQ19TH/Jged1xv+h8LBrouaSD310m75oAljYs59LNHkLDkQ==
+
+ts-transformer-keys@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/ts-transformer-keys/-/ts-transformer-keys-0.4.3.tgz#d62389a40f430c00ef98fb9575fb6778a196e3ed"
+  integrity sha512-pOTLlet1SnAvhKNr9tMAFwuv5283OkUNiq1fXTEK+vrSv+kxU3e2Ijr/UkqyX2vuMmvcNHdpXC31hob7ljH//g==
 
 tsconfig-paths@^3.9.0:
   version "3.9.0"
