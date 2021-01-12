@@ -1,6 +1,7 @@
-import React, {Suspense, lazy} from 'react';
+import React, {Suspense, lazy, useRef} from 'react';
 import RGL, {WidthProvider} from 'react-grid-layout'
 import { WorkhubClient } from '@workerhive/client'
+import useResizeAware from 'react-resize-aware';
 import 'react-grid-layout/css/styles.css';
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -24,7 +25,7 @@ export interface LayoutItem {
 }
 
 export interface LayoutProps {
-    layout: Array<LayoutItem>
+    layout: (sizes: any, rowHeight: number) => Array<LayoutItem>
     data?: any;
 }
 
@@ -37,11 +38,14 @@ const defaultProps = {
 const client = new WorkhubClient();
 
 export const Layout : React.FC<LayoutProps> = (props) => {
+      const [resizeListener, sizes] = useResizeAware();
+
     const [ widgets, setWidgets ] = React.useState<any>({WordCounter: {type: TestWidget, title: 'Test Widget'}})
     const [ layout, setLayouts ] = React.useState<any>({rows: [{columns: [{className: 'col-md-12', widgets: [{key: 'WordCounter'}]}]}]})
 
     const [data, setData] = React.useState<any>({})
     const [ types, setTypes ] = React.useState<any>({})
+
     React.useEffect(() => {
         client.getModels().then((types : any) => {
             let _type : any ={};
@@ -49,7 +53,6 @@ export const Layout : React.FC<LayoutProps> = (props) => {
                 _type[ty.name] = ty
             })
             setTypes(_type)
-            console.log("TYPES", types, types[props.data.type])
         })
 
         if(props.data.methods){
@@ -68,13 +71,14 @@ export const Layout : React.FC<LayoutProps> = (props) => {
 
     return (
         <Suspense fallback={<div>loading</div>}>
+            {resizeListener}
         <ReactGridLayout 
             style={{flex:1}}
             {...defaultProps}    
-            layout={props.layout as RGL.Layout[]}
+            layout={props.layout(sizes, 64) as RGL.Layout[]}
             onLayoutChange={(layout) => {}} 
             isBounded={true}>
-                {props.layout.map((x) => (
+                {props.layout(sizes, 64).map((x) => (
                     <div key={x.i} style={{display: 'flex', flexDirection: 'column'}}>
                         {x.component instanceof Function ? x.component(data, types[props.data.type], client) : x.component}
                     </div>

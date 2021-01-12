@@ -15,7 +15,7 @@ const Types = [
                 projects: 'getProjects'
             }
         },
-        layout: [
+        layout: (sizes : any, rowHeight: number) => [
             {
                 i: 'header',
                 x: 0,
@@ -29,7 +29,7 @@ const Types = [
                 x: 0,
                 y: 1,
                 w: 12,
-                h: 15,
+                h: (sizes.height / rowHeight) -2,
                 component: (data: any) => (<SearchTable renderItem={(item: any) => item.name} data={data.projects || []} />)
             }
         ]
@@ -43,7 +43,7 @@ const Types = [
                 team: 'getTeamMembers'
             }
         },
-        layout: [
+        layout: (sizes : any, rowHeight: number) => [
             {
                 i: 'header',
                 x: 0,
@@ -57,10 +57,9 @@ const Types = [
                 x: 0,
                 y: 0,
                 w: 12,
-                h: 15,
+                h: (sizes.height / rowHeight) - 2,
                 component: (data: any, type: any) => {
                     const t: any = {};
-                    console.log(type)
                     if (type) type.def.forEach((_type: any) => {
                         t[_type.name] = _type.type;
                     })
@@ -89,6 +88,61 @@ const Types = [
         ]
     },
     {
+        path: '/dashboard/contacts',
+        label: "Contacts",
+        data: {
+            type: 'Contact',
+            methods: {
+                equipment: 'getContacts'
+            }
+        },
+        layout: (sizes : any, rowHeight : number) => [
+            {
+                i: 'header',
+                x: 0,
+                y: 0,
+                w: 12,
+                h: 1,
+                component: (<Header title="Contacts" />)
+            },
+            {
+                i: 'data',
+                x: 0,
+                y: 0,
+                w: 12,
+                h: (sizes.height / rowHeight) - 2,
+                component: (data: any, type: any, client: any) => {
+                    const t: any = {};
+                    console.log(type)
+                    if (type) type.def.forEach((_type: any) => {
+                        t[_type.name] = _type.type;
+                    })
+                    return ((props) => {
+                        const [open, modalOpen] = React.useState<boolean>(false);
+
+                        return (
+                            <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
+                                <MutableDialog 
+                                    title={"Contacts"} 
+                                    structure={t} 
+                                    onSave={(item:any, type: any) => {
+                                        props.client.actions.addEquipment(item)
+                                        modalOpen(false)
+                                    }}
+                                    onClose={() => modalOpen(false)}
+                                     open={open} />
+                                <SearchTable renderItem={(item: any) => item.name} data={data.contacts || []} />
+                                <Fab onClick={() => modalOpen(true)} style={{ position: 'absolute', right: 12, bottom: 12 }} color="primary">
+                                    <Add />
+                                </Fab>
+                            </div>
+                        )
+                    })({client})
+                }
+            }
+        ]
+    },
+    {
         path: '/dashboard/equipment',
         label: "Equipment",
         data: {
@@ -97,7 +151,7 @@ const Types = [
                 equipment: 'getEquipments'
             }
         },
-        layout: [
+        layout: (sizes : any, rowHeight : number) => [
             {
                 i: 'header',
                 x: 0,
@@ -111,7 +165,7 @@ const Types = [
                 x: 0,
                 y: 0,
                 w: 12,
-                h: 15,
+                h: (sizes.height / rowHeight) - 2,
                 component: (data: any, type: any, client: any) => {
                     const t: any = {};
                     console.log(type)

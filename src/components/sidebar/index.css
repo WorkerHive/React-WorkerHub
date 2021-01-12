@@ -1,3 +1,36 @@
+@media only screen and (max-width: 600px) {
+    .sidebar{
+        overflow-x: auto;
+        overflow-y: hidden;
+        width: 100% !important;
+        flex-direction: row !important;
+    }
+    .sidebar .MuiList-root{
+        display: flex;
+        max-width: unset !important;
+        flex-direction: row;
+    }
+
+    .sidebar .MuiList-root .MuiListItem-root{
+        border-right: 1px solid #dfdfdf;
+    }
+
+    .sidebar .menu-item svg{
+        margin-right: 0;
+    }
+
+    .sidebar img{
+    }
+  }
+
+.sidebar{
+    display: flex;
+    background: #4f45e2 !important;
+    color: rgb(222, 222, 222) !important;
+    flex-direction: column;
+    transition: width 200ms ease-in;
+
+}
 .menu-item svg{
     margin-right: 12px;
 }

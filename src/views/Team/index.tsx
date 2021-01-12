@@ -5,7 +5,7 @@ import { Layout } from '../../components/layout';
 
 export default function Team(props: any) {
     return (
-        <Layout layout={[
+        <Layout layout={(sizes: any) => [
             {
                 i: 'header',
                 x: 0,

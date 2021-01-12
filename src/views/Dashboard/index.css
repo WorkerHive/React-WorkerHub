@@ -1,6 +1,19 @@
+@media only screen and (max-width: 600px) {
+  .dashboard-view{
+    flex-direction: column-reverse;
+  }
+
+  .dashboard-view .dashboard-body {
+      flex: unset;
+      height: calc(100vh - 50px);
+  }
+}
+
 .dashboard-view{
     display: flex;
     flex: 1;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .dashboard-body{

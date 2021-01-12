@@ -84,7 +84,7 @@ export function Sidebar(props : SidebarProps){
       ]
 
     return (
-      <Paper style={{display: 'flex', backgroundColor: '#4f45e2',color:'rgb(222, 222, 222)', flexDirection: 'column', width: minimized ? 64 : 200, transition: 'width 200ms ease-in'}}>
+      <Paper className="sidebar" style={{width: minimized ? 64 : 200}} >
         <List style={{flex: 1, maxWidth: minimized ? 64 : 200, transition: 'max-width 200ms ease-in'}}> 
         <ListItem style={{position: 'relative', color: 'teal', padding: 12, fontSize: 20, justifyContent: 'flex-start'}}>
            <img src={'/assets/teal.png'} alt="Workhub" style={{height: 33, marginRight: minimized ? 0 : 8, marginLeft: minimized ? 0: 0}} /> 
