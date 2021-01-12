@@ -1,14 +1,15 @@
 import { Button, Typography } from '@material-ui/core';
 import { CRUDList } from '@workerhive/react-ui';
-import { WorkhubClient } from '@workerhive/client'
+import { useHub } from '@workerhive/client'
 import React from 'react';
 
-let client = new WorkhubClient();
 
 export const SettingsMap = (props: any, storeTypes : any, converters : any, roles: any) => {
+  const [ client, err ] = useHub()
+
   const [ models, setModels ] = React.useState<any>([]);
   React.useEffect(() => {
-    client.getModels().then(models => {
+    client!.getModels().then(models => {
       setModels(models)
     });
   }, [])

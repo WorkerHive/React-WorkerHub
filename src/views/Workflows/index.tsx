@@ -6,28 +6,28 @@ import '@workerhive/hive-flow/dist/index.css'
 import './index.css';
 import { MenuView } from '../../components/menu-view';
 
-import { WorkhubClient } from '@workerhive/client'
-
-const client = new WorkhubClient();
+import { useHub } from '@workerhive/client'
 
 export interface WorkflowsProps{
 
 }
 
 export default function Workflows(props: React.FC<WorkflowsProps>){
+
+    const [ client, err ] = useHub()
+
     const [ nodes, setNodes ] = React.useState<Array<any>>([])
     const [ links, setLinks ] = React.useState<Array<any>>([])
     const [ workflow, setWorkflow ] = React.useState<any>({})
     const [ workflows, setWorkflows ] = React.useState<Array<any>>([]);
 
     React.useEffect(() => {
-        setTimeout(() => {
 
-        client.actions.getWorkflows().then((workflows : any) => {
+        client!.actions.getWorkflows().then((workflows : any) => {
             setWorkflows(workflows)
         })
-        }, 1000)
-    }, [])
+   
+    }, [client])
 
     const _onNodeAdd = (node: any) => {
         updateNodes(nodes.concat([node]))
@@ -39,13 +39,13 @@ export default function Workflows(props: React.FC<WorkflowsProps>){
 
     const updateLinks = (links : any) => {
         setLinks(links)
-        if(workflow.id) client.actions.updateWorkflow(workflow.id, {links: links})
+        if(workflow.id) client!.actions.updateWorkflow(workflow.id, {links: links})
     }
 
     const updateNodes = (nodes : any) => {
         setNodes(nodes)
         console.log(workflow)
-        if(workflow.id) client.actions.updateWorkflow(workflow.id, {nodes: nodes})
+        if(workflow.id) client!.actions.updateWorkflow(workflow.id, {nodes: nodes})
     }
 
     return (
@@ -55,7 +55,7 @@ export default function Workflows(props: React.FC<WorkflowsProps>){
                 title={"Workflows"}
                 structure={{name: 'String'}}
                 onClick={(item : any) => {
-                    client.actions.getWorkflow(item.id).then((workflow : any) => {
+                    client!.actions.getWorkflow(item.id).then((workflow : any) => {
                         console.log(workflow)
                         setWorkflow(workflow)
                         setNodes(workflow.nodes || [])
@@ -63,7 +63,7 @@ export default function Workflows(props: React.FC<WorkflowsProps>){
                     })
                 }}
                 onSave={(item: any) => {
-                    client.actions.addWorkflow(item).then((r : any) => {
+                    client!.actions.addWorkflow(item).then((r : any) => {
                         alert("Saved")
                     })
                     console.log(item)

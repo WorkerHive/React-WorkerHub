@@ -11,15 +11,16 @@
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
-    "@types/react": "^16.9.53",
-    "@types/react-dom": "^16.9.8",
-    "@workerhive/client": "0.0.5",
+    "@types/react": "16.8.3",
+    "@types/react-dom": "16.8.3",
+    "@workerhive/client": "^0.0.6",
     "@workerhive/hive-flow": "^1.1.4",
-    "@workerhive/react-ui": "^1.0.17",
+    "@workerhive/react-ui": "^1.0.20",
     "is-electron": "^2.2.0",
+    "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "16.8.3",
+    "react-dom": "16.8.3",
     "react-grid-layout": "^1.2.0",
     "react-resize-aware": "^3.1.0",
     "react-router-dom": "^5.2.0",
@@ -54,8 +55,10 @@
   "devDependencies": {
     "@babel/core": "7.7.7",
     "@types/async": "^3.2.5",
+    "@types/lodash": "^4.14.167",
     "@types/react-grid-layout": "^1.1.1",
     "@types/react-router-dom": "^5.1.7",
+    "@types/uuid": "^8.3.0",
     "webpack": "4.44.2"
   }
 }

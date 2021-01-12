@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react';
-import { Header, MutableDialog, PermissionForm, SearchTable } from '@workerhive/react-ui'
+import { DocumentEditor, FileBrowser, Header, MutableDialog, PermissionForm, SearchTable } from '@workerhive/react-ui'
 import { Route } from 'react-router-dom';
 import { Layout } from '../../components/layout';
 import { Fab } from '@material-ui/core';
@@ -29,7 +29,7 @@ const Types = [
                 x: 0,
                 y: 1,
                 w: 12,
-                h: (sizes.height / rowHeight) -2,
+                h: (sizes.height / rowHeight) - (sizes.width < 600 ? 2 : 1),
                 component: (data: any) => (<SearchTable renderItem={(item: any) => item.name} data={data.projects || []} />)
             }
         ]
@@ -57,8 +57,8 @@ const Types = [
                 x: 0,
                 y: 0,
                 w: 12,
-                h: (sizes.height / rowHeight) - 2,
-                component: (data: any, type: any) => {
+                h: (sizes.height / rowHeight) - (sizes.width < 600 ? 2 : 1),
+                component: (data: any, type: any, client: any) => {
                     const t: any = {};
                     if (type) type.def.forEach((_type: any) => {
                         t[_type.name] = _type.type;
@@ -73,6 +73,8 @@ const Types = [
                                     structure={t}
                                     onSave={(item : any) => {
                                         console.log("new team member", item)
+
+                                        props.client.actions.addTeamMember(item)
                                     }}
                                     onClose={() => modalOpen(false)}
                                     open={open} />
@@ -82,9 +84,92 @@ const Types = [
                                 </Fab>
                             </div>
                         )
-                    })({})
+                    })({client})
                 }
             }
+        ]
+    },
+    {
+        path: '/dashboard/files',
+        label: "Files",
+        data: {
+            type: 'File',
+            methods: {
+                files: 'getFiles'
+            }
+        },
+        layout: (sizes: any, rowHeight: number) => [
+            {
+                i: 'header',
+                x: 0,
+                y: 0,
+                w: 12, 
+                h: 1,
+                component: (<Header title="Files" />)
+            },
+            {
+                i: 'data',
+                x: 0,
+                y: 1,
+                w: 12,
+                h: (sizes.height / rowHeight) -2,
+                component: (data: any) => (<FileBrowser files={data.files} />)
+            }
+        ]
+    },
+    {
+        path: '/dashboard/kb',
+        label: "Knowledge",
+        data :{
+            type: 'Knowledge',
+            methods: {
+                knowledges: 'getKnowledges'
+            }
+        },
+        layout: (sizes: any, rowHeight: number) => [
+            {
+                i: 'header',
+                x: 0,
+                y: 0,
+                w: 12,
+                h: 1,
+                component: (<Header title="Knowledge Base" />)
+            },
+            {
+                i: 'editor',
+                x: 0,
+                y: 1,
+                w: 12,
+                h: (sizes.height / rowHeight) - 2,
+                component: (data: any, type: any, client: any) => {
+                    const t: any = {};
+                    if (type) type.def.forEach((_type: any) => {
+                        t[_type.name] = _type.type;
+                    })
+                    return ((props) => {
+                        const [open, modalOpen] = React.useState<boolean>(false);
+
+                        return (
+                            <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
+                                <MutableDialog 
+                                    title={"Knowledge"} 
+                                    structure={t} 
+                                    onSave={(item:any, type: any) => {
+                                        props.client.actions.addKnowledge(item)
+                                        modalOpen(false)
+                                    }}
+                                    onClose={() => modalOpen(false)}
+                                     open={open} />
+                                <SearchTable renderItem={(item: any) => item.title} data={data.knowledges || []} />
+                                <Fab onClick={() => modalOpen(true)} style={{ position: 'absolute', right: 12, bottom: 12 }} color="primary">
+                                    <Add />
+                                </Fab>
+                            </div>
+                        )
+                    })({client})
+                }
+            }
+            
         ]
     },
     {
@@ -93,7 +178,7 @@ const Types = [
         data: {
             type: 'Contact',
             methods: {
-                equipment: 'getContacts'
+                contacts: 'getContacts'
             }
         },
         layout: (sizes : any, rowHeight : number) => [
@@ -108,9 +193,9 @@ const Types = [
             {
                 i: 'data',
                 x: 0,
-                y: 0,
+                y: 1,
                 w: 12,
-                h: (sizes.height / rowHeight) - 2,
+                h: (sizes.height / rowHeight) - (sizes.width < 600 ? 2 : 1),
                 component: (data: any, type: any, client: any) => {
                     const t: any = {};
                     console.log(type)
@@ -126,7 +211,7 @@ const Types = [
                                     title={"Contacts"} 
                                     structure={t} 
                                     onSave={(item:any, type: any) => {
-                                        props.client.actions.addEquipment(item)
+                                        props.client.actions.addContact(item)
                                         modalOpen(false)
                                     }}
                                     onClose={() => modalOpen(false)}
@@ -165,7 +250,7 @@ const Types = [
                 x: 0,
                 y: 0,
                 w: 12,
-                h: (sizes.height / rowHeight) - 2,
+                h: (sizes.height / rowHeight) - (sizes.width < 600 ? 2 : 1),
                 component: (data: any, type: any, client: any) => {
                     const t: any = {};
                     console.log(type)

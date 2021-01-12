@@ -1,10 +1,9 @@
 import React, {Suspense, lazy, useRef} from 'react';
 import RGL, {WidthProvider} from 'react-grid-layout'
-import { WorkhubClient } from '@workerhive/client'
+import { useHub } from '@workerhive/client'
 import useResizeAware from 'react-resize-aware';
 import 'react-grid-layout/css/styles.css';
 const ReactGridLayout = WidthProvider(RGL);
-
 
 const Header = lazy(() => import('@workerhive/react-ui').then((r) => ({default: r.Header})))
 const SearchTable = lazy(() => import('@workerhive/react-ui').then((r) => ({default: r.SearchTable})))
@@ -35,10 +34,10 @@ const defaultProps = {
     cols: 12, 
 }
 
-const client = new WorkhubClient();
-
 export const Layout : React.FC<LayoutProps> = (props) => {
       const [resizeListener, sizes] = useResizeAware();
+
+      const [ client, err ] = useHub();
 
     const [ widgets, setWidgets ] = React.useState<any>({WordCounter: {type: TestWidget, title: 'Test Widget'}})
     const [ layout, setLayouts ] = React.useState<any>({rows: [{columns: [{className: 'col-md-12', widgets: [{key: 'WordCounter'}]}]}]})
@@ -47,7 +46,7 @@ export const Layout : React.FC<LayoutProps> = (props) => {
     const [ types, setTypes ] = React.useState<any>({})
 
     React.useEffect(() => {
-        client.getModels().then((types : any) => {
+        client!.getModels().then((types : any) => {
             let _type : any ={};
             types.forEach((ty : any) => {
                 _type[ty.name] = ty
@@ -58,7 +57,7 @@ export const Layout : React.FC<LayoutProps> = (props) => {
         if(props.data.methods){
            setTimeout(() => {
             for(const k in props.data.methods){
-                client.actions[props.data.methods[k]]().then((r : any) => {
+                client!.actions[props.data.methods[k]]().then((r : any) => {
                     let d = Object.assign({}, data);
                     d[k] = r;
                     setData(d)
