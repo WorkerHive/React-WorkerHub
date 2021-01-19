@@ -1,9 +1,11 @@
 import { useHub } from '@workerhive/client';
 import React, { Suspense, lazy } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { LayoutEditor } from '../../components/layout-editor';
 
 import Sidebar from '../../components/sidebar'
+import { AdminView } from '../Admin';
+import { PageEditor } from '../PageEditor';
+import { TypeEditor } from '../TypeEditor';
 
 import './index.css';
 
@@ -22,19 +24,21 @@ const Fallback = (props : any) => {
 }
 
 export const Dashboard: React.FC<DashboardProps> = (props) => {
-    const [ hub, err ] = useHub()
-    console.log("HUB ERR", hub, err)
+    const [ hub, isReady, err ] = useHub()
+    console.log(hub && Object.keys(hub!.actions).length)
     return (
         <div className="dashboard-view">
             <Sidebar />
-            {hub != null ?(
+            {hub != null && isReady ?(
                 <Suspense fallback={<Fallback />}>
                 <div className="dashboard-body">
                     <Switch>
                         <Route path={`${props.match.url}/`} exact component={Home} />
                         <Route path={`${props.match.url}/workflows`} exact component={Workflows} />
                         <Route path={`${props.match.url}/settings`} exact component={Settings} />
-                        <Route path={`${props.match.url}/settings/page-editor`} component={LayoutEditor} />
+                        <Route path={`${props.match.url}/settings/type-editor/:type`} component={TypeEditor} />
+                        <Route path={`${props.match.url}/settings/page-editor/:page_id`} component={PageEditor} />
+                        <Route path={`${props.match.url}/admin`} component={AdminView} />
                         <TypeMap />
 
                     </Switch>
