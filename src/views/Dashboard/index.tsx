@@ -36,8 +36,8 @@ export const Dashboard: React.FC<DashboardProps> = (props) => {
                         <Route path={`${props.match.url}/`} exact component={Home} />
                         <Route path={`${props.match.url}/workflows`} exact component={Workflows} />
                         <Route path={`${props.match.url}/settings`} exact component={Settings} />
-                        <Route path={`${props.match.url}/settings/type-editor/:type`} component={TypeEditor} />
-                        <Route path={`${props.match.url}/settings/page-editor/:page_id`} component={PageEditor} />
+                        <Route path={`${props.match.url}/settings/type-editor/:type`} exact component={TypeEditor} />
+                        <Route path={`${props.match.url}/settings/type-editor/:type/pages/:page_id`} component={PageEditor} />
                         <Route path={`${props.match.url}/admin`} component={AdminView} />
                         <TypeMap />
 

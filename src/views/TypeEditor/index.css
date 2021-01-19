@@ -18,6 +18,8 @@
 
 .type-editor__types{
     flex: 0.7;
+    overflow-y: auto;
+    margin-bottom: 8px;
 }
 
 .type-editor__views{
