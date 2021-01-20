@@ -22,7 +22,7 @@ export default function Workflows(props: React.FC<WorkflowsProps>){
     const [ workflows, setWorkflows ] = React.useState<Array<any>>([]);
 
     React.useEffect(() => {
-
+        console.log(client!.actions)
         client!.actions.getWorkflows().then((workflows : any) => {
             setWorkflows(workflows)
         })

@@ -48,7 +48,7 @@ export const SettingsMap = (props: any, storeTypes : any, converters : any, role
     },
     {
       title: <Typography variant="h6" style={{display: 'flex'}}>Roles</Typography>,
-      body: <CRUDList title={"Roles"} type={{name: 'String', permissions: {type: 'Table', items: props.types}}} data={roles} />
+      body: <CRUDList title={"Roles"} type={{name: 'String', permissions: {type: 'Table', items: models}}} data={roles} />
     },
     {
       title: <Typography variant="h6" style={{display: 'flex'}}>Data Flow</Typography>,
@@ -63,6 +63,9 @@ export const SettingsMap = (props: any, storeTypes : any, converters : any, role
       title: <Typography variant="h6" style={{display: 'flex'}}>Data types</Typography>,
       body: (
         <CRUDList title={"Types"} type={{name: 'String', def: 'KV'}} data={models} 
+          onEdit={(item: any) => {
+            props.history.push(`${props.match.url}/type-editor/${item.name}`)
+          }}
           onSave={(obj : any) => { 
             console.log(obj) 
           }} />   

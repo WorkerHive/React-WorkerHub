@@ -1,0 +1,28 @@
+.workhub-layout-editor{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+.layout-item{
+    position: relative;
+}
+
+.component-menu{
+    position: absolute;
+    background: black;
+    right: 12px;
+    top: 12px;
+    padding: 8px;
+}
+
+.component-menu *{
+    cursor: pointer;
+    margin-right: 1px solid white;
+    color: green;
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+.layout-item .component-menu{
+    opacity: 0;
+}

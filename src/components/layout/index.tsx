@@ -37,7 +37,7 @@ const defaultProps = {
 export const Layout : React.FC<LayoutProps> = (props) => {
       const [resizeListener, sizes] = useResizeAware();
 
-      const [ client, err ] = useHub();
+      const [ client, isReady, err ] = useHub();
 
     const [ widgets, setWidgets ] = React.useState<any>({WordCounter: {type: TestWidget, title: 'Test Widget'}})
     const [ layout, setLayouts ] = React.useState<any>({rows: [{columns: [{className: 'col-md-12', widgets: [{key: 'WordCounter'}]}]}]})
@@ -46,26 +46,29 @@ export const Layout : React.FC<LayoutProps> = (props) => {
     const [ types, setTypes ] = React.useState<any>({})
 
     React.useEffect(() => {
-        client!.getModels().then((types : any) => {
-            let _type : any ={};
-            types.forEach((ty : any) => {
-                _type[ty.name] = ty
-            })
-            setTypes(_type)
-        })
-
-        if(props.data.methods){
-           setTimeout(() => {
-            for(const k in props.data.methods){
-                client!.actions[props.data.methods[k]]().then((r : any) => {
-                    let d = Object.assign({}, data);
-                    d[k] = r;
-                    setData(d)
+        if(Object.keys(data).length < 1 && client != null){
+            client!.getModels().then((types : any) => {
+                let _type : any ={};
+                types.forEach((ty : any) => {
+                    _type[ty.name] = ty
                 })
-            }
-        }, 1000)
+                setTypes(_type)
+            })
+
+            if(props.data.methods){
+            setTimeout(() => {
+                for(const k in props.data.methods){
+                    console.log(props.data.methods[k])
+                    client!.actions[props.data.methods[k]]().then((r : any) => {
+                        let d = Object.assign({}, data);
+                        d[k] = r;
+                        setData(d)
+                    })
+                }
+            }, 1000)
   
         }
+    }
     }, [props.data, data])
 
     return (

@@ -9,8 +9,8 @@ export interface MenuViewProps{
     items: Array<any>;
     title: string;
     structure: any;
-    onSave: Function;
-    onClick: Function;
+    onSave: (args: {item: object}) => void;
+    onClick: (item: any) => void;
 }
 
 export function MenuView(props: MenuViewProps){
