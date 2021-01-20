@@ -1,10 +1,11 @@
-import { Fab } from '@material-ui/core';
+import { Fab, Menu, MenuItem, Typography } from '@material-ui/core';
 import { Add, Cancel, Edit } from '@material-ui/icons';
 import React from 'react';
 import { v4 } from 'uuid';
-import { isEqual, merge, unionWith } from 'lodash'
+import { isEqual } from 'lodash'
 import RGL, {WidthProvider} from 'react-grid-layout'
 import { EditorModal } from './editor-modal';
+import { DataModal } from './data-modal'
 import 'react-grid-layout/css/styles.css';
 import './index.css';
 
@@ -21,7 +22,10 @@ const defaultProps = {
     cols: 12, 
 }
 export const LayoutEditor : React.FC<LayoutEditorProps> = ({layout = [], onLayoutChange}) => {
+    const [ context, setContext ] = React.useState<any>({})
     const [ modalOpen, openModal ] = React.useState<boolean>(false);
+    const [ linkModal, openLink ] = React.useState<boolean>(false);
+
     const componentMenu = [<Edit />, <Cancel />]
     const setLayouts = (layout: any) => {
         if(onLayoutChange) onLayoutChange(layout)
@@ -39,8 +43,16 @@ export const LayoutEditor : React.FC<LayoutEditorProps> = ({layout = [], onLayou
         }]))
     }
 
+
+    const handleContextMenu = (event: React.MouseEvent, item: any) => {
+        event.preventDefault();
+
+        setContext({x: event.clientX - 2, y: event.clientY - 4, item: item})
+        console.log("Right click menu", item)
+    }
+
     return (
-        <>
+        <div className="workhub-layout-editor">
         <ReactGridLayout 
             style={{flex:1}}
             {...defaultProps}    
@@ -61,7 +73,7 @@ export const LayoutEditor : React.FC<LayoutEditorProps> = ({layout = [], onLayou
             }} 
             isBounded={true}>
                 {layout.map((x: any) => (
-                    <div key={x.i} className="layout-item" style={{display: 'flex', flexDirection: 'column'}}>
+                    <div onContextMenu={(e: React.MouseEvent) => {handleContextMenu(e, x)}} key={x.i} className="layout-item" style={{display: 'flex', flexDirection: 'column'}}>
                         <div className="component-menu">
                             {componentMenu}
                         </div>
@@ -69,12 +81,28 @@ export const LayoutEditor : React.FC<LayoutEditorProps> = ({layout = [], onLayou
                     </div>
                 ))} 
         </ReactGridLayout>
+        <Menu
+            keepMounted
+            open={context.y != null}
+            onClose={() => setContext({})}
+            anchorReference="anchorPosition"
+            anchorPosition={
+                context.y !== null && context.x !== null ? {
+                    top: context.y, left: context.x
+                } : undefined
+            }
+            >
+                <Typography style={{fontWeight: 'bold', paddingLeft: 8}}>{context.item && context.item.componentName}</Typography>
+                <MenuItem onClick={() => openLink(true)}>Link Data</MenuItem>
+                <MenuItem style={{color: 'red'}}>Remove Component</MenuItem>
+            </Menu>
         <Fab style={{position: 'absolute', right: 12, bottom: 12}} color="primary" onClick={() => openModal(true)}>
             <Add />
         </Fab>
+        <DataModal component={context.item} open={linkModal} onClose={(e: any) => {openLink(false)}}/>
         <EditorModal open={modalOpen} onSave={(item, name) => {
             addItem(item, name)    
         }} onClose={() => openModal(false)}/>
-        </>
+        </div>
     )
 }

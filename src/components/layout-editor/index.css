@@ -1,3 +1,8 @@
+.workhub-layout-editor{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
 .layout-item{
     position: relative;
 }
@@ -20,8 +25,4 @@
 
 .layout-item .component-menu{
     opacity: 0;
-}
-
-.layout-item:hover .component-menu{
-    opacity: 1;
 }

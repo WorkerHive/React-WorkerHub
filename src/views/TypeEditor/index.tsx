@@ -35,7 +35,7 @@ export const TypeEditor : React.FC<TypeEditorProps> = (props) => {
                     </div>*/}
                     
                     <Paper className="type-editor__types">
-                        <CRUDKV types={[]} value={type.def} onChange={(def : any) => {console.log("Hit"); setType({def: def});}} />
+                        <CRUDKV types={client!.models || []} value={type.def} onChange={(def : any) => {console.log("Hit"); setType({def: def});}} />
                     </Paper>
 
                     <Paper className="type-editor__views">
