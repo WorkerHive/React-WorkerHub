@@ -2505,10 +2505,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@workerhive/client@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@workerhive/client/-/client-0.0.21.tgz#029554787e4c320e0245263064270aad78fb708e"
-  integrity sha512-o7gIhdlz6EQ9XK7NKQy89HNEbm5f1048XziRs3b4YCri6SqsF89Wysxj5WGHpUTex3U8KrcX0odih1cu0hho3A==
+"@workerhive/client@^0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@workerhive/client/-/client-0.0.22.tgz#551a5576c8ecaf31d85df72ef7d06679e3a0f6e5"
+  integrity sha512-GZwrp/zjNKHkiV1kmkC8MXopJMYf3lhp5bHQ/5nEnYl0uZoOWlYuuimRYxoasMUwlBPv2f04zknktsEL4vyzxQ==
   dependencies:
     "@apollo/client" "^3.3.6"
     apollo-upload-client "^14.1.3"
