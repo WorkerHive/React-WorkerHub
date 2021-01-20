@@ -154,7 +154,7 @@ const Types = [
                                 <MutableDialog 
                                     title={"Knowledge"} 
                                     structure={t} 
-                                    onSave={(item:any, type: any) => {
+                                    onSave={({item}) => {
                                         props.client.actions.addKnowledge(item)
                                         modalOpen(false)
                                     }}
@@ -210,7 +210,7 @@ const Types = [
                                 <MutableDialog 
                                     title={"Contacts"} 
                                     structure={t} 
-                                    onSave={(item:any, type: any) => {
+                                    onSave={({item}) => {
                                         props.client.actions.addContact(item)
                                         modalOpen(false)
                                     }}
@@ -265,7 +265,7 @@ const Types = [
                                 <MutableDialog 
                                     title={"Equipment"} 
                                     structure={t} 
-                                    onSave={(item:any, type: any) => {
+                                    onSave={({item}) => {
                                         props.client.actions.addEquipment(item)
                                         modalOpen(false)
                                     }}

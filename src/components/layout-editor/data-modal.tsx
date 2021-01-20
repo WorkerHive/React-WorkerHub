@@ -11,14 +11,14 @@ export interface DataModalProps {
 }
 
 export interface DataModalInputProps {
-    type: string;
+    type: {type: string, properties: any};
     label?: string;
 }
 
 export const DataModalInput : React.FC<DataModalInputProps> = (props) => {
     const [ client, isReady, err ] = useHub()
 
-    switch(props.type){
+    switch(props.type.type){
         case 'string':
             return <TextField fullWidth label={props.label} />
         case 'array':
@@ -32,6 +32,12 @@ export const DataModalInput : React.FC<DataModalInputProps> = (props) => {
                     </Select>
                 </FormControl>
             )
+        case 'object':
+            if(props.type.properties.args != null){
+               return <div>Function ({Object.keys(props.type.properties.args.properties).join(', ')})</div>
+            }
+           return null;
+
         default: 
             return null;
     }
@@ -43,6 +49,7 @@ export const DataModal : React.FC<DataModalProps> = (props) => {
     React.useEffect(() => {
         if(props.component){
             let prop = WorkUIProps[`${props.component?.componentName}Props`]
+            console.log(prop)
             setProperties(prop.properties)
         } 
     }, [props.component])
@@ -57,7 +64,7 @@ export const DataModal : React.FC<DataModalProps> = (props) => {
                      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                          <div style={{flex: 1}}>{prop} :</div> 
                          <div style={{flex: 1}}>
-                             <DataModalInput label={prop} type={properties[prop].type} />
+                             <DataModalInput label={prop} type={properties[prop]} />
                           </div>
                      </div>
                     );
