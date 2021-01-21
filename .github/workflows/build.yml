@@ -9,6 +9,8 @@ on:
 jobs:
   make-release: 
     runs-on: ubuntu-latest
+    env: 
+      NODE_ENV: production
     steps: 
       - name: Create Release
         id: create_release
@@ -29,7 +31,8 @@ jobs:
         with:
           node-version: 14
       - run: yarn install
-      - run: NODE_OPTIONS="--max_old_space_size=4096" NODE_ENV="production" yarn build
+      - run: echo $NODE_ENV
+      - run: NODE_OPTIONS="--max_old_space_size=4096" yarn build
         env: 
           CI: false
       - run: zip build.zip -r build
