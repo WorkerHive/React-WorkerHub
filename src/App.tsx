@@ -19,6 +19,8 @@ function App() {
 
   const [ hubUrl, setHubUrl ] = React.useState<string | null>(isElectron() ? localStorage.getItem('workhub-api') : (process.env.NODE_ENV != "production" ? 'http://localhost:4002' : ''));
 
+  console.log(process.env.NODE_ENV, hubUrl)
+  
   return (
     <WorkhubProvider args={{a: 'b'}} url={hubUrl || ''}>
         <Router>
