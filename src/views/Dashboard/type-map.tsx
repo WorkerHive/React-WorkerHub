@@ -45,11 +45,19 @@ const Types = [
                                 if(item.id){
                                     const id = item.id;
                                     delete item.id;
-                                    client.actions.updateSchedule(id, item).then(() => {
+                                    client.actions.updateSchedule(id, {
+                                        start: item.start,
+                                        end: item.end,
+                                        title: item.title
+                                    }).then(() => {
                                         openModal(false)
                                     })
                                 }else{
-                                    client.actions.addSchedule(item).then(() => {
+                                    client.actions.addSchedule({
+                                        start: item.start,
+                                        end: item.end,
+                                        title: item.title
+                                    }).then(() => {
                                         openModal(false)
                                     })
                                 }
