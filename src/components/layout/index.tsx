@@ -76,7 +76,9 @@ export const Layout : React.FC<LayoutProps> = (props) => {
             {resizeListener}
         <ReactGridLayout 
             style={{flex:1}}
-            {...defaultProps}    
+            {...defaultProps}   
+            isDraggable={false}
+            isResizable={false} 
             layout={props.layout(sizes, 64) as RGL.Layout[]}
             onLayoutChange={(layout) => {}} 
             isBounded={true}>

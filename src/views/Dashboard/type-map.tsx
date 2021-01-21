@@ -1,11 +1,57 @@
 import React, { FC, ReactElement } from 'react';
-import { DocumentEditor, FileBrowser, Header, MutableDialog, PermissionForm, SearchTable } from '@workerhive/react-ui'
+import { Calendar, DocumentEditor, FileBrowser, Header, MutableDialog, PermissionForm, SearchTable } from '@workerhive/react-ui'
 import { Route } from 'react-router-dom';
 import { Layout } from '../../components/layout';
-import { Fab } from '@material-ui/core';
+import { Paper, Fab } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 
 const Types = [
+    {
+        path: '/dashboard/calendar',
+        label: "Calendar",
+        data: {
+            type: "Schedule",
+            methods: {
+                scheduleItems: 'getSchedule'
+            }
+        },
+        layout: (sizes: any, rowHeight: number) => [
+            {
+                i: 'header',
+                x: 0,
+                y: 0,
+                w: 12,
+                h: 1,
+                component: (data: any) => <Header title={"Calendar"} />,
+            },
+            {
+                i: 'data',
+                x: 0,
+                y: 1,
+                w: 12,
+                h: sizes.height / rowHeight - 1, 
+                component: (data: any) => {
+                
+                    return ((props) => {
+                        
+                        const [ modalOpen, openModal ] = React.useState<boolean>(false);
+
+                    return <Paper style={{padding: 4, flex: 1, display: 'flex'}}>
+                        <MutableDialog 
+                            open={modalOpen} 
+                            data={{startTime: new Date()}}
+                            structure={{
+                                startTime: "Date",
+                                endTime: "Date",
+                                title: "String"
+                            }} title={"Schedule"}/>
+                        <Calendar events={[]} onSelectSlot={(slots : any) => openModal(true)} />
+                    </Paper>
+                    })(data)
+                }
+            }
+        ]
+    },
     {
         path: '/dashboard/projects',
         label: "Projects",

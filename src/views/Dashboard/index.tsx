@@ -1,4 +1,7 @@
 import { useHub } from '@workerhive/client';
+import { MuiPickersUtilsProvider} from '@material-ui/pickers'
+import MomentUtils from '@date-io/moment';
+
 import React, { Suspense, lazy } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
@@ -27,6 +30,7 @@ export const Dashboard: React.FC<DashboardProps> = (props) => {
     const [ hub, isReady, err ] = useHub()
     console.log(hub && Object.keys(hub!.actions).length)
     return (
+        <MuiPickersUtilsProvider utils={MomentUtils}>
         <div className="dashboard-view">
             <Sidebar />
             {hub != null && isReady ?(
@@ -47,6 +51,7 @@ export const Dashboard: React.FC<DashboardProps> = (props) => {
             ) : <Fallback />}
 
         </div>        
+        </MuiPickersUtilsProvider>
 
     )
 }
