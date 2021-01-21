@@ -12,7 +12,7 @@ const Types = [
         data: {
             type: "Schedule",
             methods: {
-                scheduleItems: 'getSchedule'
+                scheduleItems: 'getSchedules'
             }
         },
         layout: (sizes: any, rowHeight: number) => [
@@ -30,22 +30,57 @@ const Types = [
                 y: 1,
                 w: 12,
                 h: sizes.height / rowHeight - 1, 
-                component: (data: any) => {
+                component: (data: any, type: any, client: any) => {
                 
                     return ((props) => {
                         
                         const [ modalOpen, openModal ] = React.useState<boolean>(false);
 
-                    return <Paper style={{padding: 4, flex: 1, display: 'flex'}}>
+                        const [ userData, setData ] = React.useState<object>({});
+
+                          return <Paper style={{padding: 4, flex: 1, display: 'flex'}}>
                         <MutableDialog 
                             open={modalOpen} 
-                            data={{startTime: new Date()}}
+                            onSave={({item} : any) => {
+                                if(item.id){
+                                    const id = item.id;
+                                    delete item.id;
+                                    client.actions.updateSchedule(id, item).then(() => {
+                                        openModal(false)
+                                    })
+                                }else{
+                                    client.actions.addSchedule(item).then(() => {
+                                        openModal(false)
+                                    })
+                                }
+                                console.log("Save calendar", item)
+                            }}
+                            onClose={() => {
+                                openModal(false);
+                                setData({})
+                            }}
+                            data={userData}
                             structure={{
-                                startTime: "Date",
-                                endTime: "Date",
-                                title: "String"
+                                title: "String",
+                                start: "Date",
+                                end: "Date",
+                                allDay: "Boolean"
                             }} title={"Schedule"}/>
-                        <Calendar events={[]} onSelectSlot={(slots : any) => openModal(true)} />
+                        <Calendar events={data.scheduleItems ? data.scheduleItems.map((x:any) => {
+                            return {
+                                ...x,
+                                start: typeof(x.start) === 'string' ? new Date(x.start) : x.start,
+                                end: typeof(x.end) === 'string' ? new Date(x.end) : x.end
+                            }
+                        }) : []} 
+                        onDoubleClickEvent={(event: any) => {
+                            setData(event)
+                            openModal(true)
+                        }}
+                        onSelectSlot={(slotInfo: any) =>{
+                            openModal(true)
+                            setData(slotInfo)
+                        } } />
                     </Paper>
                     })(data)
                 }
@@ -117,7 +152,7 @@ const Types = [
                                 <MutableDialog 
                                     title={"Team"} 
                                     structure={t}
-                                    onSave={(item : any) => {
+                                    onSave={({item} : any) => {
                                         console.log("new team member", item)
 
                                         props.client.actions.addTeamMember(item)
