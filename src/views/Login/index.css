@@ -3,6 +3,21 @@
     flex: 1;
 }
 
+.login-header{ 
+    display: flex;
+    align-items: center;
+    padding-bottom: 8px;
+}
+
+.login-header h5{
+    margin-bottom: -4px;
+}
+
+.login-header img{ 
+    height: 44px;
+    margin-right: 12px;
+}
+
 .login-section{
     flex: 0.28;
     display: flex;

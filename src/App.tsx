@@ -19,17 +19,27 @@ function App() {
 
   const [ hubUrl, setHubUrl ] = React.useState<string | null>(isElectron() ? localStorage.getItem('workhub-api') : (process.env.NODE_ENV == "development" ? 'http://localhost:4002' : window.location.origin));
 
-  console.log(process.env.NODE_ENV, hubUrl)
-  
+
   return (
-    <WorkhubProvider args={{a: 'b'}} url={hubUrl || ''}>
         <Router>
           <div className="App">
             <Route path="/login" component={Login} />
-            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/dashboard" render={(props) => {
+              console.log(localStorage.getItem('token'))
+              if(localStorage.getItem('token')!.length > 0){
+                return (
+                      <WorkhubProvider token={localStorage.getItem('token')!} url={hubUrl || ''}>
+                        <Dashboard {...props} />
+                      </WorkhubProvider>
+                )
+              }else{
+                return (
+                  <Redirect to="/login" />
+                )
+              }
+            }} />
           </div>
         </Router>
-    </WorkhubProvider>
   );
 }
 

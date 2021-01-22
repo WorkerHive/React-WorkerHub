@@ -13,31 +13,28 @@ import { TypeEditor } from '../TypeEditor';
 import './index.css';
 
 const TypeMap = lazy(() => import('./type-map'))
-const Home = lazy(() => import('../Home'))
 const Settings = lazy(() => import('../Settings')) 
 const Workflows = lazy(() => import('../Workflows'))
-const Team = lazy(() => import('../Team'))
 
 export interface DashboardProps{
     match: any;
 }
 
 const Fallback = (props : any) => {
-    return (<div>Loading ...</div>)
+    return (<div>Loading {props.reason} ...</div>)
 }
 
 export const Dashboard: React.FC<DashboardProps> = (props) => {
-    const [ hub, isReady, err ] = useHub()
+    const [ hub, store, isReady, err ] = useHub()
     console.log(hub && Object.keys(hub!.actions).length)
     return (
         <MuiPickersUtilsProvider utils={MomentUtils}>
         <div className="dashboard-view">
             <Sidebar />
             {hub != null && isReady ?(
-                <Suspense fallback={<Fallback />}>
+                <Suspense fallback={<Fallback reason="Components"/>}>
                 <div className="dashboard-body">
                     <Switch>
-                        <Route path={`${props.match.url}/`} exact component={Home} />
                         <Route path={`${props.match.url}/workflows`} exact component={Workflows} />
                         <Route path={`${props.match.url}/settings`} exact component={Settings} />
                         <Route path={`${props.match.url}/settings/type-editor/:type`} exact component={TypeEditor} />
@@ -48,7 +45,7 @@ export const Dashboard: React.FC<DashboardProps> = (props) => {
                     </Switch>
                 </div>
                 </Suspense>
-            ) : <Fallback />}
+            ) : <Fallback reason={`Client ${isReady} ${hub}`} />}
 
         </div>        
         </MuiPickersUtilsProvider>

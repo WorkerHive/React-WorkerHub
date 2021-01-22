@@ -2554,10 +2554,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@workerhive/client@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@workerhive/client/-/client-0.0.22.tgz#551a5576c8ecaf31d85df72ef7d06679e3a0f6e5"
-  integrity sha512-GZwrp/zjNKHkiV1kmkC8MXopJMYf3lhp5bHQ/5nEnYl0uZoOWlYuuimRYxoasMUwlBPv2f04zknktsEL4vyzxQ==
+"@workerhive/client@^0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@workerhive/client/-/client-0.0.27.tgz#eef42e8c31f9f6cc0d06b9fc2f22acbab92290f5"
+  integrity sha512-E+hBB9UsVG7H2WJQCl7GTsGQntM+vVeEsZCqnOMWJiykwss2eHbZApA6pU/C/u50yySM1RokL/g4QOYOakmWGg==
   dependencies:
     "@apollo/client" "^3.3.6"
     apollo-upload-client "^14.1.3"
@@ -2579,10 +2579,10 @@
     uuid "^8.3.1"
     with-context "^0.0.3"
 
-"@workerhive/react-ui@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@workerhive/react-ui/-/react-ui-1.1.8.tgz#2f4745c02e0b67a1a8279a8fef8889afb3372d58"
-  integrity sha512-jC+pl1mluYAvH7ZljmqwTZKgJjN+Jke/PcAFhzydHUW4XaIp9Smw/3xaa9vJWR5pE9AXaoqLz4mlpFceVYKKuQ==
+"@workerhive/react-ui@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@workerhive/react-ui/-/react-ui-1.1.10.tgz#3e044031d61681dc857189b0f2d293f7f38fab97"
+  integrity sha512-VDZ5uBvLQeb7wkJZU7E+AZkJs+7ng/RUuoiaQkToEXpIlAfWaveRJSHqmhf12N22J3O/hXet/WbWU1/2M46Kvg==
   dependencies:
     "@date-io/moment" "1.x"
     "@lourenci/react-kanban" "^2.1.0"
