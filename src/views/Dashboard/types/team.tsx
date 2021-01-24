@@ -7,9 +7,8 @@ export const TEAM_VIEW = {
         path: '/dashboard/team',
         label: "Team",
         data: {
-            type: 'TeamMember',
-            methods: {
-                team: 'getTeamMembers'
+            team: {
+                type: "[TeamMember]"
             }
         },
         layout: (sizes : any, rowHeight: number) => [
@@ -19,7 +18,7 @@ export const TEAM_VIEW = {
                 y: 0,
                 w: 12,
                 h: 1,
-                component: (data: any) => (<Header title="Team" />)
+                component: (data: any) => (<Header title={data.label} />)
             },
             {
                 i: 'data',
@@ -29,7 +28,7 @@ export const TEAM_VIEW = {
                 h: (sizes.height / rowHeight) - (sizes.width < 600 ? 2 : 1),
                 component: (data: any, params: any, type: any, client: any) => {
                     const t: any = {};
-                    if (type) type.def.forEach((_type: any) => {
+                    if (type["TeamMember"]) type["TeamMember"].def.forEach((_type: any) => {
                         t[_type.name] = _type.type;
                     })
                     return ((props) => {
@@ -38,7 +37,7 @@ export const TEAM_VIEW = {
                         return (
                             <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
                                 <MutableDialog 
-                                    title={"Team"} 
+                                    title={data.label} 
                                     data={selected}
                                     structure={t}
                                     onSave={({item} : any) => {
@@ -74,7 +73,7 @@ export const TEAM_VIEW = {
                                         </>
                                        
                                     ]} 
-                                    data={data.TeamMember || []} />
+                                    data={data.team || []} />
 
                                 <Fab onClick={() => modalOpen(true)} style={{ position: 'absolute', right: 12, bottom: 12 }} color="primary">
                                     <Add />

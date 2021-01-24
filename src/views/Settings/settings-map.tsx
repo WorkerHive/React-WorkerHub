@@ -4,8 +4,8 @@ import { useHub } from '@workerhive/client'
 import React from 'react';
 
 
-export const SettingsMap = (props: any, storeTypes : any, converters : any, roles: any) => {
-  const [ client, err ] = useHub()
+export const SettingsMap = (props: any, stores: any, storeTypes : any, converters : any, roles: any) => {
+  const [ client, store, isReady, err ] = useHub()
 
   const [ models, setModels ] = React.useState<any>([]);
   React.useEffect(() => {
@@ -24,26 +24,26 @@ export const SettingsMap = (props: any, storeTypes : any, converters : any, role
       body: (
         <CRUDList 
           title={"Connections"} 
-          onDelete={(obj : any) => {
-            if(obj && obj.id){
-              props.deleteStore(obj.id)
+          onDelete={({item}: any) => {
+            if(item && item.id){
+              client!.actions.deleteStore(item.id)
             }
             
           }}
-          onSave={(ob : any) => {
-            let obj = Object.assign({}, ob)
+          onSave={({item} : any) => {
+            let obj = Object.assign({}, item)
             if(!obj.id){
-              props.addStore(obj)
+              client!.actions.addStore(obj)
             }else{
               const id = obj.id;
               delete obj.id;
               console.log("UPDATE STORE", id, obj)
 
-              props.updateStore(id, obj)
+              client!.actions.updateStore(id, obj)
             }
           }}
           type={{name: 'String', type: {type: 'Select', items: storeTypes, key: 'id'}, host: 'String', user: 'String', pass: 'Password', dbName: 'String'}} 
-          data={props.stores} />
+          data={store.IntegrationStore} />
       )
     },
     {

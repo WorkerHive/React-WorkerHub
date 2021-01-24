@@ -31,7 +31,7 @@ export default (props: any) => {
         <>
             {Types.map((x) => (
                 <Route path={x.path} exact render={(props) => (
-                    <Layout {...props} data={x.data} layout={x.layout} />
+                    <Layout {...props} schema={x} />
                 )} />
             ))}
         </>

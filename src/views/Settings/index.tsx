@@ -3,6 +3,7 @@ import React from 'react';
 import { AccordionList } from "@workerhive/react-ui"
 import { SettingsMap } from './settings-map'
 import './index.css';
+import { useHub } from '@workerhive/client';
 
 export interface SettingsProps{
     history: any;
@@ -12,7 +13,17 @@ export default function Settings (props: SettingsProps){
   const [ converters, setConverters ] = React.useState([])
   const [ stores, setStores ] = React.useState([])
 
+  const [ client, store, isReady ] = useHub();
+
   React.useEffect(() => {
+    client!.actions.getStoreTypes().then((data : any) => {
+      setStoreTypes(data)
+    })
+
+    client!.actions.getStores().then((data : any) => {
+      setStores(data)
+    })
+
    /* getStoreTypes().then((types : any) => {
       console.log("TYOES", types)
       setStoreTypes(types);
@@ -43,7 +54,7 @@ export default function Settings (props: SettingsProps){
 
     return (
         <div className="settings-view">
-            <AccordionList items={SettingsMap(props, storeTypes, converters, roles)} />
+            <AccordionList items={SettingsMap(props, stores, storeTypes, converters, roles)} />
         </div>
     )
 }

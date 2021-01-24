@@ -54,7 +54,7 @@ export default function Workflows(props: React.FC<WorkflowsProps>){
             <MenuView 
                 title={"Workflows"}
                 structure={{name: 'String'}}
-                onClick={(item : any) => {
+                onClick={({item }: any) => {
                     client!.actions.getWorkflow(item.id).then((workflow : any) => {
                         console.log(workflow)
                         setWorkflow(workflow)
@@ -62,8 +62,9 @@ export default function Workflows(props: React.FC<WorkflowsProps>){
                         setLinks(workflow.links || [])
                     })
                 }}
-                onSave={(item: any) => {
+                onSave={({item}:any) => {
                     client!.actions.addWorkflow(item).then((r : any) => {
+                      
                         alert("Saved")
                     })
                     console.log(item)

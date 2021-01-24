@@ -7,10 +7,12 @@ export const PROJECT_DRILLDOWN = {
     path: '/dashboard/projects/:id',
     label: "Project Drilldown",
     data: {
-        type: "Project",
-        methods: {
-            project: 'getProjects'
-        }
+        project: {
+            type: 'Project',
+            query: (params: any) => ({
+                id: params.id
+            })
+        },
     },
     layout: (sizes: any, rowHeight: number) => [
         {
@@ -20,8 +22,8 @@ export const PROJECT_DRILLDOWN = {
             w: 12, 
             h: 1,
             component: (data: any, params: any) => {
-                let project = (data.Project || []).filter((project : any) => project.id === params.id)[0]
-                return (<Header title={project ? project.name : ''} />)
+                console.log(data)
+                return (<Header title={data.project ? data.project.name : ''} />)
             }
         },
         {
@@ -31,9 +33,8 @@ export const PROJECT_DRILLDOWN = {
             w: 12, 
             h: sizes.height / rowHeight,
             component: (data: any, params: any) => {
-                let project = (data.Project || []).filter((a : any) => a.id == params.id)[0]
                 return <div>
-                    {JSON.stringify(project)}
+                    {JSON.stringify(data.project)}
                 </div>
             }
         }
@@ -44,9 +45,11 @@ export const PROJECT_VIEW = {
         path: '/dashboard/projects',
         label: "Projects",
         data: {
-            type: "Project",
-            methods: {
-                projects: 'getProjects'
+            projects: {
+                type: '[Project]',
+                query: () => ({
+
+                })
             }
         },
         layout: (sizes : any, rowHeight: number) => [
@@ -56,7 +59,7 @@ export const PROJECT_VIEW = {
                 y: 0,
                 w: 12,
                 h: 1,
-                component: (data: any) => (<Header title="Projects" />)
+                component: (data: any) => (<Header title={data.label} />)
             },
             {
                 i: 'data',
@@ -64,10 +67,11 @@ export const PROJECT_VIEW = {
                 y: 1,
                 w: 12,
                 h: (sizes.height / rowHeight) - (sizes.width < 600 ? 2 : 1),
-                component: (data: any, params: any, type: any, client: any) => {
+                component: (data: any, params: any, types: any, client: any) => {
+                    console.log(types)
                     const t: any = {};
-                    console.log(type)
-                    if (type) type.def.forEach((_type: any) => {
+                    console.log(types)
+                    if (types["Project"]) types["Project"].def.forEach((_type: any) => {
                         t[_type.name] = _type.type;
                     })
                     return ((props) => {
@@ -76,7 +80,7 @@ export const PROJECT_VIEW = {
                         return (
                             <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
                                 <MutableDialog 
-                                    title={"Project"} 
+                                    title={data.label} 
                                     data={selected}
                                     structure={t} 
                                     onSave={({item} : any) => {
@@ -111,7 +115,7 @@ export const PROJECT_VIEW = {
                                        
                                        </div> 
                                     )}
-                                    data={data.Project || []} />
+                                    data={data.projects || []} />
                                 <Fab onClick={() => modalOpen(true)} style={{ position: 'absolute', right: 12, bottom: 12 }} color="primary">
                                     <Add />
                                 </Fab>

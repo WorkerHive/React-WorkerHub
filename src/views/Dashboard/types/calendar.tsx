@@ -6,9 +6,8 @@ export const CALENDAR_VIEW =  {
         path: '/dashboard/calendar',
         label: "Calendar",
         data: {
-            type: "Schedule",
-            methods: {
-                scheduleItems: 'getSchedules'
+            scheduleItems: {
+                type: '[Schedule]',
             }
         },
         layout: (sizes: any, rowHeight: number) => [
@@ -70,7 +69,7 @@ export const CALENDAR_VIEW =  {
                                 end: "Date",
                                 allDay: "Boolean"
                             }} title={"Schedule"}/>
-                        <Calendar events={data.Schedule ? data.Schedule.map((x:any) => {
+                        <Calendar events={data.scheduleItems ? data.scheduleItems.map((x:any) => {
                             return {
                                 ...x,
                                 start: typeof(x.start) === 'string' ? new Date(x.start) : x.start,

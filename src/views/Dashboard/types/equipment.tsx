@@ -7,9 +7,8 @@ export const EQUIPMENT_VIEW = {
         path: '/dashboard/equipment',
         label: "Equipment",
         data: {
-            type: 'Equipment',
-            methods: {
-                equipment: 'getEquipments'
+            equipment: {
+                type: '[Equipment]'
             }
         },
         layout: (sizes : any, rowHeight : number) => [
@@ -19,7 +18,7 @@ export const EQUIPMENT_VIEW = {
                 y: 0,
                 w: 12,
                 h: 1,
-                component: (data : any) => (<Header title="Equipment" />)
+                component: (data : any) => (<Header title={data.label} tabs={[...new Set(data.equipment.map((x:any) => x.type))]}/>)
             },
             {
                 i: 'data',
@@ -30,7 +29,7 @@ export const EQUIPMENT_VIEW = {
                 component: (data: any, params: any, type: any, client: any) => {
                     const t: any = {};
                     console.log(type)
-                    if (type) type.def.forEach((_type: any) => {
+                    if (type["Equipment"]) type["Equipment"].def.forEach((_type: any) => {
                         t[_type.name] = _type.type;
                     })
                     return ((props) => {
@@ -39,7 +38,7 @@ export const EQUIPMENT_VIEW = {
                         return (
                             <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
                                 <MutableDialog 
-                                    title={"Equipment"} 
+                                    title={data.label} 
                                     structure={t} 
                                     onSave={({item}) => {
                                         props.client.actions.addEquipment(item).then(() => {
@@ -59,7 +58,7 @@ export const EQUIPMENT_VIEW = {
                                             ]} />
                                         </>
                                     )} 
-                                    data={data.Equipment || []} />
+                                    data={data.equipment || []} />
                                 <Fab onClick={() => modalOpen(true)} style={{ position: 'absolute', right: 12, bottom: 12 }} color="primary">
                                     <Add />
                                 </Fab>

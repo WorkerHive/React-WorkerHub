@@ -8,9 +8,11 @@ export const CONTACT_VIEW = {
         path: '/dashboard/contacts',
         label: "Contacts",
         data: {
-            type: 'Contact',
-            methods: {
-                contacts: 'getContacts'
+            contacts: {
+                type: '[Contact]'
+            },
+            organisations: {
+                type: '[ContactOrganisation]'
             }
         },
         layout: (sizes : any, rowHeight : number) => [
@@ -20,7 +22,7 @@ export const CONTACT_VIEW = {
                 y: 0,
                 w: 12,
                 h: 1,
-                component: (data: any) => (<Header title="Contacts" tabs={["People", "Companies"]} />)
+                component: (data: any) => (<Header title={data.label} tabs={["People", "Companies"]} />)
             },
             {
                 i: 'data',
@@ -31,7 +33,7 @@ export const CONTACT_VIEW = {
                 component: (data: any, params: any, type: any, client: any) => {
                     const t: any = {};
                     console.log(type)
-                    if (type) type.def.forEach((_type: any) => {
+                    if (type["Contact"]) type["Contact"].def.forEach((_type: any) => {
                         t[_type.name] = _type.type;
                     })
                     return ((props) => {
@@ -41,7 +43,7 @@ export const CONTACT_VIEW = {
                         return (
                             <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
                                 <MutableDialog 
-                                    title={"Contacts"} 
+                                    title={data.label} 
                                     data={selected}
                                     structure={t} 
                                     onSave={({item} : any) => {
@@ -71,7 +73,7 @@ export const CONTACT_VIEW = {
                                             }}
                                         ]}/>
                                     </div>
-                                )} data={data.Contact || []} />
+                                )} data={data.contacts || []} />
                                 <Fab onClick={() => modalOpen(true)} style={{ position: 'absolute', right: 12, bottom: 12 }} color="primary">
                                     <Add />
                                 </Fab>

@@ -7,9 +7,8 @@ export const KNOWLEDGE_VIEW = {
         path: '/dashboard/kb',
         label: "Knowledge",
         data :{
-            type: 'Knowledge',
-            methods: {
-                knowledges: 'getKnowledges'
+            kb: {
+                type: '[Knowledge]'
             }
         },
         layout: (sizes: any, rowHeight: number) => [
@@ -26,10 +25,10 @@ export const KNOWLEDGE_VIEW = {
                 x: 0,
                 y: 1,
                 w: 12,
-                h: (sizes.height / rowHeight) - 2,
+                h: (sizes.height / rowHeight) - 1,
                 component: (data: any, params: any, type: any, client: any) => {
                     const t: any = {};
-                    if (type) type.def.forEach((_type: any) => {
+                    if (type["Knowledge"]) type["Knowledge"].def.forEach((_type: any) => {
                         t[_type.name] = _type.type;
                     })
                     return ((props) => {
@@ -46,7 +45,7 @@ export const KNOWLEDGE_VIEW = {
                                     }}
                                     onClose={() => modalOpen(false)}
                                      open={open} />
-                                <SearchTable renderItem={(item: any) => item.title} data={data.Knowledge || []} />
+                                <SearchTable renderItem={(item: any) => item.title} data={data.kb || []} />
                                 <Fab onClick={() => modalOpen(true)} style={{ position: 'absolute', right: 12, bottom: 12 }} color="primary">
                                     <Add />
                                 </Fab>
