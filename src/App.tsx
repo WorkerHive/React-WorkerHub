@@ -1,7 +1,8 @@
 import React from 'react';
 import isElectron from 'is-electron'
 import { HashRouter, BrowserRouter, Route, Redirect } from 'react-router-dom'
-import { WorkhubClient, WorkhubProvider } from '@workerhive/client'
+import { WorkhubClient } from '@workerhive/client'
+import { WorkhubProvider } from '@workerhive/client/dist/react'
 import {Login} from './views/Login';
 
 import './App.css';

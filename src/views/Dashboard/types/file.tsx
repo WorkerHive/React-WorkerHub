@@ -5,9 +5,8 @@ export const FILE_VIEW = {
         path: '/dashboard/files',
         label: "Files",
         data: {
-            type: 'File',
-            methods: {
-                files: 'getFiles'
+            files: {
+                type: '[File]'
             }
         },
         layout: (sizes: any, rowHeight: number) => [

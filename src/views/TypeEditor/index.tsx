@@ -3,7 +3,7 @@ import React from 'react';
 import { CRUDKV, Header } from "@workerhive/react-ui"
 import './index.css';
 import { Add, ArrowBack } from '@material-ui/icons';
-import { useHub } from '@workerhive/client';
+import { useHub } from '@workerhive/client/dist/react';
 
 export interface TypeEditorProps{
     match: any;

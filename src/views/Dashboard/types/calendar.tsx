@@ -1,4 +1,5 @@
 import { Paper } from "@material-ui/core";
+import { WorkhubClient } from "@workerhive/client";
 import { Calendar, Header, MutableDialog } from "@workerhive/react-ui";
 import React from "react";
 
@@ -8,6 +9,7 @@ export const CALENDAR_VIEW =  {
         data: {
             scheduleItems: {
                 type: '[Schedule]',
+                live: true
             }
         },
         layout: (sizes: any, rowHeight: number) => [
@@ -25,7 +27,7 @@ export const CALENDAR_VIEW =  {
                 y: 1,
                 w: 12,
                 h: sizes.height / rowHeight - 1, 
-                component: (data: any, params: any, type: any, client: any) => {
+                component: (data: any, params: any, type: any, client?: WorkhubClient | null) => {
                 
                     return ((props) => {
                         
@@ -40,7 +42,7 @@ export const CALENDAR_VIEW =  {
                                 if(item.id){
                                     const id = item.id;
                                     delete item.id;
-                                    client.actions.updateSchedule(id, {
+                                    client!.actions.updateSchedule(id, {
                                         start: item.start,
                                         end: item.end,
                                         title: item.title
@@ -48,13 +50,23 @@ export const CALENDAR_VIEW =  {
                                         openModal(false)
                                     })
                                 }else{
+                                    const newItem : any = {
+                                        start: item.start,
+                                        end: item.end,
+                                        title: item.title
+                                    }
+                                    client!.realtimeSync?.getArray('calendar', type['Schedule']).push([newItem])
+                   
+                                    openModal(false)
+
+                                    /*
                                     client.actions.addSchedule({
                                         start: item.start,
                                         end: item.end,
                                         title: item.title
                                     }).then(() => {
                                         openModal(false)
-                                    })
+                                    })*/
                                 }
                                 console.log("Save calendar", item)
                             }}

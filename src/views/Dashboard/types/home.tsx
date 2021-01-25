@@ -6,9 +6,8 @@ export const HOME_VIEW = {
     path: '/dashboard/',
     label: 'Home',
     data: {
-        type: 'Calendar',
-        methods: {
-            schedule: 'getSchedules'
+        schedule: {
+            type: '[Schedule]'
         }
     }, 
     layout: (sizes: any, rowHeight: number) => [

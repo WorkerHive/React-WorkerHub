@@ -21,9 +21,8 @@ export const PROJECT_DRILLDOWN = {
             y: 0,
             w: 12, 
             h: 1,
-            component: (data: any, params: any) => {
-                console.log(data)
-                return (<Header title={data.project ? data.project.name : ''} />)
+            component: (data: any, params: any, types: any, client: any) => {
+                return (<Header title={data.project ? data.project.name : ''} user={client.user} connected={client.realtimeSync.status}/>)
             }
         },
         {
@@ -59,7 +58,7 @@ export const PROJECT_VIEW = {
                 y: 0,
                 w: 12,
                 h: 1,
-                component: (data: any) => (<Header title={data.label} />)
+                component: (data: any, params: any, types: any, client: any) => (<Header title={data.label} user={client.user} connected={client.realtimeSync.status} />)
             },
             {
                 i: 'data',
@@ -68,9 +67,7 @@ export const PROJECT_VIEW = {
                 w: 12,
                 h: (sizes.height / rowHeight) - (sizes.width < 600 ? 2 : 1),
                 component: (data: any, params: any, types: any, client: any) => {
-                    console.log(types)
                     const t: any = {};
-                    console.log(types)
                     if (types["Project"]) types["Project"].def.forEach((_type: any) => {
                         t[_type.name] = _type.type;
                     })
@@ -91,8 +88,6 @@ export const PROJECT_VIEW = {
                                         }else{
                                             props.client.actions.addProject(item).then(() => modalOpen(false))
                                         }
-                                        
-                                        //modalOpen(false)
                                     }}
                                     onClose={() => {
                                         modalOpen(false)

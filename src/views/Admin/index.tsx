@@ -3,7 +3,7 @@ import React from 'react';
 import { Editor, HiveProvider } from "@workerhive/hive-flow"
 
 import './index.css';
-import { useHub } from '@workerhive/client';
+import { useHub } from '@workerhive/client/dist/react';
 
 export interface AdminViewProps{
 

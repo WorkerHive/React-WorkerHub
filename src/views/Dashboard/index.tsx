@@ -1,4 +1,4 @@
-import { useHub } from '@workerhive/client';
+import { useHub } from '@workerhive/client/dist/react';
 import { MuiPickersUtilsProvider} from '@material-ui/pickers'
 import MomentUtils from '@date-io/moment';
 

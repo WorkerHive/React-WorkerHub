@@ -1,8 +1,9 @@
 import React, { Suspense, lazy, useRef } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout'
-import { useHub, WorkhubClient } from '@workerhive/client'
+import { WorkhubClient } from '@workerhive/client'
 import useResizeAware from 'react-resize-aware';
 import 'react-grid-layout/css/styles.css';
+import { useHub } from '@workerhive/client/dist/react';
 const ReactGridLayout = WidthProvider(RGL);
 
 const Header = lazy(() => import('@workerhive/react-ui').then((r) => ({ default: r.Header })))
@@ -42,19 +43,11 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
     const [client, store, isReady, err] = useHub();
 
-
     const [data, setData] = React.useState<any>({})
     const [types, setTypes] = React.useState<any>({})
 
     React.useEffect(() => {
         if (Object.keys(data).length < 1 && client != null) {
-            /*client!.getModels().then((types : any) => {
-                let _type : any ={};
-                types.forEach((ty : any) => {
-                    _type[ty.name] = ty
-                })
-                setTypes(_type)
-            })*/
 
             if (props.schema.data) {
                 /*
@@ -70,6 +63,10 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                     for (const k in props.schema.data) {
                         //Pull name from data object
                         let name = props.schema.data[k].type;
+                        const liveData : boolean = props.schema.data[k].live || false;
+
+                        if(!name) continue;
+
                         let isArray = false;
                         let query = typeof(props.schema.data[k].query) === 'function' ? props.schema.data[k].query(props.match.params) : {}
 
@@ -79,8 +76,8 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                             isArray = true;
                         }
 
-                        //Fetch the full Model
-                        let model = client.models?.filter((a) => a.name == name)[0]
+                        //Fetch the full Model Description
+                        let model = client.models?.filter((a : any) => a.name === name)[0]
 
                         if (model) {
                             //Key the model to types state
@@ -98,7 +95,6 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                                 } else {
                                     let result = await client!.actions[`get${model.name}s`]()
 
-                                    console.log(store, result)
                                     currentValue = result //store[model.name]
 
                                 }
@@ -119,18 +115,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                                     console.log("CUrrent Valye", currentValue)
                                 } else {
                                     let result = await client!.actions[`get${model.name}`](query.id)
-                                    console.log(result, query, store[model.name])
                                     currentValue = result
-                                  /*  currentValue = store[model.name].filter((a: any) => {
-                                        let matches = true;
-                                        for (var k in (query || {})) {
-                                            if (a[k] != query[k]) {
-                                                matches = false;
-
-                                            }
-                                        }
-                                        return matches;
-                                    })*/
 
                                 }
                             }
@@ -144,17 +129,6 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                         }
                     }
                 })()
-                /*
-                                    console.log("Data action", k, props.schema.data)
-                                    client!.actions[props.schema.data[k].query]().then((r : any) => {
-                                        console.log(r, k)
-                                        let d = Object.assign({}, data);
-                                        d[k] = r;
-                                        setData(d)
-                                    })*/
-
-
-
             }
         }
     }, [props.schema, data, store])
@@ -164,20 +138,39 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
         for(const k in props.schema.data){
             let name = props.schema.data[k].type;
+            const liveData: boolean = props.schema.data[k].live || false;
+
+
+            if(!name) continue;
             let arr = (name.match(/\[(.*?)\]/) != null)
             if(arr) name = name.match(/\[(.*?)\]/)[1]
+
+            let model = client!.models?.filter((a : any) => a.name === name)[0]
+
             let query = typeof(props.schema.data[k].query) === 'function' ? props.schema.data[k].query(props.match.params) : {}
 
             
-            obj[k] = arr ? (store[name] || []):(store[name].filter((a: any) => {
-                let match = true;
-                for(var queryK in query){
-                    if(a[queryK] != query[queryK]){
-                        match = false;
+            if(liveData) console.log("LIVE", client!.realtimeSync!.getArray('calendar', model).toArray())
+
+            obj[k] = arr ? 
+                (liveData ? client!.realtimeSync?.getArray('calendar', model).toArray() : (store[name] || []) )
+                : (liveData ? client!.realtimeSync?.getArray('calendar', model).toArray().filter((a : any) => {
+                    let match = true;
+                    for(var queryK in query){
+                        if(a[queryK] != query[queryK]){
+                            match = false;
+                        }
                     }
-                }
-                return match;
-            })[0] || {})
+                    return match;
+                })[0] : (store[name].filter((a: any) => {
+                    let match = true;
+                    for(var queryK in query){
+                        if(a[queryK] != query[queryK]){
+                            match = false;
+                        }
+                    }
+                    return match;
+                })[0] || {}))
         }
 
         return obj
