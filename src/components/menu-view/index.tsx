@@ -23,7 +23,7 @@ export function MenuView(props: MenuViewProps){
             <Paper className="menu-view__menu">
                 <List style={{flex: 1}}>
                     {props.items.map((x) => (
-                        <ListItem button onClick={() => props.onClick(x)}>{x.name}</ListItem>
+                        <ListItem button onClick={() => props.onClick({item: x})}>{x.name}</ListItem>
                     ))}
                 </List>
                 <div className="menu-view__action">
