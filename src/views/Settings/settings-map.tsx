@@ -63,11 +63,11 @@ export const SettingsMap = (props: any, stores: any, storeTypes : any, converter
       title: <Typography variant="h6" style={{display: 'flex'}}>Data types</Typography>,
       body: (
         <CRUDList title={"Types"} type={{name: 'String', def: 'KV'}} data={models} 
-          onEdit={(item: any) => {
+          onEdit={({item}: any) => {
             props.history.push(`${props.match.url}/type-editor/${item.name}`)
           }}
-          onSave={(obj : any) => { 
-            console.log(obj) 
+          onSave={({item} : any) => { 
+            console.log(item) 
           }} />   
       )
     }

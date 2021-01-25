@@ -131,7 +131,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                 })()
             }
         }
-    }, [props.schema, data, store])
+    }, [props.schema, data, store, types])
 
     function getData() : object{
         let obj : any = {};

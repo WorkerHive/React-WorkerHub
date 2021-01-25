@@ -2976,13 +2976,13 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@workerhive/client@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@workerhive/client/-/client-0.1.0.tgz#3cd63558a6ce598bc92ca9556a886e65f1fd9d41"
-  integrity sha512-yzQXayUm4gQiB+IP638KMvDfWYTJE5ZcAC68NrhhlP/5nP1LALxdKAbiKG1Boxyso6oSaMjLbGIqpCzA3hyXDg==
+"@workerhive/client@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@workerhive/client/-/client-0.1.1.tgz#40f5a36ac6266bdf195f604dae52b9a4424ecfcd"
+  integrity sha512-9A+HZiH8L6QWDPp98TBHPb4p5fcmfwKv8saaISKwTH2d/XU+s0HHVAmdtvVbKBKVvpR3C2A43VvNRKqz+cZtQw==
   dependencies:
     "@apollo/client" "^3.3.6"
-    "@workerhive/ipfs" "^1.0.2"
+    "@workerhive/ipfs" "^1.0.3"
     apollo-boost "^0.4.9"
     apollo-link-context "^1.0.20"
     apollo-link-http "^1.5.17"
@@ -3009,7 +3009,7 @@
     uuid "^8.3.1"
     with-context "^0.0.3"
 
-"@workerhive/ipfs@^1.0.2":
+"@workerhive/ipfs@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@workerhive/ipfs/-/ipfs-1.0.3.tgz#a1f3c9fc99a8c823520ce73b6e9878b8344b30f5"
   integrity sha512-e+do3fhYOCdxoFm7/X3LMJAx34vWA6Jdk0NruGdwMoCIkeRaTxsiOdqw8ti9eBFGu1jzhvxKhW8Wooz840StTw==

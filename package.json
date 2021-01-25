@@ -13,7 +13,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.10",
     "@types/react-dom": "^17.0.0",
-    "@workerhive/client": "^0.1.0",
+    "@workerhive/client": "^0.1.1",
     "@workerhive/hive-flow": "^1.1.4",
     "@workerhive/react-ui": "^1.1.12",
     "is-electron": "^2.2.0",

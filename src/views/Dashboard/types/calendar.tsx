@@ -9,7 +9,7 @@ export const CALENDAR_VIEW =  {
         data: {
             scheduleItems: {
                 type: '[Schedule]',
-                live: true
+                live: false
             }
         },
         layout: (sizes: any, rowHeight: number) => [

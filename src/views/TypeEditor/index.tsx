@@ -21,7 +21,8 @@ export const TypeEditor : React.FC<TypeEditorProps> = (props) => {
 
     React.useEffect(() => {
         if(isReady && client){
-            setType({def: client.models!.filter((a) => a.name === props.match.params.type)[0].def})
+            let type = client.models!.filter((a) => a.name === props.match.params.type)[0]
+            setType({def: type.def, name: type.name})
         }
     }, [])
 
@@ -35,7 +36,24 @@ export const TypeEditor : React.FC<TypeEditorProps> = (props) => {
                     </div>*/}
                     
                     <Paper className="type-editor__types">
-                        <CRUDKV types={client!.models || []} value={type.def} onChange={(def : any) => {console.log("Hit"); setType({def: def});}} />
+                        <CRUDKV types={client!.models || []} value={type.def} onChange={({value} : any) => {
+
+                          let fields = value.filter((a : {type: string, name: string}) => a.type.length > 0)
+                          let newFields = fields.filter((a: any) => {
+                            return type.def.map((x: any) => `${x.name}:${x.type}`).indexOf(`${a.name}:${a.type}`) < 0
+                          })
+
+                          if(newFields.length > 0){
+                              client!.actions.updateType(type.name, newFields)
+                            /*client!.actions.updateType(type.name, value.filter((a : any) => {
+                                return a.name && a.name.length > 0 && a.type && a.type.length > 0
+                            }).filter((a: any) => {
+                                return type.def.map((x: any) => x.name + ":"+JSON.stringify(x.def)).indexOf(`${a.name}:${JSON.stringify(a.def)}`)
+                            }))*/
+                            }
+                            setType({name: type.name, def: value});
+
+                        }} />
                     </Paper>
 
                     <Paper className="type-editor__views">
