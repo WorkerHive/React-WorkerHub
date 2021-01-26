@@ -13,7 +13,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mate
 import { AdminEditor } from './editor';
 
 export interface AdminViewProps{
-
+    stores: any;
 }
 
 export const AdminView: React.FC<AdminViewProps> = (props) => {
@@ -22,8 +22,6 @@ export const AdminView: React.FC<AdminViewProps> = (props) => {
     const editor = useEditor();
     const [ nodes, setNodes ] = React.useState<any>([])
     const [ links, setLinks ] = React.useState<any>([])
-
-    console.log(client?.models)
 
     const displayNodes = client!.models! ? client!.models!.filter((a) => a.directives.indexOf('configurable') > -1).map((x: any, ix :number) => ({
                     id: `type-${ix}`,
@@ -37,7 +35,7 @@ export const AdminView: React.FC<AdminViewProps> = (props) => {
                         label: x.name,
                         typedef: x.def,
                     }
-                })).concat((store.IntegrationStore || []).map((x: any, ix : number) => ({
+                })).concat((props.stores || []).map((x: any, ix : number) => ({
                     id: `store-${ix}`,
                     type: 'extStore',
                     position: {
@@ -58,7 +56,6 @@ export const AdminView: React.FC<AdminViewProps> = (props) => {
 
     const [ filterLink, setFilterLink ] = React.useState<any>([]);
 
-    console.log(Modal, Modal instanceof Element, Modal instanceof Component);
     return (
         <div className="admin-view">
 

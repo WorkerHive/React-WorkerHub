@@ -12,7 +12,7 @@ export const modal = (props : any) => {
   )
 }
 
-export const node = withEditor((props : any) => {
+export const node = (props : any) => {
     return (
     <NodeWrapper {...props}>
       <div style={{padding: 8}} className="ext-store">
@@ -20,4 +20,4 @@ export const node = withEditor((props : any) => {
      </div>
     </NodeWrapper>
     )
-})
+}

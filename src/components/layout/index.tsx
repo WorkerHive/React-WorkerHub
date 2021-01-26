@@ -4,6 +4,7 @@ import { WorkhubClient } from '@workerhive/client'
 import useResizeAware from 'react-resize-aware';
 import 'react-grid-layout/css/styles.css';
 import { useHub } from '@workerhive/client/dist/react';
+import { isEqual } from 'lodash';
 const ReactGridLayout = WidthProvider(RGL);
 
 const Header = lazy(() => import('@workerhive/react-ui').then((r) => ({ default: r.Header })))
@@ -43,11 +44,13 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
     const [client, store, isReady, err] = useHub();
 
+    const [ schema, setSchema ] = React.useState<any>();
+
     const [data, setData] = React.useState<any>({})
     const [types, setTypes] = React.useState<any>({})
 
     React.useEffect(() => {
-        if (Object.keys(data).length < 1 && client != null) {
+        if (client != null && !isEqual(props.schema, schema)) {
 
             if (props.schema.data) {
                 /*
@@ -63,6 +66,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                     for (const k in props.schema.data) {
                         //Pull name from data object
                         let name = props.schema.data[k].type;
+                        console.log("Get Data", name)
                         const liveData : boolean = props.schema.data[k].live || false;
 
                         if(!name) continue;
@@ -90,7 +94,8 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                             //Check for data in cache if not delegate to fetch
                             if (isArray) {
                                 currentValue = store[model.name]
-                                if (currentValue) {
+                                console.log("Current value", currentValue, store, model.name)
+                                if (currentValue && currentValue.length > 0) {
                                     console.log("Current value", currentValue)
                                 } else {
                                     let result = await client!.actions[`get${model.name}s`]()
@@ -129,9 +134,10 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                         }
                     }
                 })()
+                setSchema(props.schema)
             }
         }
-    }, [props.schema, data, store, types])
+    }, [props.schema, client, props.match.params, data, store, types])
 
     function getData() : object{
         let obj : any = {};
@@ -148,7 +154,6 @@ export const Layout: React.FC<LayoutProps> = (props) => {
             let model = client!.models?.filter((a : any) => a.name === name)[0]
 
             let query = typeof(props.schema.data[k].query) === 'function' ? props.schema.data[k].query(props.match.params) : {}
-
             
             if(liveData) console.log("LIVE", client!.realtimeSync!.getArray('calendar', model).toArray())
 

@@ -13,8 +13,9 @@ import { CONTACT_VIEW } from './types/contacts';
 import { KNOWLEDGE_VIEW } from './types/knowledgebase';
 import { TEAM_VIEW } from './types/team';
 import { HOME_VIEW } from './types/home';
-
+import { ADMIN_VIEW } from './types/admin';
 const Types = [
+    ADMIN_VIEW,
     HOME_VIEW,
    CALENDAR_VIEW,
     PROJECT_VIEW,

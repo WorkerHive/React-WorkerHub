@@ -11,14 +11,12 @@ export interface EditorProps {
 export const AdminEditor: React.FC<EditorProps> = (props) => {
     const editor = useEditor();
     const [ client, stores ] = useHub();
-    console.log(editor);
 
     //const [ Modal, setModal ] = React.useState<any>();
     const [ modalOpen, openModal ] = React.useState<boolean>(false);
     
     const Modal = props.selected && props.selected.type && props.selected.type.modal;
 
-    console.log(Modal)
     return (
         <>
          <Dialog fullWidth open={props.selected != null} onClose={props.onClose}>
