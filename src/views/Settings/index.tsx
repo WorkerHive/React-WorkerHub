@@ -20,7 +20,7 @@ export default function Settings (props: SettingsProps){
       setStoreTypes(data)
     })
 
-    client!.actions.getStores().then((data : any) => {
+    client!.actions.getIntegrationStores().then((data : any) => {
       setStores(data)
     })
 

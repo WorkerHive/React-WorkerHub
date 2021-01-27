@@ -1,3 +1,4 @@
+import { WorkhubClient } from "@workerhive/client";
 import { FileBrowser, Header } from "@workerhive/react-ui";
 import React from "react";
 
@@ -24,7 +25,11 @@ export const FILE_VIEW = {
                 y: 1,
                 w: 12,
                 h: (sizes.height / rowHeight) -2,
-                component: (data: any) => (<FileBrowser files={data.files} />)
+                component: (data: any, params: any, types: any, client: any) => (
+                    <FileBrowser files={data.files} onFileUpload={({files}: any) => {
+                        client!.actions.addFile(files[0])
+                    }} />
+                )
             }
         ]
     }

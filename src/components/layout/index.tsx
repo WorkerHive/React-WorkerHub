@@ -62,6 +62,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                         }
                     }
                 */
+                let _types : any = {};
                 (async () => {
                     for (const k in props.schema.data) {
                         //Pull name from data object
@@ -81,13 +82,13 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                         }
 
                         //Fetch the full Model Description
-                        let model = client.models?.filter((a : any) => a.name === name)[0]
+                        let model = client.models?.concat(client.uploadModels).filter((a : any) => a.name === name)[0]
 
                         if (model) {
                             //Key the model to types state
-                            let t = Object.assign({}, types)
-                            t[model.name] = model;
-                            setTypes(t);
+                            console.log("TYPES", types)
+                            _types[model.name] = model;
+                          //  setTypes(t);
 
                             let currentValue;
 
@@ -134,10 +135,11 @@ export const Layout: React.FC<LayoutProps> = (props) => {
                         }
                     }
                 })()
+                setTypes(_types)
                 setSchema(props.schema)
             }
         }
-    }, [props.schema, client, props.match.params, data, store, types])
+    }, [props.schema, schema, client, props.match.params, data, store, types])
 
     function getData() : object{
         let obj : any = {};
@@ -151,7 +153,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
             let arr = (name.match(/\[(.*?)\]/) != null)
             if(arr) name = name.match(/\[(.*?)\]/)[1]
 
-            let model = client!.models?.filter((a : any) => a.name === name)[0]
+            let model = client!.models?.concat(client!.uploadModels).filter((a : any) => a.name === name)[0]
 
             let query = typeof(props.schema.data[k].query) === 'function' ? props.schema.data[k].query(props.match.params) : {}
             

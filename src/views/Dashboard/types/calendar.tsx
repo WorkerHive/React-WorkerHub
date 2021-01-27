@@ -1,5 +1,6 @@
 import { Paper } from "@material-ui/core";
 import { WorkhubClient } from "@workerhive/client";
+import { useHub } from "@workerhive/client/dist/react";
 import { Calendar, Header, MutableDialog } from "@workerhive/react-ui";
 import React from "react";
 
@@ -10,6 +11,12 @@ export const CALENDAR_VIEW =  {
             scheduleItems: {
                 type: '[Schedule]',
                 live: false
+            },
+            people: {
+                type: '[TeamMember]'
+            },
+            equipment: {
+                type: '[Equipment]'
             }
         },
         layout: (sizes: any, rowHeight: number) => [
@@ -28,9 +35,13 @@ export const CALENDAR_VIEW =  {
                 w: 12,
                 h: sizes.height / rowHeight - 1, 
                 component: (data: any, params: any, type: any, client?: WorkhubClient | null) => {
-                
+                    const t: any = {};
+                    console.log(type)
+                    if (type["Schedule"]) type["Schedule"].def.forEach((_type: any) => {
+                        t[_type.name] = _type.type;
+                    })
                     return ((props) => {
-                        
+                        const [ c, stores ] = useHub()
                         const [ modalOpen, openModal ] = React.useState<boolean>(false);
 
                         const [ userData, setData ] = React.useState<object>({});
@@ -53,20 +64,17 @@ export const CALENDAR_VIEW =  {
                                     const newItem : any = {
                                         start: item.start,
                                         end: item.end,
-                                        title: item.title
+                                        people: item.people,
+                                        resources: item.resources
                                     }
-                                    client!.realtimeSync?.getArray('calendar', type['Schedule']).push([newItem])
+                                   // client!.realtimeSync?.getArray('calendar', type['Schedule']).push([newItem])
                    
                                     openModal(false)
 
-                                    /*
-                                    client.actions.addSchedule({
-                                        start: item.start,
-                                        end: item.end,
-                                        title: item.title
-                                    }).then(() => {
+                                    
+                                    client!.actions.addSchedule(newItem).then(() => {
                                         openModal(false)
-                                    })*/
+                                    })
                                 }
                                 console.log("Save calendar", item)
                             }}
@@ -74,13 +82,12 @@ export const CALENDAR_VIEW =  {
                                 openModal(false);
                                 setData({})
                             }}
+                            models={client?.models?.map((x: any) => ({
+                                ...x,
+                                data: stores[x.name]
+                            }))}
                             data={userData}
-                            structure={{
-                                title: "String",
-                                start: "Date",
-                                end: "Date",
-                                allDay: "Boolean"
-                            }} title={"Schedule"}/>
+                            structure={t} title={"Schedule"}/>
                         <Calendar events={data.scheduleItems ? data.scheduleItems.map((x:any) => {
                             return {
                                 ...x,

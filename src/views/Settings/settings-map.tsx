@@ -4,14 +4,20 @@ import { useHub } from '@workerhive/client/dist/react'
 import React from 'react';
 
 
-export const SettingsMap = (props: any, stores: any, storeTypes : any, converters : any, roles: any) => {
+export const SettingsMap = (props: any, stores: any, storeTypes : any, converters : any, _roles: any) => {
   const [ client, store, isReady, err ] = useHub()
 
   const [ models, setModels ] = React.useState<any>([]);
+  const [ roles, setRoles ] = React.useState<any>([])
+
   React.useEffect(() => {
     client!.getModels().then(models => {
-      setModels(models)
+      setModels(models.crud)
     });
+
+    client!.actions.getRoles().then((roles: any) => {
+      setRoles(roles)
+    })
   }, [])
 
   return [
@@ -48,7 +54,31 @@ export const SettingsMap = (props: any, stores: any, storeTypes : any, converter
     },
     {
       title: <Typography variant="h6" style={{display: 'flex'}}>Roles</Typography>,
-      body: <CRUDList title={"Roles"} type={{name: 'String', permissions: {type: 'Table', items: models}}} data={roles} />
+      body: (
+        <CRUDList 
+          title={"Roles"} 
+          onDelete={({item}: any) => {
+            client!.actions.deleteRole(item.id)
+          }}
+          onSave={({item}: any) => {
+            let obj = Object.assign({}, item);
+            if(!obj.id){
+              client!.actions.addRole(obj)
+            }else{
+              const id = obj.id;
+              delete obj.id;
+              client!.actions.updateRole(id,obj)
+            }
+          }}
+          type={{
+            name: 'String', 
+            permissions: {
+              type: 'Table', 
+              items: models.filter((a: any) => a.directives.indexOf('configurable') > -1)
+            }
+          }} 
+          data={store.Role} />
+      )
     },
     {
       title: <Typography variant="h6" style={{display: 'flex'}}>Data Flow</Typography>,
